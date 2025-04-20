@@ -1,0 +1,325 @@
+
+import React, { useState, useContext, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { AlertCircle, Sparkle, Clipboard, ArrowRight } from "lucide-react";
+import { AuthContext } from "@/contexts/AuthContext";
+import TaskSelector from "./TaskSelector";
+import PromptForm from "./PromptForm";
+import { TaskType } from "./TaskIcons";
+import UpgradePrompt from "../subscription/UpgradePrompt";
+
+const PromptBuilder: React.FC = () => {
+  const { user } = useContext(AuthContext);
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
+  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
+  const [canGenerate, setCanGenerate] = useState<boolean>(true);
+  const [promptsRemaining, setPromptsRemaining] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      setPromptsRemaining(user.promptsRemaining || 0);
+    }
+  }, [user]);
+
+  const handleFormChange = (field: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleNextStep = () => {
+    if (currentStep === 1 && selectedTask) {
+      setCurrentStep(2);
+    }
+  };
+
+  const handlePrevStep = () => {
+    if (currentStep === 2) {
+      setCurrentStep(1);
+    }
+  };
+
+  const handleGenerate = () => {
+    // Check if user can generate prompts
+    if (!canGenerate) {
+      return;
+    }
+
+    if (user && promptsRemaining !== null && promptsRemaining <= 0) {
+      // User has no prompts remaining
+      return;
+    }
+
+    // Generate the enhanced prompt
+    const enhancedPrompt = generateEnhancedPrompt();
+    setGeneratedPrompt(enhancedPrompt);
+    setCurrentStep(3);
+
+    // Reduce the number of prompts remaining if user is authenticated
+    if (user && promptsRemaining !== null) {
+      const newPromptsRemaining = promptsRemaining - 1;
+      setPromptsRemaining(newPromptsRemaining);
+      
+      // Mock updating the user in a real app this would call an API
+      const updatedUser = { ...user, promptsRemaining: newPromptsRemaining };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    }
+  };
+
+  const generateEnhancedPrompt = () => {
+    // This is a mock implementation of the prompt enhancement algorithm
+    // In a real app, this would call an AI service (like OpenAI) to generate the prompt
+    
+    let prompt = "";
+    
+    // Start with a task-specific template
+    switch (selectedTask) {
+      case "content":
+        prompt = `Write a ${formData.contentType || "piece of content"} about "${formData.topic || "the provided topic"}".`;
+        
+        if (formData.keyPoints) {
+          prompt += `\n\nInclude these key points:\n${formData.keyPoints}`;
+        }
+        
+        if (formData.targetAudience) {
+          prompt += `\n\nTarget audience: ${formData.targetAudience}`;
+        }
+        break;
+        
+      case "code":
+        prompt = `Write ${formData.language || "code"} that accomplishes the following:\n${formData.functionality || "the specified functionality"}`;
+        
+        if (formData.includeComments) {
+          prompt += "\n\nInclude helpful comments in the code to explain the approach.";
+        }
+        
+        if (formData.optimizePerformance) {
+          prompt += "\n\nOptimize the code for performance.";
+        }
+        break;
+        
+      case "idea":
+        prompt = `Help me brainstorm ${formData.ideaType || "ideas"} for the following challenge:\n${formData.challenge || "the provided challenge"}`;
+        
+        if (formData.context) {
+          prompt += `\n\nBackground context: ${formData.context}`;
+        }
+        
+        if (formData.constraints) {
+          prompt += `\n\nConsider these constraints: ${formData.constraints}`;
+        }
+        break;
+        
+      default:
+        prompt = formData.prompt || "Please provide a detailed response.";
+    }
+    
+    // Add tone if specified
+    if (formData.tone) {
+      prompt += `\n\nUse a ${formData.tone} tone in your response.`;
+    }
+    
+    // Add additional context if provided
+    if (formData.additionalContext) {
+      prompt += `\n\nAdditional context: ${formData.additionalContext}`;
+    }
+    
+    // Add examples request if enabled
+    if (formData.includeExamples) {
+      prompt += "\n\nInclude examples in your response.";
+    }
+    
+    // Add detail level instructions
+    const detailLevelMap = {
+      1: "Provide a brief and concise response.",
+      2: "Provide a moderately detailed response with good explanations.",
+      3: "Provide a comprehensive, highly detailed response with thorough explanations."
+    };
+    
+    prompt += `\n\n${detailLevelMap[formData.detailLevel || 2]}`;
+    
+    // Add premium features for premium users
+    if (user && user.subscription === "premium") {
+      prompt += "\n\nInclude strategic insights and advanced considerations in your response.";
+      prompt += "\n\nOptimize this response for maximum clarity and practical usefulness.";
+    }
+    
+    return prompt;
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(generatedPrompt).then(
+      () => {
+        // Show success notification (would integrate with a toast system in real app)
+        console.log("Prompt copied to clipboard");
+      },
+      (err) => {
+        console.error("Could not copy text: ", err);
+      }
+    );
+  };
+
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Step 1: Select Task Type</h2>
+            <TaskSelector
+              selectedTask={selectedTask}
+              onTaskSelect={setSelectedTask}
+            />
+            <div className="mt-4 flex justify-end">
+              <Button
+                onClick={handleNextStep}
+                disabled={!selectedTask}
+                className="flex items-center"
+              >
+                Next <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        );
+      case 2:
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Step 2: Provide Details</h2>
+            {selectedTask && (
+              <PromptForm
+                taskType={selectedTask}
+                formData={formData}
+                onChange={handleFormChange}
+              />
+            )}
+            <div className="mt-4 flex justify-between">
+              <Button variant="outline" onClick={handlePrevStep}>
+                Back
+              </Button>
+              <Button 
+                onClick={handleGenerate}
+                disabled={!canGenerate || (user && promptsRemaining !== null && promptsRemaining <= 0)}
+                className="flex items-center"
+              >
+                <Sparkle className="mr-2 h-4 w-4" />
+                Generate Enhanced Prompt
+              </Button>
+            </div>
+            
+            {user && promptsRemaining !== null && promptsRemaining <= 0 && (
+              <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-start">
+                <AlertCircle className="text-amber-500 mt-0.5 mr-2 h-5 w-5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm text-amber-800">
+                    You've used all your prompt enhancements for this month.
+                  </p>
+                  <UpgradePrompt currentTier={user.subscription || "free"} />
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      case 3:
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Your Enhanced Prompt</h2>
+            <Tabs defaultValue="prompt">
+              <TabsList className="mb-4">
+                <TabsTrigger value="prompt">Enhanced Prompt</TabsTrigger>
+                <TabsTrigger value="before-after">Before & After</TabsTrigger>
+              </TabsList>
+              <TabsContent value="prompt">
+                <Card className="p-4 bg-gray-50 border border-gray-200">
+                  <Textarea
+                    readOnly
+                    value={generatedPrompt}
+                    className="min-h-[300px] bg-white"
+                  />
+                  <div className="mt-4 flex justify-between">
+                    <Button variant="outline" onClick={() => setCurrentStep(2)}>
+                      Back to Editor
+                    </Button>
+                    <Button onClick={copyToClipboard} className="flex items-center">
+                      <Clipboard className="mr-2 h-4 w-4" />
+                      Copy to Clipboard
+                    </Button>
+                  </div>
+                </Card>
+              </TabsContent>
+              <TabsContent value="before-after">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="font-medium mb-2">Original Idea</h3>
+                    <div className="p-3 bg-gray-100 rounded-md min-h-[200px]">
+                      <p className="text-sm text-gray-700">
+                        {formData.prompt || `${selectedTask}: ${formData.topic || formData.challenge || formData.functionality || "Your prompt"}`}
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-medium mb-2">Enhanced Prompt</h3>
+                    <div className="p-3 bg-purple-50 rounded-md min-h-[200px] border border-purple-100">
+                      <p className="text-sm text-gray-700">{generatedPrompt}</p>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold mb-2">AI Prompt Builder</h1>
+        <p className="text-gray-600">
+          Create enhanced prompts that generate better results from AI tools
+        </p>
+      </div>
+
+      {!user && (
+        <div className="mb-6 p-4 bg-purple-50 border border-purple-100 rounded-md">
+          <h3 className="font-semibold mb-2">Get More from AI Prompt Builder</h3>
+          <p className="text-sm text-gray-700 mb-3">
+            Sign up for free to save your prompts and get 5 enhanced prompts per month.
+          </p>
+          <div className="flex space-x-2">
+            <Button size="sm" asChild>
+              <a href="/signup">Sign Up - Free</a>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <a href="/signin">Sign In</a>
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {user && promptsRemaining !== null && (
+        <div className="mb-6 flex justify-between items-center">
+          <div>
+            <span className="text-sm text-gray-600">
+              {user.subscription === "premium" 
+                ? "Premium Subscription: Unlimited Prompts" 
+                : `Prompts remaining this month: ${promptsRemaining}`}
+            </span>
+          </div>
+          {user.subscription !== "premium" && (
+            <Button variant="outline" size="sm" asChild>
+              <a href="/pricing">Upgrade</a>
+            </Button>
+          )}
+        </div>
+      )}
+
+      <Card className="p-6">{renderStepContent()}</Card>
+    </div>
+  );
+};
+
+export default PromptBuilder;
