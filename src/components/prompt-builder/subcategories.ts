@@ -1,4 +1,3 @@
-
 import { TaskType } from "./TaskIcons";
 
 export interface SubCategory {
@@ -13,6 +12,38 @@ export type SubCategoriesMap = {
 };
 
 export const SUBCATEGORIES: SubCategoriesMap = {
+  email: [
+    {
+      id: "business",
+      name: "Business Communication",
+      description: "Professional business emails",
+      defaultPrompt: "Write a professional email for [purpose] that [objective]. The tone should be [tone] and include [key points]. The email should be appropriate for [audience] and maintain [company] standards.",
+    },
+    {
+      id: "customer",
+      name: "Customer Service",
+      description: "Customer support responses",
+      defaultPrompt: "Compose a customer service email response addressing [issue]. Use a [tone] tone while showing empathy and providing clear solutions. Include [specific details] and end with [call to action].",
+    },
+    {
+      id: "marketing",
+      name: "Marketing Emails",
+      description: "Promotional and campaign emails",
+      defaultPrompt: "Create a marketing email for [product/service] targeting [audience]. Include compelling subject line, clear value proposition about [benefits], and strong call-to-action for [desired action].",
+    },
+    {
+      id: "influencer",
+      name: "Influencer Outreach",
+      description: "Collaboration and partnership emails",
+      defaultPrompt: "Write an outreach email to [influencer type] for [collaboration type]. Highlight [unique value proposition], demonstrate familiarity with their work, and propose [specific collaboration details].",
+    },
+    {
+      id: "corporate",
+      name: "Corporate Communications",
+      description: "Internal and stakeholder emails",
+      defaultPrompt: "Draft a corporate communication about [topic] for [stakeholder group]. Include [key updates/changes], address potential concerns about [issues], and outline [next steps/expectations].",
+    },
+  ],
   content: [
     {
       id: "blog",
@@ -117,33 +148,25 @@ export const SUBCATEGORIES: SubCategoriesMap = {
       defaultPrompt: "Generate a prompt for concept art of [subject] for [purpose]. Include details about the aesthetic, mood, key visual elements, color scheme, and stylistic references to inform the creation.",
     },
   ],
-  chat: [
-    {
-      id: "customer",
-      name: "Customer Support",
-      description: "Help and service conversations",
-      defaultPrompt: "Act as a customer support assistant for [company/product]. Respond to user inquiries about [topic] with helpful, accurate information. Maintain a [tone] tone and focus on resolving issues effectively.",
-    },
-    {
-      id: "tutor",
-      name: "Educational Tutor",
-      description: "Teaching & explanation dialogues",
-      defaultPrompt: "Serve as a tutor helping to explain [topic] at a [level] level. Break down complex concepts, provide examples, answer follow-up questions, and check for understanding throughout the conversation.",
-    },
-    {
-      id: "roleplay",
-      name: "Character Roleplay",
-      description: "Conversational character simulation",
-      defaultPrompt: "Roleplay as [character/expert] and engage in a conversation about [topic]. Maintain the appropriate knowledge level, speech patterns, and perspective consistent with this role throughout our interaction.",
-    },
-    {
-      id: "interview",
-      name: "Interview Simulation",
-      description: "Practice Q&A sessions",
-      defaultPrompt: "Simulate an interview scenario for a [position] role. Ask relevant questions about [topics], evaluate responses, provide constructive feedback, and create a realistic interview experience.",
-    },
-  ],
   research: [
+    {
+      id: "market",
+      name: "Market Research",
+      description: "Industry and market analysis",
+      defaultPrompt: "Conduct research on [market/industry] focusing on [specific aspects]. Include key trends, competitive analysis, and market size data. Consider [specific factors] and their impact.",
+    },
+    {
+      id: "academic",
+      name: "Academic Research",
+      description: "Scholarly analysis and literature review",
+      defaultPrompt: "Perform a literature review on [topic] covering research from [time period]. Focus on [specific aspects], identify key findings, and highlight gaps in current research.",
+    },
+    {
+      id: "competitor",
+      name: "Competitor Analysis",
+      description: "Detailed competitor research",
+      defaultPrompt: "Analyze [competitor names] in terms of [specific aspects]. Include strengths, weaknesses, unique selling propositions, and market positioning. Focus on [key metrics].",
+    },
     {
       id: "topic",
       name: "Topic Research",

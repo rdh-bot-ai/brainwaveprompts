@@ -10,6 +10,13 @@ const Builder = () => {
       <div className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-10">
+            <div className="flex justify-center mb-6">
+              <img 
+                src="/lovable-uploads/f2622b06-7867-46dd-a22c-c9f2a546dc3e.png" 
+                alt="Brainwave Prompts Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               AI Prompt Builder
             </h1>

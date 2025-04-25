@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import TaskIcon, { TaskType } from "./TaskIcons";
@@ -34,9 +33,9 @@ const TASK_OPTIONS: TaskOption[] = [
     description: "Image prompts for AI art generators",
   },
   {
-    id: "chat",
-    name: "Chat Assistant",
-    description: "Conversation, Q&A, guidance",
+    id: "email",
+    name: "Email Response",
+    description: "Professional email templates & responses",
   },
   {
     id: "research",
