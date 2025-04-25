@@ -10,11 +10,13 @@ import TaskSelector from "./TaskSelector";
 import PromptForm from "./PromptForm";
 import { TaskType } from "./TaskIcons";
 import UpgradePrompt from "../subscription/UpgradePrompt";
+import { getDefaultPrompt } from "./subcategories";
 
 const PromptBuilder: React.FC = () => {
   const { user } = useContext(AuthContext);
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
   const [canGenerate, setCanGenerate] = useState<boolean>(true);
@@ -25,6 +27,22 @@ const PromptBuilder: React.FC = () => {
       setPromptsRemaining(user.promptsRemaining || 0);
     }
   }, [user]);
+
+  // Update formData when subcategory changes
+  useEffect(() => {
+    if (selectedTask && selectedSubCategory) {
+      const defaultPrompt = getDefaultPrompt(selectedTask, selectedSubCategory);
+      
+      // Prefill the form with default values based on the subcategory
+      setFormData(prev => ({
+        ...prev,
+        prompt: defaultPrompt,
+        detailLevel: prev.detailLevel || 2, // Default to moderate detail
+        tone: prev.tone || "professional", // Default to professional tone
+        includeExamples: prev.includeExamples !== undefined ? prev.includeExamples : false,
+      }));
+    }
+  }, [selectedTask, selectedSubCategory]);
 
   const handleFormChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -40,6 +58,15 @@ const PromptBuilder: React.FC = () => {
     if (currentStep === 2) {
       setCurrentStep(1);
     }
+  };
+
+  const handleTaskSelection = (task: TaskType) => {
+    setSelectedTask(task);
+    setSelectedSubCategory(null); // Reset subcategory when task changes
+  };
+
+  const handleSubCategorySelection = (subCategory: string) => {
+    setSelectedSubCategory(subCategory);
   };
 
   const handleGenerate = () => {
@@ -75,46 +102,75 @@ const PromptBuilder: React.FC = () => {
     
     let prompt = "";
     
-    // Start with a task-specific template
-    switch (selectedTask) {
-      case "content":
-        prompt = `Write a ${formData.contentType || "piece of content"} about "${formData.topic || "the provided topic"}".`;
-        
-        if (formData.keyPoints) {
-          prompt += `\n\nInclude these key points:\n${formData.keyPoints}`;
-        }
-        
-        if (formData.targetAudience) {
-          prompt += `\n\nTarget audience: ${formData.targetAudience}`;
-        }
-        break;
-        
-      case "code":
-        prompt = `Write ${formData.language || "code"} that accomplishes the following:\n${formData.functionality || "the specified functionality"}`;
-        
-        if (formData.includeComments) {
-          prompt += "\n\nInclude helpful comments in the code to explain the approach.";
-        }
-        
-        if (formData.optimizePerformance) {
-          prompt += "\n\nOptimize the code for performance.";
-        }
-        break;
-        
-      case "idea":
-        prompt = `Help me brainstorm ${formData.ideaType || "ideas"} for the following challenge:\n${formData.challenge || "the provided challenge"}`;
-        
-        if (formData.context) {
-          prompt += `\n\nBackground context: ${formData.context}`;
-        }
-        
-        if (formData.constraints) {
-          prompt += `\n\nConsider these constraints: ${formData.constraints}`;
-        }
-        break;
-        
-      default:
-        prompt = formData.prompt || "Please provide a detailed response.";
+    // Use the form data prompt if it exists (which will be pre-populated from subcategory)
+    if (formData.prompt) {
+      prompt = formData.prompt;
+      
+      // Replace placeholders with actual values if they exist
+      if (selectedTask === "content" && formData.topic) {
+        prompt = prompt.replace(/\[topic\]/g, formData.topic);
+      }
+      if (formData.keyPoints) {
+        prompt = prompt.replace(/\[key points\]/g, formData.keyPoints);
+      }
+      if (selectedTask === "code" && formData.language) {
+        prompt = prompt.replace(/\[language\]/g, formData.language);
+      }
+      if (selectedTask === "code" && formData.functionality) {
+        prompt = prompt.replace(/\[functionality\]/g, formData.functionality);
+      }
+      if (selectedTask === "idea" && formData.challenge) {
+        prompt = prompt.replace(/\[challenge\]/g, formData.challenge);
+      }
+      if (formData.context) {
+        prompt = prompt.replace(/\[context\]/g, formData.context);
+      }
+      if (formData.constraints) {
+        prompt = prompt.replace(/\[constraints\]/g, formData.constraints);
+      }
+    } else {
+      // Fall back to the original logic if no prompt exists
+      // Start with a task-specific template
+      switch (selectedTask) {
+        case "content":
+          prompt = `Write a ${formData.contentType || "piece of content"} about "${formData.topic || "the provided topic"}".`;
+          
+          if (formData.keyPoints) {
+            prompt += `\n\nInclude these key points:\n${formData.keyPoints}`;
+          }
+          
+          if (formData.targetAudience) {
+            prompt += `\n\nTarget audience: ${formData.targetAudience}`;
+          }
+          break;
+          
+        case "code":
+          prompt = `Write ${formData.language || "code"} that accomplishes the following:\n${formData.functionality || "the specified functionality"}`;
+          
+          if (formData.includeComments) {
+            prompt += "\n\nInclude helpful comments in the code to explain the approach.";
+          }
+          
+          if (formData.optimizePerformance) {
+            prompt += "\n\nOptimize the code for performance.";
+          }
+          break;
+          
+        case "idea":
+          prompt = `Help me brainstorm ${formData.ideaType || "ideas"} for the following challenge:\n${formData.challenge || "the provided challenge"}`;
+          
+          if (formData.context) {
+            prompt += `\n\nBackground context: ${formData.context}`;
+          }
+          
+          if (formData.constraints) {
+            prompt += `\n\nConsider these constraints: ${formData.constraints}`;
+          }
+          break;
+          
+        default:
+          prompt = formData.prompt || "Please provide a detailed response.";
+      }
     }
     
     // Add tone if specified
@@ -170,12 +226,14 @@ const PromptBuilder: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4">Step 1: Select Task Type</h2>
             <TaskSelector
               selectedTask={selectedTask}
-              onTaskSelect={setSelectedTask}
+              selectedSubCategory={selectedSubCategory}
+              onTaskSelect={handleTaskSelection}
+              onSubCategorySelect={handleSubCategorySelection}
             />
             <div className="mt-4 flex justify-end">
               <Button
                 onClick={handleNextStep}
-                disabled={!selectedTask}
+                disabled={!selectedTask || !selectedSubCategory}
                 className="flex items-center"
               >
                 Next <ArrowRight className="ml-2 h-4 w-4" />
@@ -187,9 +245,10 @@ const PromptBuilder: React.FC = () => {
         return (
           <div>
             <h2 className="text-xl font-semibold mb-4">Step 2: Provide Details</h2>
-            {selectedTask && (
+            {selectedTask && selectedSubCategory && (
               <PromptForm
                 taskType={selectedTask}
+                subCategory={selectedSubCategory}
                 formData={formData}
                 onChange={handleFormChange}
               />

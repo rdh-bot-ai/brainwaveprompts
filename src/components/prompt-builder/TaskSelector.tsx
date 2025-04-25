@@ -1,7 +1,10 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import TaskIcon, { TaskType } from "./TaskIcons";
+import { SUBCATEGORIES } from "./subcategories";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 interface TaskOption {
   id: TaskType;
@@ -64,10 +67,29 @@ const TASK_OPTIONS: TaskOption[] = [
 
 interface TaskSelectorProps {
   selectedTask: TaskType | null;
+  selectedSubCategory: string | null;
   onTaskSelect: (task: TaskType) => void;
+  onSubCategorySelect: (subCategory: string) => void;
 }
 
-const TaskSelector: React.FC<TaskSelectorProps> = ({ selectedTask, onTaskSelect }) => {
+const TaskSelector: React.FC<TaskSelectorProps> = ({ 
+  selectedTask, 
+  selectedSubCategory,
+  onTaskSelect, 
+  onSubCategorySelect 
+}) => {
+  // State to track if subcategories should be shown
+  const [showSubCategories, setShowSubCategories] = useState(false);
+
+  // Effect to show subcategories when a task is selected
+  useEffect(() => {
+    if (selectedTask) {
+      setShowSubCategories(true);
+    } else {
+      setShowSubCategories(false);
+    }
+  }, [selectedTask]);
+
   return (
     <div className="py-4">
       <h2 className="text-lg font-semibold mb-3">I want AI to:</h2>
@@ -96,6 +118,38 @@ const TaskSelector: React.FC<TaskSelectorProps> = ({ selectedTask, onTaskSelect 
           </Card>
         ))}
       </div>
+
+      {showSubCategories && selectedTask && (
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold mb-3">Select Specific Type:</h2>
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <RadioGroup 
+              value={selectedSubCategory || ""} 
+              onValueChange={onSubCategorySelect}
+              className="grid grid-cols-1 md:grid-cols-2 gap-3"
+            >
+              {SUBCATEGORIES[selectedTask].map((subCat) => (
+                <div key={subCat.id} className="flex items-start space-x-3">
+                  <RadioGroupItem 
+                    value={subCat.id} 
+                    id={`subcat-${subCat.id}`} 
+                    className="mt-1"
+                  />
+                  <div className="flex-1">
+                    <Label 
+                      htmlFor={`subcat-${subCat.id}`} 
+                      className="font-medium cursor-pointer"
+                    >
+                      {subCat.name}
+                    </Label>
+                    <p className="text-sm text-gray-500">{subCat.description}</p>
+                  </div>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

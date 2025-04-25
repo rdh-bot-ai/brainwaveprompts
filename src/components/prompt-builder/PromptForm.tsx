@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { TaskType } from "./TaskIcons";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,22 +13,72 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SUBCATEGORIES } from "./subcategories";
 
 interface PromptFormProps {
   taskType: TaskType;
+  subCategory: string;
   formData: Record<string, any>;
   onChange: (field: string, value: any) => void;
 }
 
-const PromptForm: React.FC<PromptFormProps> = ({ taskType, formData, onChange }) => {
+const PromptForm: React.FC<PromptFormProps> = ({ 
+  taskType, 
+  subCategory,
+  formData, 
+  onChange 
+}) => {
   // Helper to handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     onChange(e.target.name, e.target.value);
   };
 
+  // Get the selected subcategory object
+  const selectedSubCategory = SUBCATEGORIES[taskType]?.find(sub => sub.id === subCategory);
+
+  // Effect to update prompt when relevant fields change
+  useEffect(() => {
+    if (selectedSubCategory) {
+      let updatedPrompt = selectedSubCategory.defaultPrompt;
+      
+      // Replace placeholders with actual values if they exist
+      if (taskType === "content" && formData.topic) {
+        updatedPrompt = updatedPrompt.replace(/\[topic\]/g, formData.topic);
+      }
+      if (formData.keyPoints) {
+        updatedPrompt = updatedPrompt.replace(/\[key points\]/g, formData.keyPoints);
+      }
+      if (taskType === "code" && formData.language) {
+        updatedPrompt = updatedPrompt.replace(/\[language\]/g, formData.language);
+      }
+      if (taskType === "code" && formData.functionality) {
+        updatedPrompt = updatedPrompt.replace(/\[functionality\]/g, formData.functionality);
+      }
+      
+      // Only update if something changed
+      if (updatedPrompt !== formData.prompt) {
+        onChange("prompt", updatedPrompt);
+      }
+    }
+  }, [taskType, subCategory, formData.topic, formData.keyPoints, formData.language, formData.functionality]);
+
   // Common fields that appear in most forms
   const renderCommonFields = () => (
     <>
+      <div className="mb-6">
+        <Label htmlFor="prompt" className="text-lg font-medium">Your Prompt Template</Label>
+        <p className="text-sm text-gray-500 mb-2">
+          This template will be used to generate your enhanced prompt. Edit it to customize.
+        </p>
+        <Textarea
+          name="prompt"
+          value={formData.prompt || ""}
+          onChange={handleChange}
+          className="min-h-[150px] font-mono text-sm"
+          placeholder="Your prompt template appears here. Edit it to customize..."
+        />
+      </div>
+
       <div className="mb-4">
         <Label htmlFor="tone">Tone</Label>
         <Select
@@ -112,27 +162,6 @@ const PromptForm: React.FC<PromptFormProps> = ({ taskType, formData, onChange })
           onChange={handleChange}
           className="min-h-[80px]"
         />
-      </div>
-      
-      <div className="mb-4">
-        <Label htmlFor="contentType">Content Type</Label>
-        <Select
-          name="contentType"
-          value={formData.contentType || ""}
-          onValueChange={(value) => onChange("contentType", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select content type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="blog">Blog Post</SelectItem>
-            <SelectItem value="article">Article</SelectItem>
-            <SelectItem value="essay">Essay</SelectItem>
-            <SelectItem value="social">Social Media Post</SelectItem>
-            <SelectItem value="email">Email</SelectItem>
-            <SelectItem value="story">Story</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
       
       <div className="mb-4">
@@ -230,32 +259,59 @@ const PromptForm: React.FC<PromptFormProps> = ({ taskType, formData, onChange })
       </div>
       
       <div className="mb-4">
-        <Label htmlFor="ideaType">Idea Type</Label>
-        <Select
-          name="ideaType"
-          value={formData.ideaType || ""}
-          onValueChange={(value) => onChange("ideaType", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select type of ideas" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="creative">Creative Solutions</SelectItem>
-            <SelectItem value="business">Business Strategies</SelectItem>
-            <SelectItem value="product">Product Ideas</SelectItem>
-            <SelectItem value="marketing">Marketing Concepts</SelectItem>
-            <SelectItem value="personal">Personal Projects</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="mb-4">
         <Label htmlFor="constraints">Constraints (Optional)</Label>
         <Textarea
           name="constraints"
           placeholder="Any limitations or requirements to consider..."
           value={formData.constraints || ""}
           onChange={handleChange}
+        />
+      </div>
+    </>
+  );
+
+  const renderImageFields = () => (
+    <>
+      <div className="mb-4">
+        <Label htmlFor="subject">Subject</Label>
+        <Input
+          name="subject"
+          placeholder="What should be in the image?"
+          value={formData.subject || ""}
+          onChange={handleChange}
+        />
+      </div>
+      
+      <div className="mb-4">
+        <Label htmlFor="style">Visual Style</Label>
+        <Select
+          name="style"
+          value={formData.style || ""}
+          onValueChange={(value) => onChange("style", value)}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select visual style" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="realistic">Photorealistic</SelectItem>
+            <SelectItem value="abstract">Abstract</SelectItem>
+            <SelectItem value="cartoon">Cartoon/Stylized</SelectItem>
+            <SelectItem value="3d">3D Rendered</SelectItem>
+            <SelectItem value="watercolor">Watercolor</SelectItem>
+            <SelectItem value="oil">Oil Painting</SelectItem>
+            <SelectItem value="digital">Digital Art</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      
+      <div className="mb-4">
+        <Label htmlFor="details">Visual Details</Label>
+        <Textarea
+          name="details"
+          placeholder="Describe specific visual elements, colors, lighting, mood..."
+          value={formData.details || ""}
+          onChange={handleChange}
+          className="min-h-[80px]"
         />
       </div>
     </>
@@ -270,20 +326,11 @@ const PromptForm: React.FC<PromptFormProps> = ({ taskType, formData, onChange })
         return renderCodeFields();
       case "idea":
         return renderIdeaFields();
+      case "image":
+        return renderImageFields();
       // Add more task-specific forms as needed
       default:
-        return (
-          <div className="mb-4">
-            <Label htmlFor="prompt">Your Prompt</Label>
-            <Textarea
-              name="prompt"
-              placeholder="Describe what you want the AI to do in detail..."
-              value={formData.prompt || ""}
-              onChange={handleChange}
-              className="min-h-[150px]"
-            />
-          </div>
-        );
+        return null;
     }
   };
 
