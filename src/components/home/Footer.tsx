@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -8,12 +7,17 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">AI Prompt Builder</h3>
+            <div className="flex items-center space-x-3 mb-4">
+              <img 
+                src="/lovable-uploads/a4fa3116-9da7-4898-a3e2-7acc1ff57e59.png" 
+                alt="Brainwave Prompts" 
+                className="h-8 w-auto brightness-0 invert"
+              />
+            </div>
             <p className="text-sm text-gray-400">
               Create enhanced prompts for better AI interactions.
             </p>
           </div>
-          
           <FooterSection
             title="Product"
             links={[

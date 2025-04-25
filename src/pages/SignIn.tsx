@@ -36,6 +36,13 @@ const SignIn = () => {
       <Navbar />
       <div className="pt-24 pb-16 flex items-center justify-center">
         <div className="w-full max-w-md px-4">
+          <div className="flex justify-center mb-8">
+            <img 
+              src="/lovable-uploads/a4fa3116-9da7-4898-a3e2-7acc1ff57e59.png" 
+              alt="Brainwave Prompts" 
+              className="h-12 w-auto"
+            />
+          </div>
           <Card>
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl font-bold">Sign in</CardTitle>
