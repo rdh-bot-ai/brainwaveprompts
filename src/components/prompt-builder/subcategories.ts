@@ -43,6 +43,24 @@ export const SUBCATEGORIES: SubCategoriesMap = {
       description: "Internal and stakeholder emails",
       defaultPrompt: "Draft a corporate communication about [topic] for [stakeholder group]. Include [key updates/changes], address potential concerns about [issues], and outline [next steps/expectations].",
     },
+    {
+      id: "sales",
+      name: "Sales Outreach",
+      description: "Sales and prospecting emails",
+      defaultPrompt: "Write a sales outreach email for [target audience] about [product/service]. Include a compelling value proposition, address pain points, and end with a clear [call to action].",
+    },
+    {
+      id: "follow",
+      name: "Follow-up Emails",
+      description: "Post-meeting or event follow-ups",
+      defaultPrompt: "Create a follow-up email regarding [topic/event]. Reference key points from [previous interaction], and include next steps for [objective].",
+    },
+    {
+      id: "networking",
+      name: "Professional Networking",
+      description: "Network building and connections",
+      defaultPrompt: "Write a networking email to [contact] regarding [purpose]. Mention [common connection/interest] and suggest [specific action/meeting].",
+    }
   ],
   content: [
     {
@@ -69,6 +87,24 @@ export const SUBCATEGORIES: SubCategoriesMap = {
       description: "Newsletters, campaigns & outreach",
       defaultPrompt: "Write an email about [topic] with a compelling subject line, personalized greeting, clear value proposition, and specific call-to-action. Keep the tone conversational yet professional.",
     },
+    {
+      id: "technical",
+      name: "Technical Writing",
+      description: "Documentation & technical content",
+      defaultPrompt: "Create technical content about [topic] for [audience level]. Include [key concepts], practical examples, and clear explanations of [technical details].",
+    },
+    {
+      id: "script",
+      name: "Video Script",
+      description: "Scripts for video content",
+      defaultPrompt: "Write a video script about [topic] that's [duration] long. Include an engaging hook, clear sections on [key points], and a strong call-to-action.",
+    },
+    {
+      id: "newsletter",
+      name: "Newsletter",
+      description: "Email newsletter content",
+      defaultPrompt: "Create a newsletter about [topic] that includes [key updates], industry insights, and engaging content that will resonate with [target audience].",
+    }
   ],
   code: [
     {
@@ -95,6 +131,24 @@ export const SUBCATEGORIES: SubCategoriesMap = {
       description: "Code to connect with external services",
       defaultPrompt: "Write [language] code to integrate with [specific API/service] to accomplish [functionality]. Include authentication handling, error management, and example usage scenarios.",
     },
+    {
+      id: "testing",
+      name: "Test Cases",
+      description: "Unit & integration tests",
+      defaultPrompt: "Write [language] test cases for [functionality]. Include unit tests for edge cases, integration scenarios, and proper test documentation.",
+    },
+    {
+      id: "refactor",
+      name: "Code Refactoring",
+      description: "Improve existing code",
+      defaultPrompt: "Refactor this [language] code: [paste code]. Improve readability, maintainability, and performance while maintaining the same functionality.",
+    },
+    {
+      id: "database",
+      name: "Database Queries",
+      description: "SQL and database operations",
+      defaultPrompt: "Write a [database type] query to [operation] that handles [requirements]. Include proper indexing and optimization considerations.",
+    }
   ],
   idea: [
     {
@@ -121,6 +175,24 @@ export const SUBCATEGORIES: SubCategoriesMap = {
       description: "Artistic and creative ideas",
       defaultPrompt: "Generate creative concepts for [challenge] that are innovative and original. Explore different artistic directions, themes, and executions that could resonate with [context].",
     },
+    {
+      id: "marketing",
+      name: "Marketing Campaigns",
+      description: "Marketing strategy ideas",
+      defaultPrompt: "Generate marketing campaign ideas for [product/service] targeting [audience]. Consider [budget/constraints] and focus on [objectives].",
+    },
+    {
+      id: "content-strategy",
+      name: "Content Strategy",
+      description: "Content planning ideas",
+      defaultPrompt: "Develop content strategy ideas for [platform/channel] to reach [target audience]. Include content themes, formats, and distribution approaches.",
+    },
+    {
+      id: "innovation",
+      name: "Product Innovation",
+      description: "New product/feature ideas",
+      defaultPrompt: "Generate innovative product ideas that solve [problem] for [target market]. Consider [industry trends] and [technological capabilities].",
+    }
   ],
   image: [
     {
@@ -147,6 +219,24 @@ export const SUBCATEGORIES: SubCategoriesMap = {
       description: "Visuals for products or media",
       defaultPrompt: "Generate a prompt for concept art of [subject] for [purpose]. Include details about the aesthetic, mood, key visual elements, color scheme, and stylistic references to inform the creation.",
     },
+    {
+      id: "product",
+      name: "Product Photography",
+      description: "Product showcase images",
+      defaultPrompt: "Create a product photography prompt for [product] that highlights [key features]. Include lighting setup, composition, and styling details.",
+    },
+    {
+      id: "character",
+      name: "Character Design",
+      description: "Character concept art",
+      defaultPrompt: "Generate a character design prompt for [character type]. Include details about personality, appearance, poses, and artistic style.",
+    },
+    {
+      id: "environment",
+      name: "Environment Design",
+      description: "Scene and location visuals",
+      defaultPrompt: "Create an environment design prompt for [location/scene]. Specify atmosphere, lighting, key elements, and architectural/natural details.",
+    }
   ],
   research: [
     {
@@ -191,6 +281,24 @@ export const SUBCATEGORIES: SubCategoriesMap = {
       description: "Academic research synthesis",
       defaultPrompt: "Conduct a literature review on [topic] covering key academic papers and research findings. Synthesize the major contributions, methodologies, findings, and identify gaps in the current research.",
     },
+    {
+      id: "consumer",
+      name: "Consumer Research",
+      description: "Customer behavior analysis",
+      defaultPrompt: "Research consumer behavior patterns for [product/service] in [market]. Focus on preferences, pain points, and decision factors.",
+    },
+    {
+      id: "technology",
+      name: "Technology Research",
+      description: "Tech trends and analysis",
+      defaultPrompt: "Research emerging technologies in [field/industry]. Analyze potential impacts, adoption trends, and implementation considerations.",
+    },
+    {
+      id: "sustainability",
+      name: "Sustainability Research",
+      description: "Environmental impact studies",
+      defaultPrompt: "Research sustainability practices in [industry/sector]. Focus on environmental impact, regulations, and improvement opportunities.",
+    }
   ],
   data: [
     {
@@ -217,6 +325,24 @@ export const SUBCATEGORIES: SubCategoriesMap = {
       description: "Future data projections",
       defaultPrompt: "Based on the provided data about [topic], generate forecasts and predictions for [timeframe]. Explain the methodology, assumptions, confidence levels, and key factors that could influence these projections.",
     },
+    {
+      id: "predictive",
+      name: "Predictive Analysis",
+      description: "Future trends prediction",
+      defaultPrompt: "Develop predictive analysis for [metric/trend] based on [historical data]. Include key variables, assumptions, and confidence levels.",
+    },
+    {
+      id: "segmentation",
+      name: "Market Segmentation",
+      description: "Customer grouping analysis",
+      defaultPrompt: "Create market segmentation analysis for [customer base]. Identify key segments, characteristics, and targeting opportunities.",
+    },
+    {
+      id: "conversion",
+      name: "Conversion Analysis",
+      description: "Sales funnel optimization",
+      defaultPrompt: "Analyze conversion data for [process/funnel]. Identify bottlenecks, optimization opportunities, and success metrics.",
+    }
   ],
   seo: [
     {
@@ -243,6 +369,24 @@ export const SUBCATEGORIES: SubCategoriesMap = {
       description: "Location-based optimization",
       defaultPrompt: "Develop local SEO content for [business type] in [location]. Include locally relevant keywords, NAP information structure, Google Business Profile optimization suggestions, and local schema markup recommendations.",
     },
+    {
+      id: "competitor",
+      name: "Competitor Analysis",
+      description: "SEO competition research",
+      defaultPrompt: "Analyze SEO competition for [keyword/topic] in [industry]. Include gaps, opportunities, and strategic recommendations.",
+    },
+    {
+      id: "technical-seo",
+      name: "Technical SEO",
+      description: "Technical optimization",
+      defaultPrompt: "Create technical SEO recommendations for [website/page]. Include structure, metadata, schema markup, and performance optimization suggestions.",
+    },
+    {
+      id: "local-content",
+      name: "Local SEO Content",
+      description: "Location-based optimization",
+      defaultPrompt: "Generate local SEO content for [business] in [location]. Include local keywords, business information, and location-specific details.",
+    }
   ],
   knowledge: [
     {
@@ -269,6 +413,24 @@ export const SUBCATEGORIES: SubCategoriesMap = {
       description: "Detailed technical explanations",
       defaultPrompt: "Write technical documentation for [product/feature/system]. Include purpose, specifications, setup instructions, usage examples, API details if applicable, and common troubleshooting scenarios.",
     },
+    {
+      id: "training",
+      name: "Training Materials",
+      description: "Educational content",
+      defaultPrompt: "Create training materials for [topic/skill]. Include learning objectives, key concepts, exercises, and assessment criteria.",
+    },
+    {
+      id: "procedures",
+      name: "Standard Procedures",
+      description: "Process documentation",
+      defaultPrompt: "Document standard operating procedures for [process]. Include step-by-step instructions, requirements, and troubleshooting guides.",
+    },
+    {
+      id: "reference",
+      name: "Quick Reference",
+      description: "Quick guides and cheatsheets",
+      defaultPrompt: "Create a quick reference guide for [topic/tool]. Include essential commands, common use cases, and best practices.",
+    }
   ],
   other: [
     {
@@ -298,7 +460,6 @@ export const SUBCATEGORIES: SubCategoriesMap = {
   ],
 };
 
-// Helper function to get default prompt for a task type and subcategory
 export const getDefaultPrompt = (taskType: TaskType, subCategoryId: string): string => {
   const subcategory = SUBCATEGORIES[taskType]?.find(sub => sub.id === subCategoryId);
   return subcategory?.defaultPrompt || "";
