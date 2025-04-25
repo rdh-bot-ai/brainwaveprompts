@@ -36,11 +36,9 @@ const SignIn = () => {
       <div className="pt-24 pb-16 flex items-center justify-center">
         <div className="w-full max-w-md px-4">
           <div className="flex justify-center mb-8">
-            <img 
-              src="/lovable-uploads/a4fa3116-9da7-4898-a3e2-7acc1ff57e59.png" 
-              alt="Brainwave Prompts" 
-              className="h-12 w-auto"
-            />
+            <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              Brainwave Prompts
+            </span>
           </div>
           <Card>
             <CardHeader className="space-y-1">
