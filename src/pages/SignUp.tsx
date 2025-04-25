@@ -1,4 +1,3 @@
-
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -45,7 +44,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#1A1F2C]">
       <Navbar />
       <div className="pt-24 pb-16 flex items-center justify-center">
         <div className="w-full max-w-md px-4">
@@ -53,10 +52,10 @@ const SignUp = () => {
             <img 
               src="/lovable-uploads/a4fa3116-9da7-4898-a3e2-7acc1ff57e59.png" 
               alt="Brainwave Prompts" 
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
           </div>
-          <Card>
+          <Card className="bg-[#2C3142] border-gray-800">
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
               <CardDescription>
