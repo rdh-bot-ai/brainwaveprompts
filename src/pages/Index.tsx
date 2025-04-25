@@ -216,7 +216,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Use Cases Section */}
+      {/* Use Cases Section - Updated */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
