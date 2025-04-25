@@ -128,7 +128,7 @@ const Index = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-16 px-4 bg-gradient-to-b from-purple-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">How It Works</h2>
@@ -138,43 +138,76 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="rounded-full bg-purple-600 w-16 h-16 flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl">
-                1
+          <div className="grid md:grid-cols-3 gap-8 relative">
+            {/* Connecting Line */}
+            <div className="hidden md:block absolute top-24 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-purple-200 via-purple-400 to-purple-200" />
+
+            {/* Step 1 */}
+            <div className="relative">
+              <div className="text-center space-y-4">
+                <div className="relative">
+                  <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center transform transition-transform hover:scale-105 shadow-lg">
+                    <span className="text-2xl font-bold text-white">1</span>
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-purple-200 animate-pulse" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800">Select Your Task</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Choose from content creation, code generation, brainstorming, and more.
+                </p>
+                <div className="mt-4 flex justify-center">
+                  <div className="p-4 bg-purple-50 rounded-full">
+                    <PencilLine className="w-8 h-8 text-purple-600" />
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-2">Select Your Task</h3>
-              <p className="text-gray-600">
-                Choose from content creation, code generation, brainstorming, and
-                more.
-              </p>
             </div>
 
-            <div className="text-center">
-              <div className="rounded-full bg-purple-600 w-16 h-16 flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl">
-                2
+            {/* Step 2 */}
+            <div className="relative">
+              <div className="text-center space-y-4">
+                <div className="relative">
+                  <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center transform transition-transform hover:scale-105 shadow-lg">
+                    <span className="text-2xl font-bold text-white">2</span>
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-purple-200 animate-pulse delay-150" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800">Add Details</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Fill in the task-specific form with your requirements, tone, context, and constraints.
+                </p>
+                <div className="mt-4 flex justify-center">
+                  <div className="p-4 bg-purple-50 rounded-full">
+                    <Code className="w-8 h-8 text-purple-600" />
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-2">Add Details</h3>
-              <p className="text-gray-600">
-                Fill in the task-specific form with your requirements, tone,
-                context, and constraints.
-              </p>
             </div>
 
-            <div className="text-center">
-              <div className="rounded-full bg-purple-600 w-16 h-16 flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl">
-                3
+            {/* Step 3 */}
+            <div className="relative">
+              <div className="text-center space-y-4">
+                <div className="relative">
+                  <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-700 to-purple-900 flex items-center justify-center transform transition-transform hover:scale-105 shadow-lg">
+                    <span className="text-2xl font-bold text-white">3</span>
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-purple-200 animate-pulse delay-300" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800">Get Enhanced Prompt</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Our AI enhances your input into a detailed, optimized prompt ready to use with any AI tool.
+                </p>
+                <div className="mt-4 flex justify-center">
+                  <div className="p-4 bg-purple-50 rounded-full">
+                    <Sparkles className="w-8 h-8 text-purple-600" />
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-2">Get Enhanced Prompt</h3>
-              <p className="text-gray-600">
-                Our AI enhances your input into a detailed, optimized prompt
-                ready to use with any AI tool.
-              </p>
             </div>
           </div>
 
           <div className="text-center mt-12">
-            <Button size="lg" asChild className="rounded-full">
+            <Button size="lg" asChild className="rounded-full bg-purple-600 hover:bg-purple-700 shadow-lg transform transition-all hover:-translate-y-0.5">
               <Link to="/builder">
                 Try It Now <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
