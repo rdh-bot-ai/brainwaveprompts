@@ -1,9 +1,12 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { PencilLine, Code, Sparkles, ArrowRight } from "lucide-react";
+
 const HowItWorksSection = () => {
-  return <section className="py-16 px-4 bg-gradient-to-b from-purple-50 to-white">
+  return (
+    <section className="py-16 px-4 bg-gradient-to-b from-purple-50 to-white overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-4">How It Works</h2>
@@ -14,16 +17,41 @@ const HowItWorksSection = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 relative">
-          
+          {/* Connecting Lines */}
+          <div className="hidden md:block absolute top-1/2 left-0 w-full -translate-y-1/2 pointer-events-none">
+            <div className="relative h-0.5 w-full">
+              {/* First connecting line */}
+              <div className="absolute left-[25%] right-[50%] h-full bg-gradient-to-r from-purple-200 to-purple-400" 
+                   style={{ transform: 'translateY(-2rem) rotate(-5deg)' }} />
+              {/* Second connecting line */}
+              <div className="absolute left-[50%] right-[25%] h-full bg-gradient-to-r from-purple-400 to-purple-200"
+                   style={{ transform: 'translateY(2rem) rotate(5deg)' }} />
+            </div>
+          </div>
 
-          <Step number={1} title="Select Your Task" description="Choose from content creation, code generation, brainstorming, and more." icon={<PencilLine className="w-8 h-8 text-purple-600" />} />
+          <Step 
+            number={1} 
+            title="Select Your Task" 
+            description="Choose from content creation, code generation, brainstorming, and more." 
+            icon={<PencilLine className="w-8 h-8 text-purple-600" />} 
+          />
 
-          <Step number={2} title="Add Details" description="Fill in the task-specific form with your requirements, tone, context, and constraints." icon={<Code className="w-8 h-8 text-purple-600" />} />
+          <Step 
+            number={2} 
+            title="Add Details" 
+            description="Fill in the task-specific form with your requirements, tone, context, and constraints." 
+            icon={<Code className="w-8 h-8 text-purple-600" />} 
+          />
 
-          <Step number={3} title="Get Enhanced Prompt" description="Our AI enhances your input into a detailed, optimized prompt ready to use with any AI tool." icon={<Sparkles className="w-8 h-8 text-purple-600" />} />
+          <Step 
+            number={3} 
+            title="Get Enhanced Prompt" 
+            description="Our AI enhances your input into a detailed, optimized prompt ready to use with any AI tool." 
+            icon={<Sparkles className="w-8 h-8 text-purple-600" />} 
+          />
         </div>
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-16">
           <Button size="lg" asChild className="rounded-full bg-purple-600 hover:bg-purple-700 shadow-lg transform transition-all hover:-translate-y-0.5">
             <Link to="/builder">
               Try It Now <ArrowRight className="ml-2 h-4 w-4" />
@@ -31,8 +59,10 @@ const HowItWorksSection = () => {
           </Button>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 const Step = ({
   number,
   title,
@@ -44,7 +74,8 @@ const Step = ({
   description: string;
   icon: React.ReactNode;
 }) => {
-  return <div className="relative">
+  return (
+    <div className="relative z-10">
       <div className="text-center space-y-4">
         <div className="relative">
           <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center transform transition-transform hover:scale-105 shadow-lg">
@@ -60,6 +91,8 @@ const Step = ({
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default HowItWorksSection;
