@@ -9,13 +9,13 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-[#1A1F2C] border-b border-gray-800 px-4 py-2.5 fixed left-0 right-0 top-0 z-50">
+    <nav className="bg-white border-b border-gray-200 px-4 py-2.5 fixed left-0 right-0 top-0 z-50">
       <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
         <Link to="/" className="flex items-center space-x-3">
           <img 
             src="/lovable-uploads/a4fa3116-9da7-4898-a3e2-7acc1ff57e59.png" 
             alt="Brainwave Prompts" 
-            className="h-10 w-auto"
+            className="h-8 w-auto"
           />
         </Link>
         <div className="flex items-center lg:order-2">

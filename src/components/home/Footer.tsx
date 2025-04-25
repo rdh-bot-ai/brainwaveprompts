@@ -1,10 +1,9 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#1A1F2C] text-gray-300 py-12 px-4">
+    <footer className="bg-gray-900 text-gray-300 py-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -12,7 +11,7 @@ const Footer = () => {
               <img 
                 src="/lovable-uploads/a4fa3116-9da7-4898-a3e2-7acc1ff57e59.png" 
                 alt="Brainwave Prompts" 
-                className="h-10 w-auto"
+                className="h-8 w-auto brightness-0 invert"
               />
             </div>
             <p className="text-sm text-gray-400">
