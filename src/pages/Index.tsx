@@ -13,7 +13,6 @@ import {
   RefreshCw,
   PencilLine,
   ArrowRight,
-  Image,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 
@@ -55,8 +54,8 @@ const Index = () => {
             <div className="lg:w-1/2">
               <div className="bg-white p-2 rounded-xl shadow-xl">
                 <img
-                  src={`https://images.unsplash.com/photo-1649972904349-6e44c42644a7?q=80&w=1074&auto=format&fit=crop`}
-                  alt="AI Prompt Builder"
+                  src={`https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2000&auto=format&fit=crop`}
+                  alt="AI Prompt Engineering"
                   className="rounded-lg w-full object-cover aspect-video"
                 />
               </div>
