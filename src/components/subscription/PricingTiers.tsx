@@ -1,27 +1,24 @@
-
 import React, { useContext } from "react";
 import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AuthContext } from "@/contexts/AuthContext";
-
-const PricingFeature: React.FC<{ 
-  included: boolean; 
-  feature: string; 
+const PricingFeature: React.FC<{
+  included: boolean;
+  feature: string;
   tier?: "free" | "registered" | "premium";
-}> = ({ included, feature, tier }) => (
-  <div className="flex items-center space-x-2 py-1">
-    {included ? (
-      <Check className={`h-4 w-4 ${tier === "premium" ? "text-purple-600" : "text-green-600"}`} />
-    ) : (
-      <X className="h-4 w-4 text-gray-300" />
-    )}
+}> = ({
+  included,
+  feature,
+  tier
+}) => <div className="flex items-center space-x-2 py-1">
+    {included ? <Check className={`h-4 w-4 ${tier === "premium" ? "text-purple-600" : "text-green-600"}`} /> : <X className="h-4 w-4 text-gray-300" />}
     <span className={`text-sm ${!included ? "text-gray-400" : ""}`}>{feature}</span>
-  </div>
-);
-
+  </div>;
 const PricingTiers: React.FC = () => {
-  const { user } = useContext(AuthContext);
+  const {
+    user
+  } = useContext(AuthContext);
 
   // Mock upgrade function - in a real app, this would handle payment processing
   const handleUpgrade = (tier: "free" | "registered" | "premium") => {
@@ -30,10 +27,13 @@ const PricingTiers: React.FC = () => {
       window.location.href = "/signup";
       return;
     }
-
     if (tier === "registered") {
       // Mock updating user to registered tier
-      const updatedUser = { ...user, subscription: "registered", promptsRemaining: 5 };
+      const updatedUser = {
+        ...user,
+        subscription: "registered",
+        promptsRemaining: 5
+      };
       localStorage.setItem("user", JSON.stringify(updatedUser));
       window.location.reload();
     } else if (tier === "premium") {
@@ -41,27 +41,21 @@ const PricingTiers: React.FC = () => {
       alert("This would redirect to a payment gateway in a real application");
     }
   };
-
   const getCurrentPlan = () => {
     if (!user) return null;
     return user.subscription || "free";
   };
-
   const currentPlan = getCurrentPlan();
-
-  return (
-    <div className="grid gap-8 md:grid-cols-3">
+  return <div className="grid gap-8 md:grid-cols-3">
       {/* Free Tier */}
       <Card className={`border ${currentPlan === "free" ? "border-blue-200 bg-blue-50" : ""}`}>
         <CardHeader>
-          {currentPlan === "free" && (
-            <div className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
+          {currentPlan === "free" && <div className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
               Current Plan
-            </div>
-          )}
+            </div>}
           <CardTitle className="text-xl">Free Tier</CardTitle>
           <div className="flex items-baseline">
-            <span className="text-3xl font-bold">₹0</span>
+            <span className="text-3xl font-bold">$0</span>
             <span className="ml-1 text-gray-500">/month</span>
           </div>
           <CardDescription>
@@ -82,29 +76,23 @@ const PricingTiers: React.FC = () => {
           </div>
         </CardContent>
         <CardFooter>
-          {currentPlan === "free" ? (
-            <Button className="w-full" disabled>
+          {currentPlan === "free" ? <Button className="w-full" disabled>
               Current Plan
-            </Button>
-          ) : (
-            <Button variant="outline" className="w-full" onClick={() => handleUpgrade("free")}>
+            </Button> : <Button variant="outline" className="w-full" onClick={() => handleUpgrade("free")}>
               Downgrade
-            </Button>
-          )}
+            </Button>}
         </CardFooter>
       </Card>
 
       {/* Registered Tier */}
       <Card className={`border ${currentPlan === "registered" ? "border-green-200 bg-green-50" : ""}`}>
         <CardHeader>
-          {currentPlan === "registered" && (
-            <div className="mb-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+          {currentPlan === "registered" && <div className="mb-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
               Current Plan
-            </div>
-          )}
+            </div>}
           <CardTitle className="text-xl">Registered</CardTitle>
           <div className="flex items-baseline">
-            <span className="text-3xl font-bold">₹0</span>
+            <span className="text-3xl font-bold">$0</span>
             <span className="ml-1 text-gray-500">/month</span>
           </div>
           <CardDescription>
@@ -125,33 +113,23 @@ const PricingTiers: React.FC = () => {
           </div>
         </CardContent>
         <CardFooter>
-          {currentPlan === "registered" ? (
-            <Button className="w-full" disabled>
+          {currentPlan === "registered" ? <Button className="w-full" disabled>
               Current Plan
-            </Button>
-          ) : (
-            <Button 
-              className="w-full" 
-              onClick={() => handleUpgrade("registered")}
-              variant={currentPlan === "premium" ? "outline" : "default"}
-            >
+            </Button> : <Button className="w-full" onClick={() => handleUpgrade("registered")} variant={currentPlan === "premium" ? "outline" : "default"}>
               {currentPlan === "premium" ? "Downgrade" : "Register Free"}
-            </Button>
-          )}
+            </Button>}
         </CardFooter>
       </Card>
 
       {/* Premium Tier */}
       <Card className={`border ${currentPlan === "premium" ? "border-purple-200 bg-purple-50" : "border-purple-100"}`}>
         <CardHeader className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-t-lg">
-          {currentPlan === "premium" && (
-            <div className="mb-2 inline-block rounded-full bg-white bg-opacity-20 px-3 py-1 text-xs font-medium text-white">
+          {currentPlan === "premium" && <div className="mb-2 inline-block rounded-full bg-white bg-opacity-20 px-3 py-1 text-xs font-medium text-white">
               Current Plan
-            </div>
-          )}
+            </div>}
           <CardTitle className="text-xl">Premium</CardTitle>
           <div className="flex items-baseline">
-            <span className="text-3xl font-bold">₹750</span>
+            <span className="text-3xl font-bold">$12</span>
             <span className="ml-1 text-gray-100">/month</span>
           </div>
           <CardDescription className="text-gray-100">
@@ -172,22 +150,13 @@ const PricingTiers: React.FC = () => {
           </div>
         </CardContent>
         <CardFooter>
-          {currentPlan === "premium" ? (
-            <Button className="w-full" disabled>
+          {currentPlan === "premium" ? <Button className="w-full" disabled>
               Current Plan
-            </Button>
-          ) : (
-            <Button 
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700" 
-              onClick={() => handleUpgrade("premium")}
-            >
+            </Button> : <Button className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700" onClick={() => handleUpgrade("premium")}>
               Upgrade to Premium
-            </Button>
-          )}
+            </Button>}
         </CardFooter>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default PricingTiers;
