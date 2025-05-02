@@ -6,7 +6,7 @@ import { Sparkles } from "lucide-react";
 
 const PricingSection = () => {
   return (
-    <section className="py-16 px-4 bg-purple-50">
+    <section className="py-16 px-4 bg-gray-50">
       <div className="max-w-4xl mx-auto text-center">
         <Sparkles className="h-10 w-10 text-purple-600 mx-auto mb-4" />
         <h2 className="text-3xl font-bold mb-4">
