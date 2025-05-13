@@ -1,3 +1,4 @@
+
 import React, { useContext, useState, useMemo } from "react";
 import Navbar from "@/components/layout/Navbar";
 import { AuthContext } from "@/contexts/AuthContext";
@@ -80,10 +81,9 @@ const CATEGORIES: TemplateCategory[] = [
 
 const Templates = () => {
   const { user } = useContext(AuthContext);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter templates based on category and search query
   const filteredTemplates = useMemo(() => {
     return TEMPLATE_DATA.filter(template => {
       const matchesCategory = selectedCategory === "all" || template.category === selectedCategory;
@@ -98,22 +98,22 @@ const Templates = () => {
   }, [selectedCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="pt-16">
-        <SidebarProvider defaultOpen={true}>
-          <div className="flex w-full min-h-[calc(100vh-64px)]">
-            <TemplatesSidebar 
+      <div className="container mx-auto px-0 py-6">
+        <SidebarProvider defaultOpen>
+          <div className="flex min-h-[calc(100vh-theme(spacing.20))] w-full rounded-lg border bg-card shadow">
+            <TemplatesSidebar
               categories={CATEGORIES}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
             />
             
             <div className="flex-1 p-6">
-              <div className="max-w-7xl mx-auto">
-                <div className="text-center mb-8">
-                  <h1 className="text-3xl font-bold mb-4">Prompt Library</h1>
-                  <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <div className="space-y-6">
+                <div>
+                  <h1 className="text-3xl font-bold mb-2">Templates</h1>
+                  <p className="text-muted-foreground">
                     Start with professionally crafted templates for common use cases.
                     {user?.subscription === "free" && " Upgrade to access more templates."}
                   </p>
