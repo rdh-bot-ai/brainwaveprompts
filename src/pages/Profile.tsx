@@ -1,4 +1,3 @@
-
 import { useContext, useState } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/layout/Navbar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { User, CreditCard, FileText, Calendar, Info, Lock, FileInvoice } from "lucide-react";
+import { User, CreditCard, FileText, Calendar, Info, Lock } from "lucide-react";
 import UpgradePrompt from "@/components/subscription/UpgradePrompt";
 import { useNavigate } from "react-router-dom";
 
@@ -180,7 +179,7 @@ const Profile = () => {
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-2xl flex items-center gap-2">
-                    <FileInvoice size={24} />
+                    <FileText size={24} />
                     Invoices
                   </CardTitle>
                   <CardDescription>View your billing history</CardDescription>
