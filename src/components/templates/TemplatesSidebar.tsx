@@ -8,7 +8,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupLabel,
-  SidebarGroupMenu,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
