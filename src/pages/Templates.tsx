@@ -1,4 +1,3 @@
-
 import React, { useContext, useState, useMemo } from "react";
 import Navbar from "@/components/layout/Navbar";
 import { AuthContext } from "@/contexts/AuthContext";
@@ -6,6 +5,8 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import TemplatesSidebar from "@/components/templates/TemplatesSidebar";
 import TemplateCard from "@/components/templates/TemplateCard";
 import { TemplateItem, TemplateCategory } from "@/types/template-types";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 // Template data
 const TEMPLATE_DATA: TemplateItem[] = [
@@ -106,8 +107,6 @@ const Templates = () => {
               categories={CATEGORIES}
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
             />
             
             <div className="flex-1 p-6">
@@ -118,6 +117,18 @@ const Templates = () => {
                     Start with professionally crafted templates for common use cases.
                     {user?.subscription === "free" && " Upgrade to access more templates."}
                   </p>
+                  
+                  <div className="mt-6 max-w-md mx-auto">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        placeholder="Search templates..."
+                        className="pl-10 pr-4 py-2"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {filteredTemplates.length > 0 ? (
