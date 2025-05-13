@@ -69,7 +69,7 @@ const TEMPLATE_DATA: TemplateItem[] = [
 
 // Categories
 const CATEGORIES: TemplateCategory[] = [
-  { id: "all", name: "All" },
+  { id: "all", name: "All Templates" },
   { id: "Content", name: "Content" },
   { id: "Code", name: "Code" },
   { id: "Marketing", name: "Marketing" },
@@ -89,7 +89,8 @@ const Templates = () => {
       const matchesSearch = 
         searchQuery === "" || 
         template.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        template.description.toLowerCase().includes(searchQuery.toLowerCase());
+        template.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        template.prompt.toLowerCase().includes(searchQuery.toLowerCase());
       
       return matchesCategory && matchesSearch;
     });
