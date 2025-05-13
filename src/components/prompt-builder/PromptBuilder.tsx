@@ -11,6 +11,7 @@ import { TaskType } from "./TaskIcons";
 import UpgradePrompt from "../subscription/UpgradePrompt";
 import { getDefaultPrompt } from "./subcategories";
 import { useToast } from "@/hooks/use-toast";
+
 const PromptBuilder: React.FC = () => {
   const {
     user
