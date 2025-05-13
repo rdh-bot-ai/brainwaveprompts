@@ -28,7 +28,7 @@ export const Navbar = () => {
                 Sign Out
               </Button>
               <Link to="/profile">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-600 font-semibold">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 text-purple-600 font-semibold text-lg">
                   {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
                 </div>
               </Link>
