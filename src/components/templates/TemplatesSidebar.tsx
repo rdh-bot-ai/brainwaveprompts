@@ -8,6 +8,7 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupLabel,
+  SidebarGroupMenu,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -30,12 +31,13 @@ const TemplatesSidebar: React.FC<TemplatesSidebarProps> = ({
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Categories</SidebarGroupLabel>
-          <SidebarMenu>
+          <SidebarMenu className="mt-3">
             {categories.map((category) => (
               <SidebarMenuItem key={category.id}>
                 <SidebarMenuButton
                   onClick={() => setSelectedCategory(category.id)}
                   className={cn(
+                    "px-3 py-2.5 mb-1",
                     selectedCategory === category.id && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                   )}
                 >
