@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,22 +8,34 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Navbar from "@/components/layout/Navbar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { User, CreditCard, FileText, Calendar, Info, Lock } from "lucide-react";
+import { User, CreditCard, FileText, Calendar, Info, Lock, MessageCircle } from "lucide-react";
 import UpgradePrompt from "@/components/subscription/UpgradePrompt";
 import { useNavigate } from "react-router-dom";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
 const Profile = () => {
   const { user, signOut } = useContext(AuthContext);
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactSubject, setContactSubject] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [isContactSubmitting, setIsContactSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/signin");
+    }
+  }, [user, navigate]);
 
   if (!user) {
-    navigate("/signin");
     return null;
   }
 
@@ -55,8 +67,48 @@ const Profile = () => {
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      // Show success notification (would use a toast in real implementation)
-      alert("Password updated successfully");
+      // Show success notification
+      toast({
+        title: "Success",
+        description: "Password updated successfully",
+      });
+    }, 1000);
+  };
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!contactSubject.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a subject",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!contactMessage.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a message",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsContactSubmitting(true);
+    
+    // Mock contact form submission - in a real app, this would call an API
+    setTimeout(() => {
+      setIsContactSubmitting(false);
+      setContactDialogOpen(false);
+      setContactSubject("");
+      setContactMessage("");
+      
+      toast({
+        title: "Success",
+        description: "Your message has been sent. We'll get back to you soon.",
+      });
     }, 1000);
   };
 
@@ -113,10 +165,14 @@ const Profile = () => {
                     </div>
                   </div>
                   
-                  <div className="pt-4">
+                  <div className="pt-4 flex flex-wrap gap-3">
                     <Button onClick={() => setPasswordDialogOpen(true)} className="flex items-center">
                       <Lock className="mr-2 h-4 w-4" />
                       Change Password
+                    </Button>
+                    <Button onClick={() => setContactDialogOpen(true)} className="flex items-center">
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Contact Us
                     </Button>
                   </div>
                 </CardContent>
@@ -314,6 +370,60 @@ const Profile = () => {
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Updating..." : "Update Password"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={contactDialogOpen} onOpenChange={setContactDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Contact Support</DialogTitle>
+            <DialogDescription>
+              Send us a message and we'll get back to you as soon as possible.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleContactSubmit}>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Your Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={user.email}
+                  readOnly
+                  disabled
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="subject">Subject</Label>
+                <Input
+                  id="subject"
+                  value={contactSubject}
+                  onChange={(e) => setContactSubject(e.target.value)}
+                  placeholder="How can we help you?"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="message">Message</Label>
+                <Textarea
+                  id="message"
+                  value={contactMessage}
+                  onChange={(e) => setContactMessage(e.target.value)}
+                  placeholder="Please describe your issue or question in detail..."
+                  className="min-h-[120px]"
+                  required
+                />
+              </div>
+            </div>
+            <DialogFooter className="mt-6">
+              <Button type="button" variant="outline" onClick={() => setContactDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isContactSubmitting}>
+                {isContactSubmitting ? "Sending..." : "Send Message"}
               </Button>
             </DialogFooter>
           </form>
