@@ -8,7 +8,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupLabel,
-  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -29,26 +28,14 @@ const TemplatesSidebar: React.FC<TemplatesSidebarProps> = ({
   return (
     <Sidebar variant="inset" className="w-[260px] border-r">
       <SidebarContent>
-        <SidebarGroup className="pt-2">
-          <SidebarGroupLabel className="px-3 py-2 text-base">Categories</SidebarGroupLabel>
-          <SidebarMenu className="px-1">
-            <SidebarMenuItem className="mb-1">
-              <SidebarMenuButton
-                onClick={() => setSelectedCategory("all")}
-                className={cn(
-                  "px-3 py-2.5 rounded-md transition-colors",
-                  selectedCategory === "all" && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                )}
-              >
-                All Templates
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+        <SidebarGroup>
+          <SidebarGroupLabel>Categories</SidebarGroupLabel>
+          <SidebarMenu>
             {categories.map((category) => (
-              <SidebarMenuItem key={category.id} className="mb-1">
+              <SidebarMenuItem key={category.id}>
                 <SidebarMenuButton
                   onClick={() => setSelectedCategory(category.id)}
                   className={cn(
-                    "px-3 py-2.5 rounded-md transition-colors",
                     selectedCategory === category.id && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                   )}
                 >
