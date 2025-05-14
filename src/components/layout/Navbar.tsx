@@ -3,10 +3,20 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useContext, useState } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export const Navbar = () => {
   const { user, signOut } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
+
+  const getUserInitial = () => {
+    if (user?.name && user.name.length > 0) {
+      return user.name.charAt(0).toUpperCase();
+    } else if (user?.email && user.email.length > 0) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    return "U";
+  };
 
   return (
     <nav className="bg-white border-b border-gray-200 px-4 py-2.5 fixed left-0 right-0 top-0 z-50">
@@ -28,9 +38,9 @@ export const Navbar = () => {
                 Sign Out
               </Button>
               <Link to="/profile">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 text-purple-600 font-semibold text-lg">
-                  {user.name?.charAt(0) || user.email?.charAt(0) || "U"}
-                </div>
+                <Avatar className="bg-purple-100 text-purple-600 font-semibold text-lg">
+                  <AvatarFallback>{getUserInitial()}</AvatarFallback>
+                </Avatar>
               </Link>
             </div>
           ) : (
