@@ -1,3 +1,4 @@
+
 import React, { useState, useContext, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,7 @@ import TaskSelector from "./TaskSelector";
 import PromptForm from "./PromptForm";
 import { TaskType } from "./TaskIcons";
 import UpgradePrompt from "../subscription/UpgradePrompt";
-import { getDefaultPrompt } from "./subcategories";
+import { getDefaultPrompt, SUBCATEGORIES } from "./subcategories";
 import { useToast } from "@/hooks/use-toast";
 
 const PromptBuilder: React.FC = () => {
