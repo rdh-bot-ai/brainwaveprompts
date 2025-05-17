@@ -32,14 +32,19 @@ const Builder = () => {
           description: templateDescription || ""
         } 
       });
-      document.dispatchEvent(event);
       
-      // Clear the stored data after it's been used
-      sessionStorage.removeItem("templatePrompt");
-      sessionStorage.removeItem("openInAdvancedEditor");
-      sessionStorage.removeItem("templateTitle");
-      sessionStorage.removeItem("templateCategory");
-      sessionStorage.removeItem("templateDescription");
+      // Add a slight delay to ensure the PromptBuilder component is mounted
+      setTimeout(() => {
+        document.dispatchEvent(event);
+        console.log("Dispatched loadTemplate event");
+        
+        // Clear the stored data after it's been used
+        sessionStorage.removeItem("templatePrompt");
+        sessionStorage.removeItem("openInAdvancedEditor");
+        sessionStorage.removeItem("templateTitle");
+        sessionStorage.removeItem("templateCategory");
+        sessionStorage.removeItem("templateDescription");
+      }, 100);
     }
   }, []);
 

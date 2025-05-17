@@ -48,7 +48,14 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
   };
 
   const handleOpenInBuilder = () => {
-    // Store the template data in sessionStorage to use it in the builder
+    // Clear any existing template data first
+    sessionStorage.removeItem("templatePrompt");
+    sessionStorage.removeItem("openInAdvancedEditor");
+    sessionStorage.removeItem("templateTitle");
+    sessionStorage.removeItem("templateCategory");
+    sessionStorage.removeItem("templateDescription");
+    
+    // Now store the template data in sessionStorage to use it in the builder
     sessionStorage.setItem("templatePrompt", template.prompt);
     sessionStorage.setItem("openInAdvancedEditor", "true"); // Flag to open in advanced editor
     sessionStorage.setItem("templateTitle", template.title);
@@ -63,6 +70,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
       description: template.description
     });
     
+    // Navigate to the builder page
     navigate("/builder");
   };
 

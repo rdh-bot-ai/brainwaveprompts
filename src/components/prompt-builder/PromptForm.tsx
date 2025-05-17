@@ -8,7 +8,6 @@ import ImageForm from "./forms/ImageForm";
 import CommonForm from "./forms/CommonForm";
 import AISuggestions from "./AISuggestions";
 import { SUBCATEGORIES } from "./subcategories";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Sparkle, Pencil, File } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -32,19 +31,20 @@ const PromptForm: React.FC<PromptFormProps> = ({
   
   // Effect to set initial prompt template when subcategory changes
   useEffect(() => {
-    if (selectedSubCategory) {
+    if (selectedSubCategory && !formData.buildCustom) {
       // Only set the initial template, without adding any additional processing
       const basicTemplate = selectedSubCategory.defaultPrompt;
       
       // Only update if it's a new selection or template
       if (!formData.promptTemplate || formData.promptTemplate !== basicTemplate) {
+        console.log("Setting template from subcategory:", basicTemplate);
         onChange("promptTemplate", basicTemplate);
         onChange("prompt", basicTemplate);
         onChange("useTemplate", true);
         onChange("buildCustom", false);
       }
     }
-  }, [taskType, subCategory, selectedSubCategory, formData.promptTemplate, onChange]);
+  }, [taskType, subCategory, selectedSubCategory, formData.promptTemplate, onChange, formData.buildCustom]);
   
   // Effect to update template as user fills in form fields
   useEffect(() => {
@@ -98,7 +98,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
       formData.language, formData.functionality, formData.challenge, formData.context, 
       formData.constraints, formData.subject, formData.style, formData.details,
       formData.perspective, formData.artReferences,
-      formData.useTemplate, formData.buildCustom, onChange]);
+      formData.useTemplate, formData.buildCustom, onChange, selectedSubCategory]);
 
   // Toggle between template and custom prompt
   const handleUseTemplateChange = (checked: boolean) => {
@@ -207,10 +207,10 @@ const PromptForm: React.FC<PromptFormProps> = ({
                 {formData.useTemplate ? "Template Preview" : formData.buildCustom ? "Custom Prompt" : "Prompt Preview"}
               </Label>
             </div>
-            <Textarea
+            <textarea
               value={formData.prompt || ""}
               onChange={handleBasicEditorChange}
-              className={`min-h-[100px] font-medium ${formData.useTemplate ? "bg-white border-purple-100 whitespace-pre-line" : "bg-white border-purple-100"}`}
+              className={`min-h-[100px] w-full font-medium rounded-md border p-2 ${formData.useTemplate ? "bg-white border-purple-100 whitespace-pre-line" : "bg-white border-purple-100"}`}
               placeholder={formData.useTemplate ? 
                 "Your template preview will appear here as you fill in the details below." : 
                 formData.buildCustom ? 
@@ -248,10 +248,10 @@ const PromptForm: React.FC<PromptFormProps> = ({
                 {formData.useTemplate ? "Edit Template" : formData.buildCustom ? "Build Custom Prompt" : "Edit Prompt"}
               </Label>
             </div>
-            <Textarea
+            <textarea
               value={formData.prompt || ""}
               onChange={handleAdvancedEditorChange}
-              className="min-h-[200px] font-medium border-gray-200 whitespace-pre-line"
+              className="min-h-[200px] w-full font-medium border-gray-200 whitespace-pre-line rounded-md border p-2"
               placeholder={formData.buildCustom ? 
                 "Start building your custom prompt here..." : 
                 "Enter your prompt here..."

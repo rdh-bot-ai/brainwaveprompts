@@ -1,9 +1,7 @@
-
 import React, { useState, useContext, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import { AlertCircle, Sparkle, Copy, ArrowRight, Lightbulb, MessageCircle, CheckCircle, Clock, Star } from "lucide-react";
 import { AuthContext } from "@/contexts/AuthContext";
 import TaskSelector from "./TaskSelector";
@@ -33,6 +31,7 @@ const PromptBuilder: React.FC = () => {
   const [recentPrompts, setRecentPrompts] = useState<string[]>([]);
   const [isEnhancing, setIsEnhancing] = useState<boolean>(false);
   const [loadedFromLibrary, setLoadedFromLibrary] = useState<boolean>(false);
+  const [debugInfo, setDebugInfo] = useState<string>("");
 
   useEffect(() => {
     if (user) {
@@ -55,7 +54,8 @@ const PromptBuilder: React.FC = () => {
     const handleLoadTemplate = (event: CustomEvent) => {
       const { prompt, openInAdvancedEditor, title, category, description } = event.detail;
       
-      console.log("Loading template:", { prompt, title, category, description });
+      console.log("Loading template from event:", { prompt, title, category, description });
+      setDebugInfo(`Template loaded: ${title} - ${category}`);
       
       // Set the prompt in the form data
       setFormData(prev => ({
@@ -77,7 +77,6 @@ const PromptBuilder: React.FC = () => {
       // If category is available, try to set the task type and subcategory
       if (category) {
         // Map category to task type based on your app's categorization
-        // This is a simplified example - adjust based on your actual categories
         const categoryToTaskMap: Record<string, TaskType> = {
           "Content": "content",
           "Code": "code", 
@@ -112,12 +111,13 @@ const PromptBuilder: React.FC = () => {
     };
   }, [toast]);
 
-  // Update formData when subcategory changes
+  // Update formData when subcategory changes, but don't overwrite loaded template
   useEffect(() => {
     // Only update the form data if we're not using a template from the library
     // This prevents overwriting the template data when switching categories
     if (selectedTask && selectedSubCategory && !formData.buildCustom && !loadedFromLibrary) {
       const defaultPrompt = getDefaultPrompt(selectedTask, selectedSubCategory);
+      console.log("Setting default prompt from subcategory change:", defaultPrompt);
 
       // Prefill the form with default values based on the subcategory
       setFormData(prev => ({
@@ -130,11 +130,16 @@ const PromptBuilder: React.FC = () => {
         tone: prev.tone || "professional",
         includeExamples: prev.includeExamples !== undefined ? prev.includeExamples : false
       }));
+    } else if (loadedFromLibrary) {
+      console.log("Not setting default prompt because loadedFromLibrary is true");
+      setDebugInfo(prev => prev + "\nPreserving template data - not overwriting with subcategory defaults");
     }
     
     // Reset the loadedFromLibrary flag after initial load
     if (loadedFromLibrary) {
-      setLoadedFromLibrary(false);
+      // We should keep loadedFromLibrary true for the entire session
+      // to prevent the template from being overwritten
+      console.log("Template loaded from library, keeping flag true");
     }
   }, [selectedTask, selectedSubCategory, formData.buildCustom, loadedFromLibrary]);
 
@@ -450,10 +455,10 @@ const PromptBuilder: React.FC = () => {
               </TabsList>
               <TabsContent value="prompt" className="w-full">
                 <Card className="p-4 bg-purple-50 border border-purple-200 shadow-sm">
-                  <Textarea 
+                  <textarea 
                     readOnly 
                     value={generatedPrompt} 
-                    className="min-h-[300px] bg-white border-purple-100 focus-visible:ring-purple-500 whitespace-pre-line" 
+                    className="min-h-[300px] w-full bg-white border-purple-100 rounded-md p-2 focus-visible:ring-purple-500 whitespace-pre-line" 
                   />
                   <div className="mt-4 flex justify-between">
                     <Button 
@@ -498,27 +503,46 @@ const PromptBuilder: React.FC = () => {
         return null;
     }
   };
-  return <div className="max-w-4xl mx-auto p-4">
+  return (
+    <div className="max-w-4xl mx-auto p-4">
       <div className="mb-8 flex justify-between items-center">
         <div className="space-y-1">
-          
-          
+          {loadedFromLibrary && (
+            <div className="bg-green-50 text-green-700 px-3 py-1 text-sm rounded-full inline-flex items-center">
+              <CheckCircle className="h-3 w-3 mr-1" /> 
+              Template loaded from library
+            </div>
+          )}
+          {debugInfo && (
+            <div className="bg-blue-50 text-blue-700 px-3 py-1 text-sm rounded-full">
+              {debugInfo}
+            </div>
+          )}
         </div>
         
-        {user && promptsRemaining !== null && <div className="text-right">
+        {user && promptsRemaining !== null && 
+          <div className="text-right">
             <div className="text-sm font-medium text-gray-700">
-              {user.subscription === "premium" ? <span className="flex items-center">
+              {user.subscription === "premium" ? 
+                <span className="flex items-center">
                   <Star className="h-4 w-4 text-yellow-500 mr-1" />
                   Premium: Unlimited Prompts
-                </span> : <span>Prompts remaining: {promptsRemaining}</span>}
+                </span> 
+                : 
+                <span>Prompts remaining: {promptsRemaining}</span>
+              }
             </div>
-            {user.subscription !== "premium" && <Button variant="link" size="sm" className="text-purple-600 p-0" asChild>
+            {user.subscription !== "premium" && 
+              <Button variant="link" size="sm" className="text-purple-600 p-0" asChild>
                 <a href="/pricing">Upgrade for more</a>
-              </Button>}
-          </div>}
+              </Button>
+            }
+          </div>
+        }
       </div>
 
-      {!user && <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-100 rounded-md shadow-sm">
+      {!user && 
+        <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-100 rounded-md shadow-sm">
           <h3 className="font-semibold mb-2 text-gray-800">Get More from AI Prompt Builder</h3>
           <p className="text-sm text-gray-700 mb-3">
             Sign up for free to save your prompts and get 5 enhanced prompts per month.
@@ -531,30 +555,40 @@ const PromptBuilder: React.FC = () => {
               <a href="/signin">Sign In</a>
             </Button>
           </div>
-        </div>}
+        </div>
+      }
 
-      {recentPrompts.length > 0 && <div className="mb-6">
+      {recentPrompts.length > 0 && 
+        <div className="mb-6">
           <h3 className="text-sm font-medium text-gray-600 mb-2 flex items-center">
             <Clock className="h-4 w-4 mr-1" />
             Recently Generated
           </h3>
           <div className="grid grid-cols-1 gap-2">
-            {recentPrompts.map((prompt, index) => <div key={index} onClick={() => {
-          navigator.clipboard.writeText(prompt);
-          toast({
-            title: "Copied to clipboard",
-            duration: 2000
-          });
-        }} className="p-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-700 cursor-pointer hover:bg-gray-100 flex justify-between items-center truncate">
+            {recentPrompts.map((prompt, index) => 
+              <div key={index} 
+                onClick={() => {
+                  navigator.clipboard.writeText(prompt);
+                  toast({
+                    title: "Copied to clipboard",
+                    duration: 2000
+                  });
+                }} 
+                className="p-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-700 cursor-pointer hover:bg-gray-100 flex justify-between items-center truncate"
+              >
                 <span className="truncate">{prompt.substring(0, 100)}...</span>
                 <Copy className="h-3 w-3 text-gray-500 flex-shrink-0" />
-              </div>)}
+              </div>
+            )}
           </div>
-        </div>}
+        </div>
+      }
 
       <Card className="p-6 shadow-sm border-purple-100">
         {renderStepContent()}
       </Card>
-    </div>;
+    </div>
+  );
 };
+
 export default PromptBuilder;
