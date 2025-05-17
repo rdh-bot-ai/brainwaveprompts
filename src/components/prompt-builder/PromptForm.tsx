@@ -1,5 +1,3 @@
-
-
 import React, { useEffect } from "react";
 import { TaskType } from "./TaskIcons";
 import ContentForm from "./forms/ContentForm";
@@ -41,7 +39,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
         onChange("prompt", basicTemplate);
       }
     }
-  }, [selectedTask, selectedSubCategory]);
+  }, [taskType, selectedSubCategory, formData.promptTemplate, onChange]);
   
   // Effect to update template as user fills in form fields
   useEffect(() => {
@@ -76,7 +74,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
         onChange("prompt", updatedPrompt);
       }
     }
-  }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, formData.language, formData.functionality, formData.challenge, formData.context, formData.constraints]);
+  }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, formData.language, formData.functionality, formData.challenge, formData.context, formData.constraints, onChange]);
 
   // Render task-specific form based on task type
   const renderTaskSpecificForm = () => {
