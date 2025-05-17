@@ -1,4 +1,3 @@
-
 import { SubCategory } from "../types/subcategory-types";
 
 export const SEO_SUBCATEGORIES: SubCategory[] = [
@@ -6,13 +5,13 @@ export const SEO_SUBCATEGORIES: SubCategory[] = [
     id: "keyword",
     name: "Keyword Optimization",
     description: "Search term focused content",
-    defaultPrompt: "Create SEO-optimized content about [topic] targeting the keyword '[keyword]'. Include appropriate keyword density, semantic related terms, proper heading structure, and meta description suggestions.",
+    defaultPrompt: "Create SEO-optimized content about [topic] targeting the keyword '[keyword]'. Include: \n\n1) H1 title that naturally incorporates the target keyword while being compelling to readers\n\n2) Strategic keyword placement in the first paragraph, maintaining natural flow\n\n3) Appropriate keyword density (approximately 1-2%) without keyword stuffing\n\n4) Semantic related terms and LSI keywords to support the main keyword\n\n5) Proper heading structure with H2s and H3s that include relevant keyword variations\n\n6) Image alt text suggestions that incorporate keywords naturally\n\n7) Internal linking opportunities to related content\n\n8) External linking suggestions to authoritative sources\n\n9) Meta description suggestion under 160 characters that includes the keyword and drives click-through\n\n10) FAQ section addressing common user queries related to the keyword\n\nEnsure the content provides genuine value to readers while being optimized for search engines. Balance keyword optimization with readability and engagement.",
   },
   {
     id: "title",
     name: "Title & Meta Content",
     description: "Search engine metadata",
-    defaultPrompt: "Generate 5-10 SEO-optimized title tags and meta descriptions for content about [topic]. Ensure titles are under 60 characters, meta descriptions under 160 characters, and both include the target keyword '[keyword]'.",
+    defaultPrompt: "Generate 5-10 SEO-optimized title tags and meta descriptions for content about [topic]. For each variation: \n\n1) Title tag under 60 characters that includes the target keyword '[keyword]' near the beginning\n\n2) Title that uses power words, numbers, or parenthetical phrases to increase CTR\n\n3) Meta description under 160 characters that includes the target keyword naturally\n\n4) Meta description with a clear value proposition and call-to-action\n\n5) Different angles/approaches for the same content to test performance\n\nEnsure titles are descriptive yet concise, avoiding clickbait tactics while maintaining accuracy about the page content. Meta descriptions should expand on the title, highlight unique selling points, and create urgency or curiosity when appropriate. Include both informational and commercial intent variations if applicable to the content type.",
   },
   {
     id: "structure",

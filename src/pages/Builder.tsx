@@ -13,9 +13,10 @@ const Builder = () => {
             <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
               AI Prompt Builder
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Create detailed, effective prompts tailored to your specific needs. Select a use case, 
-              customize the details, and let our AI enhance your prompt for better results.
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              Create detailed, effective prompts tailored to your specific needs. Our templates include 
+              clearly formatted, step-by-step instructions with numbered points for maximum clarity and readability. 
+              Simply select a use case, customize the details, and let our AI enhance your prompt for better results.
             </p>
           </div>
         </div>

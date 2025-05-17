@@ -1,4 +1,3 @@
-
 import { SubCategory } from "../types/subcategory-types";
 
 export const CODE_SUBCATEGORIES: SubCategory[] = [
@@ -6,25 +5,25 @@ export const CODE_SUBCATEGORIES: SubCategory[] = [
     id: "function",
     name: "Function/Method",
     description: "Individual code functions",
-    defaultPrompt: "Write a [language] function that [functionality]. Include proper error handling for invalid inputs, edge cases (empty arrays, null values, etc.), and parameter validation with appropriate type checking. Add thorough inline comments explaining the approach, time/space complexity analysis, and include 2-3 usage examples showing different scenarios. If relevant, provide alternatives for optimizing performance or improving readability.",
+    defaultPrompt: "Write a [language] function that [functionality]. Include: \n\n1) Proper error handling for invalid inputs, edge cases (empty arrays, null values, etc.), and parameter validation with appropriate type checking\n\n2) Thorough inline comments explaining the approach, time/space complexity analysis\n\n3) 2-3 usage examples showing different scenarios\n\n4) If relevant, provide alternatives for optimizing performance or improving readability",
   },
   {
     id: "component",
     name: "UI Component",
     description: "Frontend interface elements",
-    defaultPrompt: "Create a reusable [language] UI component for [functionality]. The component should follow best practices for accessibility (ARIA attributes, keyboard navigation, focus management), include responsive design considerations (mobile, tablet, desktop breakpoints), and handle loading/error states gracefully. Provide props/parameters for customization including: appearance (size, color, variant), behavior (event callbacks), and content options. Include TypeScript interfaces/PropTypes for all props with appropriate documentation comments and handle common edge cases (empty data, long content, etc.). Show an example implementation demonstrating the component in use.",
+    defaultPrompt: "Create a reusable [language] UI component for [functionality]. The component should include: \n\n1) Best practices for accessibility (ARIA attributes, keyboard navigation, focus management)\n\n2) Responsive design considerations (mobile, tablet, desktop breakpoints)\n\n3) Handling for loading/error states gracefully\n\n4) Props/parameters for customization including: \n   - Appearance (size, color, variant)\n   - Behavior (event callbacks)\n   - Content options\n\n5) TypeScript interfaces/PropTypes for all props with appropriate documentation comments\n\n6) Handling for common edge cases (empty data, long content, etc.)\n\n7) An example implementation demonstrating the component in use",
   },
   {
     id: "algorithm",
     name: "Algorithm",
     description: "Efficient problem-solving code",
-    defaultPrompt: "Implement an efficient algorithm in [language] to solve the following problem: [functionality]. First explain your approach, breaking down the problem and outlining your strategy. Then provide a thoroughly commented implementation with named constants/variables that clearly explain their purpose. Analyze the time and space complexity using Big O notation, explaining the reasoning behind your analysis. Compare your solution with at least one alternative approach, discussing tradeoffs. Include test cases covering edge cases, boundary conditions, and typical usage scenarios. Finally, suggest optimizations or improvements that could be made if needed.",
+    defaultPrompt: "Implement an efficient algorithm in [language] to solve the following problem: [functionality]. \n\n1) First explain your approach, breaking down the problem and outlining your strategy\n\n2) Provide a thoroughly commented implementation with named constants/variables that clearly explain their purpose\n\n3) Analyze the time and space complexity using Big O notation, explaining the reasoning behind your analysis\n\n4) Compare your solution with at least one alternative approach, discussing tradeoffs\n\n5) Include test cases covering edge cases, boundary conditions, and typical usage scenarios\n\n6) Suggest optimizations or improvements that could be made if needed",
   },
   {
     id: "api",
     name: "API Integration",
     description: "Code to connect with external services",
-    defaultPrompt: "Write [language] code to integrate with [specific API/service] to accomplish [functionality]. Include complete authentication handling with secure credential management (environment variables, tokens, API keys), comprehensive error handling for common API failures (rate limiting, authentication errors, network issues), retry logic with exponential backoff for transient failures, and response parsing with proper typing. Implement proper logging for debugging and monitoring. Structure the code following best practices in [language] for maintainable API clients, with separate concerns for request construction, authentication, error handling, and response processing. Include example usage scenarios showing how to use this integration in a real application context.",
+    defaultPrompt: "Write [language] code to integrate with [specific API/service] to accomplish [functionality]. Include: \n\n1) Complete authentication handling with secure credential management (environment variables, tokens, API keys)\n\n2) Comprehensive error handling for common API failures (rate limiting, authentication errors, network issues)\n\n3) Retry logic with exponential backoff for transient failures\n\n4) Response parsing with proper typing\n\n5) Proper logging for debugging and monitoring\n\n6) Structure the code following best practices in [language] for maintainable API clients, with separate concerns for request construction, authentication, error handling, and response processing\n\n7) Include example usage scenarios showing how to use this integration in a real application context",
   },
   {
     id: "testing",

@@ -90,7 +90,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
         <Textarea
           value={formData.prompt || ""}
           onChange={(e) => onChange("prompt", e.target.value)}
-          className="min-h-[120px] font-medium bg-white border-purple-100"
+          className="min-h-[300px] font-medium bg-white border-purple-100 whitespace-pre-line"
           placeholder="Your prompt template will appear here as you fill in the details below."
         />
         <p className="mt-2 text-xs text-gray-500">
