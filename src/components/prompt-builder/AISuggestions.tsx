@@ -23,6 +23,7 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({
       
       if (!formData.prompt || formData.prompt.length < 30) {
         suggestions.push("Start by clearly stating your request or goal in the prompt editor.");
+        suggestions.push("Try using the advanced editor for more space when writing your prompt.");
       }
       
       // Task-specific custom mode suggestions

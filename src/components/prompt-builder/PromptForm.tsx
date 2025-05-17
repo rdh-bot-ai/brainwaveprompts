@@ -10,7 +10,7 @@ import AISuggestions from "./AISuggestions";
 import { SUBCATEGORIES } from "./subcategories";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Sparkle, Pencil, Check, File } from "lucide-react";
+import { Sparkle, Pencil, File } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -103,7 +103,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
     if (checked) {
       // Switch to custom mode and turn off template mode
       onChange("useTemplate", false);
-      // Clear the template-based prompt and start fresh
+      // Start with an empty prompt in custom mode to make it clear user should write from scratch
       onChange("prompt", "");
     } else if (!formData.useTemplate) {
       // If turning off custom without enabling template, default to template mode
@@ -118,6 +118,17 @@ const PromptForm: React.FC<PromptFormProps> = ({
     
     // If template mode is on, we need to update the template too
     if (formData.useTemplate) {
+      onChange("promptTemplate", newValue);
+    }
+  };
+
+  // Handle basic editor changes for custom prompt mode
+  const handleBasicEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    onChange("prompt", newValue);
+    
+    // In custom mode, update both the prompt and template
+    if (!formData.useTemplate && formData.buildCustom) {
       onChange("promptTemplate", newValue);
     }
   };
@@ -190,12 +201,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
             </div>
             <Textarea
               value={formData.prompt || ""}
-              onChange={(e) => {
-                onChange("prompt", e.target.value);
-                if (!formData.useTemplate) {
-                  onChange("promptTemplate", e.target.value);
-                }
-              }}
+              onChange={handleBasicEditorChange}
               className={`min-h-[100px] font-medium ${formData.useTemplate ? "bg-white border-purple-100 whitespace-pre-line" : "bg-white border-purple-100"}`}
               placeholder={formData.useTemplate ? 
                 "Your template preview will appear here as you fill in the details below." : 
