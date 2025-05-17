@@ -51,7 +51,8 @@ const PromptBuilder: React.FC = () => {
       // Prefill the form with default values based on the subcategory
       setFormData(prev => ({
         ...prev,
-        prompt: defaultPrompt,
+        promptTemplate: defaultPrompt, // Store the original template
+        prompt: defaultPrompt, // Current working prompt
         detailLevel: prev.detailLevel || 2,
         tone: prev.tone || "professional",
         includeExamples: prev.includeExamples !== undefined ? prev.includeExamples : false
@@ -137,99 +138,80 @@ const PromptBuilder: React.FC = () => {
     // This is a mock implementation of the prompt enhancement algorithm
     // In a real app, this would call an AI service (like OpenAI) to generate the prompt
 
-    let prompt = "";
+    let prompt = formData.prompt || "";
+    let enhancedPrompt = prompt;
 
-    // Use the form data prompt if it exists (which will be pre-populated from subcategory)
-    if (formData.prompt) {
-      prompt = formData.prompt;
+    // First, ensure all placeholders are replaced
+    if (selectedTask === "content" && formData.topic) {
+      enhancedPrompt = enhancedPrompt.replace(/\[topic\]/g, formData.topic);
+    }
+    if (formData.keyPoints) {
+      enhancedPrompt = enhancedPrompt.replace(/\[key points\]/g, formData.keyPoints);
+    }
+    if (selectedTask === "code" && formData.language) {
+      enhancedPrompt = enhancedPrompt.replace(/\[language\]/g, formData.language);
+    }
+    if (selectedTask === "code" && formData.functionality) {
+      enhancedPrompt = enhancedPrompt.replace(/\[functionality\]/g, formData.functionality);
+    }
+    if (selectedTask === "idea" && formData.challenge) {
+      enhancedPrompt = enhancedPrompt.replace(/\[challenge\]/g, formData.challenge);
+    }
+    if (formData.context) {
+      enhancedPrompt = enhancedPrompt.replace(/\[context\]/g, formData.context);
+    }
+    if (formData.constraints) {
+      enhancedPrompt = enhancedPrompt.replace(/\[constraints\]/g, formData.constraints);
+    }
 
-      // Replace placeholders with actual values if they exist
-      if (selectedTask === "content" && formData.topic) {
-        prompt = prompt.replace(/\[topic\]/g, formData.topic);
-      }
-      if (formData.keyPoints) {
-        prompt = prompt.replace(/\[key points\]/g, formData.keyPoints);
-      }
-      if (selectedTask === "code" && formData.language) {
-        prompt = prompt.replace(/\[language\]/g, formData.language);
-      }
-      if (selectedTask === "code" && formData.functionality) {
-        prompt = prompt.replace(/\[functionality\]/g, formData.functionality);
-      }
-      if (selectedTask === "idea" && formData.challenge) {
-        prompt = prompt.replace(/\[challenge\]/g, formData.challenge);
-      }
-      if (formData.context) {
-        prompt = prompt.replace(/\[context\]/g, formData.context);
-      }
-      if (formData.constraints) {
-        prompt = prompt.replace(/\[constraints\]/g, formData.constraints);
-      }
-    } else {
-      // Fall back to the original logic if no prompt exists
-      // Start with a task-specific template
-      switch (selectedTask) {
-        case "content":
-          prompt = `Write a ${formData.contentType || "piece of content"} about "${formData.topic || "the provided topic"}".`;
-          if (formData.keyPoints) {
-            prompt += `\n\nInclude these key points:\n${formData.keyPoints}`;
-          }
-          if (formData.targetAudience) {
-            prompt += `\n\nTarget audience: ${formData.targetAudience}`;
-          }
-          break;
-        case "code":
-          prompt = `Write ${formData.language || "code"} that accomplishes the following:\n${formData.functionality || "the specified functionality"}`;
-          if (formData.includeComments) {
-            prompt += "\n\nInclude helpful comments in the code to explain the approach.";
-          }
-          if (formData.optimizePerformance) {
-            prompt += "\n\nOptimize the code for performance.";
-          }
-          break;
-        case "idea":
-          prompt = `Help me brainstorm ${formData.ideaType || "ideas"} for the following challenge:\n${formData.challenge || "the provided challenge"}`;
-          if (formData.context) {
-            prompt += `\n\nBackground context: ${formData.context}`;
-          }
-          if (formData.constraints) {
-            prompt += `\n\nConsider these constraints: ${formData.constraints}`;
-          }
-          break;
-        default:
-          prompt = formData.prompt || "Please provide a detailed response.";
-      }
+    // Now enhance the prompt depending on the task type
+    switch (selectedTask) {
+      case "content":
+        enhancedPrompt = `${enhancedPrompt}\n\nPlease include the following key sections in your response:\n\n1) An engaging introduction that hooks the reader\n\n2) Well-structured body with clear headings and subheadings\n\n3) Evidence, examples, or data to support main points\n\n4) Actionable takeaways or conclusions\n\n5) Relevant questions to encourage reader engagement`;
+        break;
+      case "code":
+        enhancedPrompt = `${enhancedPrompt}\n\nPlease ensure your code includes:\n\n1) Clear comments explaining the approach and logic\n\n2) Proper error handling and edge cases\n\n3) Efficient algorithms and data structures\n\n4) Maintainable and readable formatting\n\n5) Test cases or usage examples`;
+        break;
+      case "idea":
+        enhancedPrompt = `${enhancedPrompt}\n\nIn your response, please consider:\n\n1) Both conventional and unconventional approaches\n\n2) Pros and cons of each idea\n\n3) Implementation feasibility\n\n4) Potential obstacles and solutions\n\n5) Success metrics for evaluating ideas`;
+        break;
+      case "image":
+        enhancedPrompt = `${enhancedPrompt}\n\nPlease consider these aspects in the image creation:\n\n1) Specific visual elements and their arrangement\n\n2) Color palette and lighting atmosphere\n\n3) Style reference (photorealistic, cartoon, abstract, etc.)\n\n4) Mood and emotional tone\n\n5) Technical specifications (aspect ratio, resolution, etc.)`;
+        break;
+      default:
+        // For other categories, add general enhancements
+        enhancedPrompt = `${enhancedPrompt}\n\nPlease ensure your response is:\n\n1) Comprehensive and detailed\n\n2) Well-structured with clear sections\n\n3) Practical and actionable\n\n4) Backed by reasoning or evidence where applicable\n\n5) Tailored specifically to this request`;
     }
 
     // Add tone if specified
     if (formData.tone) {
-      prompt += `\n\nUse a ${formData.tone} tone in your response.`;
+      enhancedPrompt += `\n\nUse a ${formData.tone} tone in your response.`;
     }
 
     // Add additional context if provided
     if (formData.additionalContext) {
-      prompt += `\n\nAdditional context: ${formData.additionalContext}`;
+      enhancedPrompt += `\n\nAdditional context: ${formData.additionalContext}`;
     }
 
     // Add examples request if enabled
     if (formData.includeExamples) {
-      prompt += "\n\nInclude examples in your response.";
+      enhancedPrompt += "\n\nInclude concrete examples in your response to illustrate key points.";
     }
 
     // Add detail level instructions
     const detailLevelMap = {
-      1: "Provide a brief and concise response.",
-      2: "Provide a moderately detailed response with good explanations.",
-      3: "Provide a comprehensive, highly detailed response with thorough explanations."
+      1: "Provide a brief and concise response focusing on the most essential information.",
+      2: "Provide a moderately detailed response with balanced explanations of key concepts.",
+      3: "Provide a comprehensive, highly detailed response with thorough explanations and nuanced insights."
     };
-    prompt += `\n\n${detailLevelMap[formData.detailLevel || 2]}`;
+    enhancedPrompt += `\n\n${detailLevelMap[formData.detailLevel || 2]}`;
 
     // Add premium features for premium users
     if (user && user.subscription === "premium") {
-      prompt += "\n\nInclude strategic insights and advanced considerations in your response.";
-      prompt += "\n\nOptimize this response for maximum clarity and practical usefulness.";
+      enhancedPrompt += "\n\nInclude strategic insights and advanced considerations that wouldn't be obvious to beginners.";
+      enhancedPrompt += "\n\nOptimize this response for maximum clarity, practical usefulness, and actionable next steps.";
     }
-    return prompt;
+    return enhancedPrompt;
   };
   const copyToClipboard = () => {
     navigator.clipboard.writeText(generatedPrompt).then(() => {
@@ -251,36 +233,60 @@ const PromptBuilder: React.FC = () => {
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return <div>
+        return (
+          <div>
             <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
               <Lightbulb className="mr-2 h-5 w-5 text-purple-500" />
               Step 1: Select Task Type
             </h2>
-            <TaskSelector selectedTask={selectedTask} selectedSubCategory={selectedSubCategory} onTaskSelect={handleTaskSelection} onSubCategorySelect={handleSubCategorySelection} />
+            <TaskSelector 
+              selectedTask={selectedTask} 
+              selectedSubCategory={selectedSubCategory} 
+              onTaskSelect={handleTaskSelection} 
+              onSubCategorySelect={handleSubCategorySelection} 
+            />
             <div className="mt-6 flex justify-end">
-              <Button onClick={handleNextStep} disabled={!selectedTask || !selectedSubCategory} className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
+              <Button 
+                onClick={handleNextStep} 
+                disabled={!selectedTask || !selectedSubCategory} 
+                className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+              >
                 Next <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
-          </div>;
+          </div>
+        );
       case 2:
-        return <div>
+        return (
+          <div>
             <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
               <MessageCircle className="mr-2 h-5 w-5 text-purple-500" />
               Step 2: Provide Details
             </h2>
-            {selectedTask && selectedSubCategory && <PromptForm taskType={selectedTask} subCategory={selectedSubCategory} formData={formData} onChange={handleFormChange} />}
+            {selectedTask && selectedSubCategory && (
+              <PromptForm 
+                taskType={selectedTask} 
+                subCategory={selectedSubCategory} 
+                formData={formData} 
+                onChange={handleFormChange} 
+              />
+            )}
             <div className="mt-6 flex justify-between">
               <Button variant="outline" onClick={handlePrevStep}>
                 Back
               </Button>
-              <Button onClick={handleGenerate} disabled={!canGenerate || user && promptsRemaining !== null && promptsRemaining <= 0} className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
+              <Button 
+                onClick={handleGenerate} 
+                disabled={!canGenerate || (user && promptsRemaining !== null && promptsRemaining <= 0)} 
+                className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+              >
                 <Sparkle className="mr-2 h-4 w-4" />
                 Generate Enhanced Prompt
               </Button>
             </div>
             
-            {user && promptsRemaining !== null && promptsRemaining <= 0 && <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-start">
+            {user && promptsRemaining !== null && promptsRemaining <= 0 && (
+              <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-start">
                 <AlertCircle className="text-amber-500 mt-0.5 mr-2 h-5 w-5 flex-shrink-0" />
                 <div>
                   <p className="text-sm text-amber-800">
@@ -288,10 +294,13 @@ const PromptBuilder: React.FC = () => {
                   </p>
                   <UpgradePrompt currentTier={user.subscription || "free"} />
                 </div>
-              </div>}
-          </div>;
+              </div>
+            )}
+          </div>
+        );
       case 3:
-        return <div>
+        return (
+          <div>
             <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
               <CheckCircle className="mr-2 h-5 w-5 text-green-500" />
               Your Enhanced Prompt
@@ -303,12 +312,23 @@ const PromptBuilder: React.FC = () => {
               </TabsList>
               <TabsContent value="prompt" className="w-full">
                 <Card className="p-4 bg-purple-50 border border-purple-200 shadow-sm">
-                  <Textarea readOnly value={generatedPrompt} className="min-h-[300px] bg-white border-purple-100 focus-visible:ring-purple-500" />
+                  <Textarea 
+                    readOnly 
+                    value={generatedPrompt} 
+                    className="min-h-[300px] bg-white border-purple-100 focus-visible:ring-purple-500 whitespace-pre-line" 
+                  />
                   <div className="mt-4 flex justify-between">
-                    <Button variant="outline" onClick={() => setCurrentStep(2)} className="border-purple-200 hover:bg-purple-50">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setCurrentStep(2)} 
+                      className="border-purple-200 hover:bg-purple-50"
+                    >
                       Back to Editor
                     </Button>
-                    <Button onClick={copyToClipboard} className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
+                    <Button 
+                      onClick={copyToClipboard} 
+                      className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                    >
                       <Copy className="mr-2 h-4 w-4" />
                       Copy to Clipboard
                     </Button>
@@ -318,23 +338,24 @@ const PromptBuilder: React.FC = () => {
               <TabsContent value="before-after">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <h3 className="font-medium mb-2 text-gray-700">Original Idea</h3>
-                    <div className="p-3 bg-gray-100 rounded-md min-h-[200px]">
-                      <p className="text-sm text-gray-700">
+                    <h3 className="font-medium mb-2 text-gray-700">Original Template</h3>
+                    <div className="p-3 bg-gray-100 rounded-md min-h-[200px] whitespace-pre-line">
+                      <p className="text-sm text-gray-700 whitespace-pre-line">
                         {formData.prompt || `${selectedTask}: ${formData.topic || formData.challenge || formData.functionality || "Your prompt"}`}
                       </p>
                     </div>
                   </div>
                   <div>
                     <h3 className="font-medium mb-2 text-gray-700">Enhanced Prompt</h3>
-                    <div className="p-3 bg-purple-50 rounded-md min-h-[200px] border border-purple-100">
-                      <p className="text-sm text-gray-700">{generatedPrompt}</p>
+                    <div className="p-3 bg-purple-50 rounded-md min-h-[200px] border border-purple-100 whitespace-pre-line">
+                      <p className="text-sm text-gray-700 whitespace-pre-line">{generatedPrompt}</p>
                     </div>
                   </div>
                 </div>
               </TabsContent>
             </Tabs>
-          </div>;
+          </div>
+        );
       default:
         return null;
     }
