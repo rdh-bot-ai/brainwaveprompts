@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { TaskType } from "./TaskIcons";
 import ContentForm from "./forms/ContentForm";
@@ -26,25 +27,11 @@ const PromptForm: React.FC<PromptFormProps> = ({
 }) => {
   // Get the selected subcategory object
   const selectedSubCategory = SUBCATEGORIES[taskType]?.find(sub => sub.id === subCategory);
-  
-  // Effect to set initial prompt template when subcategory changes
+
+  // Effect to update prompt when relevant fields change
   useEffect(() => {
     if (selectedSubCategory) {
-      // Only set the initial template, without adding any additional processing
-      const basicTemplate = selectedSubCategory.defaultPrompt;
-      
-      // Only update if it's a new selection or template
-      if (!formData.promptTemplate || formData.promptTemplate !== basicTemplate) {
-        onChange("promptTemplate", basicTemplate);
-        onChange("prompt", basicTemplate);
-      }
-    }
-  }, [taskType, selectedSubCategory, formData.promptTemplate, onChange]);
-  
-  // Effect to update template as user fills in form fields
-  useEffect(() => {
-    if (selectedSubCategory && formData.promptTemplate) {
-      let updatedPrompt = formData.promptTemplate;
+      let updatedPrompt = selectedSubCategory.defaultPrompt;
       
       // Replace placeholders with actual values if they exist
       if (taskType === "content" && formData.topic) {
@@ -74,7 +61,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
         onChange("prompt", updatedPrompt);
       }
     }
-  }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, formData.language, formData.functionality, formData.challenge, formData.context, formData.constraints, onChange]);
+  }, [taskType, subCategory, formData.topic, formData.keyPoints, formData.language, formData.functionality, formData.challenge, formData.context, formData.constraints]);
 
   // Render task-specific form based on task type
   const renderTaskSpecificForm = () => {
@@ -98,17 +85,17 @@ const PromptForm: React.FC<PromptFormProps> = ({
       <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-100">
         <div className="flex items-center mb-2">
           <Sparkle className="h-4 w-4 text-purple-600 mr-2" />
-          <Label className="font-medium text-sm text-gray-700">Basic Template</Label>
+          <Label className="font-medium text-sm text-gray-700">Template Preview</Label>
         </div>
         <Textarea
           value={formData.prompt || ""}
           onChange={(e) => onChange("prompt", e.target.value)}
-          className="min-h-[150px] font-medium bg-white border-purple-100 whitespace-pre-line"
+          className="min-h-[300px] font-medium bg-white border-purple-100 whitespace-pre-line"
           placeholder="Your prompt template will appear here as you fill in the details below."
         />
         <p className="mt-2 text-xs text-gray-500">
-          Fill in the basic details using the form below. When you generate the enhanced prompt,
-          we'll use AI to expand this into a comprehensive, detailed prompt.
+          This is your prompt template. You can edit it directly or use the form fields below to customize it.
+          Placeholders like [topic] will be automatically replaced with your inputs.
         </p>
       </div>
 
