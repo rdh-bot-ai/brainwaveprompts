@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertCircle, Sparkle, Clipboard, ArrowRight, Lightbulb, MessageCircle, CheckCircle, Copy, Star, Clock } from "lucide-react";
+import { AlertCircle, Sparkle, Copy, ArrowRight, Lightbulb, MessageCircle, CheckCircle, Clock, Star } from "lucide-react";
 import { AuthContext } from "@/contexts/AuthContext";
 import TaskSelector from "./TaskSelector";
 import PromptForm from "./PromptForm";
@@ -22,11 +22,18 @@ const PromptBuilder: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Record<string, any>>({
+    useTemplate: true, // Default to using templates
+    detailLevel: 2,
+    tone: "professional",
+    includeExamples: false
+  });
   const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
   const [canGenerate, setCanGenerate] = useState<boolean>(true);
   const [promptsRemaining, setPromptsRemaining] = useState<number | null>(null);
   const [recentPrompts, setRecentPrompts] = useState<string[]>([]);
+  const [isEnhancing, setIsEnhancing] = useState<boolean>(false);
+
   useEffect(() => {
     if (user) {
       setPromptsRemaining(user.promptsRemaining || 0);
@@ -53,6 +60,7 @@ const PromptBuilder: React.FC = () => {
         ...prev,
         promptTemplate: defaultPrompt, // Store the original template
         prompt: defaultPrompt, // Current working prompt
+        useTemplate: true, // Default to using templates
         detailLevel: prev.detailLevel || 2,
         tone: prev.tone || "professional",
         includeExamples: prev.includeExamples !== undefined ? prev.includeExamples : false
@@ -113,105 +121,157 @@ const PromptBuilder: React.FC = () => {
       return;
     }
 
-    // Generate the enhanced prompt
-    const enhancedPrompt = generateEnhancedPrompt();
-    setGeneratedPrompt(enhancedPrompt);
-    setCurrentStep(3);
-
-    // Save to history
-    savePromptToHistory(enhancedPrompt);
-
-    // Reduce the number of prompts remaining if user is authenticated
-    if (user && promptsRemaining !== null) {
-      const newPromptsRemaining = promptsRemaining - 1;
-      setPromptsRemaining(newPromptsRemaining);
-
-      // Mock updating the user in a real app this would call an API
-      const updatedUser = {
-        ...user,
-        promptsRemaining: newPromptsRemaining
-      };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-    }
+    // Show enhancing state
+    setIsEnhancing(true);
+    
+    // Simulate AI processing delay
+    setTimeout(() => {
+      // Generate the enhanced prompt
+      const enhancedPrompt = generateEnhancedPrompt();
+      setGeneratedPrompt(enhancedPrompt);
+      setCurrentStep(3);
+      setIsEnhancing(false);
+      
+      // Save to history
+      savePromptToHistory(enhancedPrompt);
+  
+      // Reduce the number of prompts remaining if user is authenticated
+      if (user && promptsRemaining !== null) {
+        const newPromptsRemaining = promptsRemaining - 1;
+        setPromptsRemaining(newPromptsRemaining);
+  
+        // Mock updating the user in a real app this would call an API
+        const updatedUser = {
+          ...user,
+          promptsRemaining: newPromptsRemaining
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      }
+    }, 1500);
   };
   const generateEnhancedPrompt = () => {
-    // This is a mock implementation of the prompt enhancement algorithm
-    // In a real app, this would call an AI service (like OpenAI) to generate the prompt
+    // Get base prompt (either template-based or custom)
+    let basePrompt = formData.prompt || "";
+    
+    // Make sure all placeholders are replaced with appropriate default values
+    basePrompt = basePrompt
+      .replace(/\[topic\]/g, formData.topic || "the selected topic")
+      .replace(/\[key points\]/g, formData.keyPoints || "important aspects")
+      .replace(/\[language\]/g, formData.language || "the specified programming language")
+      .replace(/\[functionality\]/g, formData.functionality || "the requested functionality")
+      .replace(/\[challenge\]/g, formData.challenge || "the problem")
+      .replace(/\[context\]/g, formData.context || "relevant background information")
+      .replace(/\[constraints\]/g, formData.constraints || "any limitations");
+    
+    // Enhance the prompt based on task type
+    let enhancedPrompt = basePrompt;
+    
+    // Only add additional context if using template or if the base prompt is short
+    const shouldAddStructure = formData.useTemplate || basePrompt.length < 100;
+    
+    if (shouldAddStructure) {
+      switch (selectedTask) {
+        case "content":
+          enhancedPrompt += `\n\n#Response Guidelines:\n\n1. Writing Style: Use a ${formData.tone || "professional"} tone throughout the content.`;
+          
+          if (formData.targetAudience) {
+            enhancedPrompt += `\n2. Target Audience: Craft content specifically for ${formData.targetAudience}.`;
+          }
+          
+          enhancedPrompt += `\n3. Structure: Include an engaging introduction that outlines the main points, well-organized body sections with clear headings, and a concise conclusion.`;
+          
+          if (formData.includeExamples) {
+            enhancedPrompt += "\n4. Examples: Incorporate relevant examples that illustrate key concepts.";
+          }
+          
+          enhancedPrompt += `\n5. Detail Level: ${getDetailLevelDescription(formData.detailLevel || 2)}`;
+          break;
+          
+        case "code":
+          enhancedPrompt += `\n\n#Code Guidelines:\n\n1. Language: Write code in ${formData.language || "the specified language"}.`;
+          
+          if (formData.includeComments) {
+            enhancedPrompt += "\n2. Documentation: Include thorough comments explaining the approach, logic, and any important decisions.";
+          }
+          
+          if (formData.optimizePerformance) {
+            enhancedPrompt += "\n3. Performance: Optimize for efficiency and performance.";
+          }
+          
+          enhancedPrompt += "\n4. Structure: Ensure code is well-organized, modular, and follows best practices.";
+          
+          if (formData.includeExamples) {
+            enhancedPrompt += "\n5. Usage: Include usage examples showing how to implement the code.";
+          }
+          
+          enhancedPrompt += `\n6. Detail Level: ${getDetailLevelDescription(formData.detailLevel || 2)}`;
+          break;
+          
+        case "idea":
+          enhancedPrompt += `\n\n#Ideation Guidelines:\n\n1. Approach: Consider both conventional and innovative solutions.`;
+          
+          if (formData.constraints) {
+            enhancedPrompt += `\n2. Constraints: Work within these limitations: ${formData.constraints}.`;
+          }
+          
+          enhancedPrompt += "\n3. Structure: Present ideas with clear rationales and potential implementation approaches.";
+          
+          if (formData.includeExamples) {
+            enhancedPrompt += "\n4. Examples: Include examples of where similar approaches have succeeded.";
+          }
+          
+          enhancedPrompt += `\n5. Detail Level: ${getDetailLevelDescription(formData.detailLevel || 2)}`;
+          break;
+          
+        case "image":
+          enhancedPrompt += `\n\n#Image Generation Guidelines:\n\n1. Style: Create imagery using ${formData.style || "the appropriate"} style.`;
+          
+          if (formData.details) {
+            enhancedPrompt += `\n2. Elements: Include these specific visual elements: ${formData.details}.`;
+          }
+          
+          enhancedPrompt += "\n3. Composition: Pay attention to balance, focal points, and visual flow.";
+          
+          if (formData.includeExamples) {
+            enhancedPrompt += "\n4. References: Use reference images or styles as inspiration where appropriate.";
+          }
+          
+          enhancedPrompt += `\n5. Detail Level: ${getDetailLevelDescription(formData.detailLevel || 2)}`;
+          break;
+          
+        default:
+          enhancedPrompt += `\n\n#Response Guidelines:\n\n1. Tone: Maintain a ${formData.tone || "professional"} tone.`;
+          enhancedPrompt += "\n2. Structure: Organize the response with clear sections and logical flow.";
+          
+          if (formData.includeExamples) {
+            enhancedPrompt += "\n3. Examples: Include relevant examples to illustrate key points.";
+          }
+          
+          enhancedPrompt += `\n4. Detail Level: ${getDetailLevelDescription(formData.detailLevel || 2)}`;
+      }
 
-    let prompt = formData.prompt || "";
-    let enhancedPrompt = prompt;
-
-    // First, ensure all placeholders are replaced
-    if (selectedTask === "content" && formData.topic) {
-      enhancedPrompt = enhancedPrompt.replace(/\[topic\]/g, formData.topic);
+      // Add premium features for premium users
+      if (user && user.subscription === "premium") {
+        enhancedPrompt += "\n\n#Premium Enhancements:";
+        enhancedPrompt += "\n1. Strategic Insights: Include advanced perspectives and analysis beyond surface-level thinking.";
+        enhancedPrompt += "\n2. Efficiency Optimization: Structure the response for maximum clarity and practical usefulness.";
+        enhancedPrompt += "\n3. Actionable Framework: Provide a clear framework for implementing the advice or information.";
+      }
     }
-    if (formData.keyPoints) {
-      enhancedPrompt = enhancedPrompt.replace(/\[key points\]/g, formData.keyPoints);
-    }
-    if (selectedTask === "code" && formData.language) {
-      enhancedPrompt = enhancedPrompt.replace(/\[language\]/g, formData.language);
-    }
-    if (selectedTask === "code" && formData.functionality) {
-      enhancedPrompt = enhancedPrompt.replace(/\[functionality\]/g, formData.functionality);
-    }
-    if (selectedTask === "idea" && formData.challenge) {
-      enhancedPrompt = enhancedPrompt.replace(/\[challenge\]/g, formData.challenge);
-    }
-    if (formData.context) {
-      enhancedPrompt = enhancedPrompt.replace(/\[context\]/g, formData.context);
-    }
-    if (formData.constraints) {
-      enhancedPrompt = enhancedPrompt.replace(/\[constraints\]/g, formData.constraints);
-    }
-
-    // Now enhance the prompt depending on the task type
-    switch (selectedTask) {
-      case "content":
-        enhancedPrompt = `${enhancedPrompt}\n\nPlease include the following key sections in your response:\n\n1) An engaging introduction that hooks the reader\n\n2) Well-structured body with clear headings and subheadings\n\n3) Evidence, examples, or data to support main points\n\n4) Actionable takeaways or conclusions\n\n5) Relevant questions to encourage reader engagement`;
-        break;
-      case "code":
-        enhancedPrompt = `${enhancedPrompt}\n\nPlease ensure your code includes:\n\n1) Clear comments explaining the approach and logic\n\n2) Proper error handling and edge cases\n\n3) Efficient algorithms and data structures\n\n4) Maintainable and readable formatting\n\n5) Test cases or usage examples`;
-        break;
-      case "idea":
-        enhancedPrompt = `${enhancedPrompt}\n\nIn your response, please consider:\n\n1) Both conventional and unconventional approaches\n\n2) Pros and cons of each idea\n\n3) Implementation feasibility\n\n4) Potential obstacles and solutions\n\n5) Success metrics for evaluating ideas`;
-        break;
-      case "image":
-        enhancedPrompt = `${enhancedPrompt}\n\nPlease consider these aspects in the image creation:\n\n1) Specific visual elements and their arrangement\n\n2) Color palette and lighting atmosphere\n\n3) Style reference (photorealistic, cartoon, abstract, etc.)\n\n4) Mood and emotional tone\n\n5) Technical specifications (aspect ratio, resolution, etc.)`;
-        break;
-      default:
-        // For other categories, add general enhancements
-        enhancedPrompt = `${enhancedPrompt}\n\nPlease ensure your response is:\n\n1) Comprehensive and detailed\n\n2) Well-structured with clear sections\n\n3) Practical and actionable\n\n4) Backed by reasoning or evidence where applicable\n\n5) Tailored specifically to this request`;
-    }
-
-    // Add tone if specified
-    if (formData.tone) {
-      enhancedPrompt += `\n\nUse a ${formData.tone} tone in your response.`;
-    }
-
-    // Add additional context if provided
-    if (formData.additionalContext) {
-      enhancedPrompt += `\n\nAdditional context: ${formData.additionalContext}`;
-    }
-
-    // Add examples request if enabled
-    if (formData.includeExamples) {
-      enhancedPrompt += "\n\nInclude concrete examples in your response to illustrate key points.";
-    }
-
-    // Add detail level instructions
-    const detailLevelMap = {
-      1: "Provide a brief and concise response focusing on the most essential information.",
-      2: "Provide a moderately detailed response with balanced explanations of key concepts.",
-      3: "Provide a comprehensive, highly detailed response with thorough explanations and nuanced insights."
-    };
-    enhancedPrompt += `\n\n${detailLevelMap[formData.detailLevel || 2]}`;
-
-    // Add premium features for premium users
-    if (user && user.subscription === "premium") {
-      enhancedPrompt += "\n\nInclude strategic insights and advanced considerations that wouldn't be obvious to beginners.";
-      enhancedPrompt += "\n\nOptimize this response for maximum clarity, practical usefulness, and actionable next steps.";
-    }
+    
     return enhancedPrompt;
+  };
+  const getDetailLevelDescription = (level: number) => {
+    switch (level) {
+      case 1: 
+        return "Provide a concise overview with essential information only.";
+      case 2: 
+        return "Include moderate detail with balanced explanations of key concepts.";
+      case 3: 
+        return "Deliver comprehensive coverage with thorough explanations and nuanced insights.";
+      default: 
+        return "Provide a balanced level of detail.";
+    }
   };
   const copyToClipboard = () => {
     navigator.clipboard.writeText(generatedPrompt).then(() => {
@@ -261,7 +321,7 @@ const PromptBuilder: React.FC = () => {
           <div>
             <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
               <MessageCircle className="mr-2 h-5 w-5 text-purple-500" />
-              Step 2: Provide Details
+              Step 2: Customize Your Prompt
             </h2>
             {selectedTask && selectedSubCategory && (
               <PromptForm 
@@ -277,11 +337,14 @@ const PromptBuilder: React.FC = () => {
               </Button>
               <Button 
                 onClick={handleGenerate} 
-                disabled={!canGenerate || (user && promptsRemaining !== null && promptsRemaining <= 0)} 
+                disabled={isEnhancing || !canGenerate || (user && promptsRemaining !== null && promptsRemaining <= 0)} 
                 className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
               >
-                <Sparkle className="mr-2 h-4 w-4" />
-                Generate Enhanced Prompt
+                {isEnhancing ? (
+                  <>Enhancing<span className="ml-2 animate-pulse">...</span></>
+                ) : (
+                  <><Sparkle className="mr-2 h-4 w-4" />Enhance with AI</>
+                )}
               </Button>
             </div>
             
@@ -303,7 +366,7 @@ const PromptBuilder: React.FC = () => {
           <div>
             <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
               <CheckCircle className="mr-2 h-5 w-5 text-green-500" />
-              Your Enhanced Prompt
+              Your AI-Enhanced Prompt
             </h2>
             <Tabs defaultValue="prompt" className="w-full">
               <TabsList className="mb-4 grid grid-cols-2 w-full md:w-auto">
@@ -338,15 +401,15 @@ const PromptBuilder: React.FC = () => {
               <TabsContent value="before-after">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <h3 className="font-medium mb-2 text-gray-700">Original Template</h3>
+                    <h3 className="font-medium mb-2 text-gray-700">Original Input</h3>
                     <div className="p-3 bg-gray-100 rounded-md min-h-[200px] whitespace-pre-line">
                       <p className="text-sm text-gray-700 whitespace-pre-line">
-                        {formData.prompt || `${selectedTask}: ${formData.topic || formData.challenge || formData.functionality || "Your prompt"}`}
+                        {formData.useTemplate ? formData.promptTemplate : formData.prompt}
                       </p>
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-medium mb-2 text-gray-700">Enhanced Prompt</h3>
+                    <h3 className="font-medium mb-2 text-gray-700">AI-Enhanced Prompt</h3>
                     <div className="p-3 bg-purple-50 rounded-md min-h-[200px] border border-purple-100 whitespace-pre-line">
                       <p className="text-sm text-gray-700 whitespace-pre-line">{generatedPrompt}</p>
                     </div>

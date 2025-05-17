@@ -17,60 +17,66 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({
   const getSuggestions = () => {
     const suggestions: string[] = [];
     
-    // General suggestions
-    if (!formData.prompt || formData.prompt.length < 50) {
-      suggestions.push("Add more details to your prompt for better results");
+    // Check if using template or custom prompt
+    if (!formData.useTemplate) {
+      suggestions.push("Consider using our template for better structure");
+      suggestions.push("Remember to specify your desired tone and detail level");
+    } else {
+      // General suggestions
+      if (!formData.prompt || formData.prompt.length < 30) {
+        suggestions.push("Fill in the basic details to see your template preview");
+      }
     }
     
     // Task-specific suggestions
     switch (taskType) {
       case "content":
-        if (formData.topic) {
-          suggestions.push(`Consider specifying your target audience for "${formData.topic}"`);
-          
-          if (!formData.keyPoints) {
-            suggestions.push("Adding key points will make your content more structured");
-          }
+        if (!formData.topic || formData.topic.length < 5) {
+          suggestions.push("Add a specific topic for better results");
+        } else if (!formData.keyPoints && formData.useTemplate) {
+          suggestions.push("Adding key points will make your content more structured");
         }
         break;
         
       case "code":
-        if (formData.language) {
-          suggestions.push(`When requesting ${formData.language} code, specify version requirements if applicable`);
-          suggestions.push("Consider asking for code comments to improve understanding");
+        if (!formData.language && formData.useTemplate) {
+          suggestions.push("Selecting a programming language will help AI generate better code");
+        }
+        if (!formData.functionality || formData.functionality.length < 10) {
+          suggestions.push("Describe the code functionality in detail for better results");
         }
         break;
         
       case "idea":
-        if (formData.challenge) {
-          suggestions.push("Consider adding constraints to focus your ideation process");
-          suggestions.push("Specify if you want practical ideas or more creative concepts");
+        if (!formData.challenge || formData.challenge.length < 10) {
+          suggestions.push("Describe your challenge clearly to get more relevant ideas");
+        }
+        if (!formData.constraints && formData.useTemplate) {
+          suggestions.push("Adding constraints helps focus the ideation process");
         }
         break;
         
       case "image":
-        suggestions.push("Include details about lighting, perspective, and style for better image prompts");
-        suggestions.push("Reference specific art styles or artists for more consistent results");
+        if (!formData.subject || formData.subject.length < 5) {
+          suggestions.push("Describe what should be in the image for better results");
+        }
+        if (!formData.details && formData.useTemplate) {
+          suggestions.push("Adding visual details improves image generation quality");
+        }
         break;
-        
-      case "research":
-        suggestions.push("Specify the depth of research needed (overview vs. detailed analysis)");
-        suggestions.push("Include time period constraints if researching historical topics");
-        break;
     }
     
-    // Subcategory-specific suggestions
-    if (taskType === "content" && subCategory === "blog") {
-      suggestions.push("Consider specifying your desired word count");
-      suggestions.push("Mention if you want SEO optimization for your blog content");
+    // Tone and detail level suggestions
+    if (!formData.tone) {
+      suggestions.push("Selecting a tone helps AI match your communication style");
     }
     
-    if (taskType === "code" && subCategory === "function") {
-      suggestions.push("Specify input parameters and expected outputs");
-      suggestions.push("Mention error handling preferences");
+    // For premium feature promotion
+    if (!formData.includeExamples && suggestions.length < 4) {
+      suggestions.push("Check 'Include Examples' for more practical, concrete outputs");
     }
     
-    return suggestions.length > 0 ? suggestions : ["Your prompt looks good!"];
+    return suggestions.length > 0 ? suggestions : ["Your prompt is looking good! Click 'Enhance with AI' when ready."];
   };
   
   const suggestions = getSuggestions();
@@ -80,7 +86,7 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({
   }
   
   return (
-    <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-4 border border-purple-100 mt-4">
+    <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-4 border border-purple-100">
       <div className="flex items-center mb-2">
         <Sparkle className="h-4 w-4 text-purple-600 mr-2" />
         <h3 className="font-medium text-sm text-gray-700">AI Suggestions</h3>

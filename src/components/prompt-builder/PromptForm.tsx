@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { TaskType } from "./TaskIcons";
 import ContentForm from "./forms/ContentForm";
@@ -9,7 +10,9 @@ import AISuggestions from "./AISuggestions";
 import { SUBCATEGORIES } from "./subcategories";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Sparkle } from "lucide-react";
+import { Sparkle, Pencil, Check, File } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface PromptFormProps {
   taskType: TaskType;
@@ -37,13 +40,14 @@ const PromptForm: React.FC<PromptFormProps> = ({
       if (!formData.promptTemplate || formData.promptTemplate !== basicTemplate) {
         onChange("promptTemplate", basicTemplate);
         onChange("prompt", basicTemplate);
+        onChange("useTemplate", true);
       }
     }
   }, [taskType, selectedSubCategory, formData.promptTemplate, onChange]);
   
   // Effect to update template as user fills in form fields
   useEffect(() => {
-    if (selectedSubCategory && formData.promptTemplate) {
+    if (selectedSubCategory && formData.promptTemplate && formData.useTemplate) {
       let updatedPrompt = formData.promptTemplate;
       
       // Replace placeholders with actual values if they exist
@@ -74,7 +78,20 @@ const PromptForm: React.FC<PromptFormProps> = ({
         onChange("prompt", updatedPrompt);
       }
     }
-  }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, formData.language, formData.functionality, formData.challenge, formData.context, formData.constraints, onChange]);
+  }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, 
+      formData.language, formData.functionality, formData.challenge, formData.context, 
+      formData.constraints, formData.useTemplate, onChange]);
+
+  // Toggle between template and custom prompt
+  const handleUseTemplateChange = (checked: boolean) => {
+    onChange("useTemplate", checked);
+    if (checked && selectedSubCategory) {
+      // Switch back to template
+      const basicTemplate = selectedSubCategory.defaultPrompt;
+      onChange("promptTemplate", basicTemplate);
+      onChange("prompt", basicTemplate);
+    }
+  };
 
   // Render task-specific form based on task type
   const renderTaskSpecificForm = () => {
@@ -94,32 +111,102 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Template Preview */}
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-100">
-        <div className="flex items-center mb-2">
-          <Sparkle className="h-4 w-4 text-purple-600 mr-2" />
-          <Label className="font-medium text-sm text-gray-700">Basic Template</Label>
-        </div>
-        <Textarea
-          value={formData.prompt || ""}
-          onChange={(e) => onChange("prompt", e.target.value)}
-          className="min-h-[150px] font-medium bg-white border-purple-100 whitespace-pre-line"
-          placeholder="Your prompt template will appear here as you fill in the details below."
+      {/* Template Mode Toggle */}
+      <div className="flex items-center space-x-2">
+        <Checkbox 
+          id="useTemplate" 
+          checked={formData.useTemplate || false} 
+          onCheckedChange={handleUseTemplateChange} 
         />
-        <p className="mt-2 text-xs text-gray-500">
-          Fill in the basic details using the form below. When you generate the enhanced prompt,
-          we'll use AI to expand this into a comprehensive, detailed prompt.
-        </p>
+        <Label htmlFor="useTemplate" className="text-sm font-medium text-gray-700">
+          Use template structure (recommended)
+        </Label>
       </div>
 
-      {/* AI Suggestions */}
-      {taskType && subCategory && (
-        <AISuggestions 
-          taskType={taskType} 
-          subCategory={subCategory} 
-          formData={formData} 
-        />
-      )}
+      {/* Prompt Editor Tabs */}
+      <Tabs defaultValue="basic" className="w-full">
+        <TabsList className="grid grid-cols-2 mb-4">
+          <TabsTrigger value="basic" className="flex items-center gap-2">
+            <File className="h-4 w-4" />
+            <span>Basic Editor</span>
+          </TabsTrigger>
+          <TabsTrigger value="advanced" className="flex items-center gap-2">
+            <Pencil className="h-4 w-4" />
+            <span>Advanced Editor</span>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="basic" className="space-y-4">
+          {/* Basic Template Preview */}
+          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-100">
+            <div className="flex items-center mb-2">
+              <Sparkle className="h-4 w-4 text-purple-600 mr-2" />
+              <Label className="font-medium text-sm text-gray-700">
+                {formData.useTemplate ? "Template Preview" : "Custom Prompt"}
+              </Label>
+            </div>
+            <Textarea
+              value={formData.prompt || ""}
+              onChange={(e) => {
+                onChange("prompt", e.target.value);
+                if (!formData.useTemplate) {
+                  onChange("promptTemplate", e.target.value);
+                }
+              }}
+              className="min-h-[100px] font-medium bg-white border-purple-100 whitespace-pre-line"
+              placeholder={formData.useTemplate ? 
+                "Your template preview will appear here as you fill in the details below." : 
+                "Write your custom prompt here..."
+              }
+              disabled={formData.useTemplate}
+            />
+            <p className="mt-2 text-xs text-gray-500">
+              {formData.useTemplate ? 
+                "Fill in the basic details using the form below. The template will update automatically." : 
+                "You're using a custom prompt. You can still use the form below to help organize your thoughts."
+              }
+            </p>
+          </div>
+
+          {/* AI Suggestions */}
+          {taskType && subCategory && (
+            <AISuggestions 
+              taskType={taskType} 
+              subCategory={subCategory} 
+              formData={formData} 
+            />
+          )}
+        </TabsContent>
+
+        <TabsContent value="advanced" className="space-y-4">
+          {/* Advanced Custom Prompt Editor */}
+          <div className="bg-white border border-gray-200 p-4 rounded-lg">
+            <div className="flex items-center mb-2">
+              <Pencil className="h-4 w-4 text-gray-700 mr-2" />
+              <Label className="font-medium text-sm text-gray-700">
+                {formData.useTemplate ? "Edit Template" : "Write Custom Prompt"}
+              </Label>
+            </div>
+            <Textarea
+              value={formData.prompt || ""}
+              onChange={(e) => {
+                onChange("prompt", e.target.value);
+                if (!formData.useTemplate) {
+                  onChange("promptTemplate", e.target.value);
+                }
+              }}
+              className="min-h-[200px] font-medium border-gray-200 whitespace-pre-line"
+              placeholder="Enter your prompt here..."
+            />
+            <p className="mt-2 text-xs text-gray-500">
+              {formData.useTemplate ? 
+                "Caution: Editing the template directly will override automatic updates from the form fields." : 
+                "Write your custom prompt with as much detail as needed. You can still use AI enhancement later."
+              }
+            </p>
+          </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Task specific form inputs */}
       <div className="bg-white rounded-lg p-0">

@@ -6,24 +6,24 @@ export const OTHER_SUBCATEGORIES: SubCategory[] = [
     id: "custom",
     name: "Custom Prompt",
     description: "Build your own prompt",
-    defaultPrompt: "I need help with [describe your task]. Please provide [specific output].",
+    defaultPrompt: "Write your own prompt here...",
   },
   {
     id: "workflow",
     name: "Workflow Design",
     description: "Process and system planning",
-    defaultPrompt: "Help me design a workflow for [process/task].",
+    defaultPrompt: "Design a workflow for:",
   },
   {
     id: "speech",
     name: "Speech/Presentation",
     description: "Public speaking content",
-    defaultPrompt: "Create a [length] speech/presentation about [topic] for [audience].",
+    defaultPrompt: "Create a speech about:",
   },
   {
     id: "critique",
     name: "Review & Critique",
     description: "Analysis and feedback",
-    defaultPrompt: "Provide a constructive critique of this [content/work/idea]: [paste content or describe].",
+    defaultPrompt: "Provide a critique of:",
   },
 ];

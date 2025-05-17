@@ -12,9 +12,8 @@ const Builder = () => {
           <div className="text-center mb-10">
             <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Brainwave Prompt Builder</h1>
             <p className="text-gray-600 max-w-3xl mx-auto">
-              Create detailed, effective prompts tailored to your specific needs. Our templates guide you 
-              through providing basic information, then our AI enhances your inputs into comprehensive, 
-              well-structured prompts that get better results from AI systems.
+              Create detailed, effective prompts that get better results from AI. Our builder helps you structure your inputs,
+              then our AI enhances them with expert techniques that dramatically improve AI responses.
             </p>
           </div>
         </div>
