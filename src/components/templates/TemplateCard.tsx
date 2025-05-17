@@ -53,6 +53,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
     sessionStorage.setItem("openInAdvancedEditor", "true"); // Flag to open in advanced editor
     sessionStorage.setItem("templateTitle", template.title);
     sessionStorage.setItem("templateCategory", template.category);
+    sessionStorage.setItem("templateDescription", template.description);
     navigate("/builder");
   };
 

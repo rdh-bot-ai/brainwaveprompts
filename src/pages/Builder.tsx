@@ -11,6 +11,7 @@ const Builder = () => {
     const openInAdvancedEditor = sessionStorage.getItem("openInAdvancedEditor");
     const templateTitle = sessionStorage.getItem("templateTitle");
     const templateCategory = sessionStorage.getItem("templateCategory");
+    const templateDescription = sessionStorage.getItem("templateDescription");
     
     if (templatePrompt) {
       // Create a custom event to signal to the PromptBuilder component
@@ -19,7 +20,8 @@ const Builder = () => {
           prompt: templatePrompt,
           openInAdvancedEditor: openInAdvancedEditor === "true",
           title: templateTitle || "",
-          category: templateCategory || ""
+          category: templateCategory || "",
+          description: templateDescription || ""
         } 
       });
       document.dispatchEvent(event);
@@ -29,6 +31,7 @@ const Builder = () => {
       sessionStorage.removeItem("openInAdvancedEditor");
       sessionStorage.removeItem("templateTitle");
       sessionStorage.removeItem("templateCategory");
+      sessionStorage.removeItem("templateDescription");
     }
   }, []);
 

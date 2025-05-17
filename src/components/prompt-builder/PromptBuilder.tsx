@@ -1,4 +1,3 @@
-
 import React, { useState, useContext, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -65,7 +64,9 @@ const PromptBuilder: React.FC = () => {
         promptTemplate: prompt,
         buildCustom: true,       // Enable custom prompt mode
         useTemplate: false,      // Disable template mode
-        defaultEditorTab: openInAdvancedEditor ? "advanced" : "basic" // Open in advanced editor if requested
+        defaultEditorTab: openInAdvancedEditor ? "advanced" : "basic", // Open in advanced editor if requested
+        title: title || "",      // Store the title of the template
+        category: category || "" // Store the category of the template
       }));
       
       // Skip to step 2 since we have a prompt
@@ -95,7 +96,7 @@ const PromptBuilder: React.FC = () => {
       
       toast({
         title: "Template loaded",
-        description: "You can now edit this template in the advanced editor.",
+        description: `"${title}" template loaded in the editor.`,
         duration: 3000
       });
     };
