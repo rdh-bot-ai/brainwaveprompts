@@ -24,6 +24,7 @@ const PromptBuilder: React.FC = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({
     useTemplate: true, // Default to using templates
+    buildCustom: false, // New state for building custom prompts
     detailLevel: 2,
     tone: "professional",
     includeExamples: false
@@ -61,6 +62,7 @@ const PromptBuilder: React.FC = () => {
         promptTemplate: defaultPrompt, // Store the original template
         prompt: defaultPrompt, // Current working prompt
         useTemplate: true, // Default to using templates
+        buildCustom: false, // Ensure custom prompt mode is off by default
         detailLevel: prev.detailLevel || 2,
         tone: prev.tone || "professional",
         includeExamples: prev.includeExamples !== undefined ? prev.includeExamples : false
@@ -166,8 +168,11 @@ const PromptBuilder: React.FC = () => {
     // Enhance the prompt based on task type
     let enhancedPrompt = basePrompt;
     
-    // Only add additional context if using template or if the base prompt is short
-    const shouldAddStructure = formData.useTemplate || basePrompt.length < 100;
+    // Only add additional context if using template, if the base prompt is short,
+    // or if it's not specifically in buildCustom mode with a substantial prompt
+    const shouldAddStructure = formData.useTemplate || 
+                              (!formData.buildCustom && basePrompt.length < 100) || 
+                              (formData.buildCustom && basePrompt.length < 50);
     
     if (shouldAddStructure) {
       switch (selectedTask) {

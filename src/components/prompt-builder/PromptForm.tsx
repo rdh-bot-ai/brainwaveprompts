@@ -41,13 +41,14 @@ const PromptForm: React.FC<PromptFormProps> = ({
         onChange("promptTemplate", basicTemplate);
         onChange("prompt", basicTemplate);
         onChange("useTemplate", true);
+        onChange("buildCustom", false);
       }
     }
   }, [taskType, subCategory, selectedSubCategory, formData.promptTemplate, onChange]);
   
   // Effect to update template as user fills in form fields
   useEffect(() => {
-    if (selectedSubCategory && formData.promptTemplate && formData.useTemplate) {
+    if (selectedSubCategory && formData.promptTemplate && formData.useTemplate && !formData.buildCustom) {
       let updatedPrompt = formData.promptTemplate;
       
       // Replace placeholders with actual values if they exist
@@ -80,16 +81,33 @@ const PromptForm: React.FC<PromptFormProps> = ({
     }
   }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, 
       formData.language, formData.functionality, formData.challenge, formData.context, 
-      formData.constraints, formData.useTemplate, onChange]);
+      formData.constraints, formData.useTemplate, formData.buildCustom, onChange]);
 
   // Toggle between template and custom prompt
   const handleUseTemplateChange = (checked: boolean) => {
     onChange("useTemplate", checked);
-    if (checked && selectedSubCategory) {
-      // Switch back to template
-      const basicTemplate = selectedSubCategory.defaultPrompt;
-      onChange("promptTemplate", basicTemplate);
-      onChange("prompt", basicTemplate);
+    if (checked) {
+      // Switch to template mode and turn off custom mode
+      onChange("buildCustom", false);
+      if (selectedSubCategory) {
+        const basicTemplate = selectedSubCategory.defaultPrompt;
+        onChange("promptTemplate", basicTemplate);
+        onChange("prompt", basicTemplate);
+      }
+    }
+  };
+
+  // Toggle between custom prompt and template
+  const handleBuildCustomPrompt = (checked: boolean) => {
+    onChange("buildCustom", checked);
+    if (checked) {
+      // Switch to custom mode and turn off template mode
+      onChange("useTemplate", false);
+      // Clear the template-based prompt and start fresh
+      onChange("prompt", "");
+    } else if (!formData.useTemplate) {
+      // If turning off custom without enabling template, default to template mode
+      handleUseTemplateChange(true);
     }
   };
 
@@ -122,16 +140,30 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Template Mode Toggle */}
-      <div className="flex items-center space-x-2">
-        <Checkbox 
-          id="useTemplate" 
-          checked={formData.useTemplate || false} 
-          onCheckedChange={handleUseTemplateChange} 
-        />
-        <Label htmlFor="useTemplate" className="text-sm font-medium text-gray-700">
-          Use template structure (recommended)
-        </Label>
+      {/* Prompt Mode Selection */}
+      <div className="flex flex-col space-y-2">
+        <div className="flex items-center space-x-2">
+          <Checkbox 
+            id="useTemplate" 
+            checked={formData.useTemplate || false}
+            disabled={formData.buildCustom || false}
+            onCheckedChange={handleUseTemplateChange} 
+          />
+          <Label htmlFor="useTemplate" className="text-sm font-medium text-gray-700">
+            Use template structure (recommended)
+          </Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox 
+            id="buildCustom" 
+            checked={formData.buildCustom || false} 
+            disabled={formData.useTemplate || false}
+            onCheckedChange={handleBuildCustomPrompt} 
+          />
+          <Label htmlFor="buildCustom" className="text-sm font-medium text-gray-700">
+            Build my own prompt
+          </Label>
+        </div>
       </div>
 
       {/* Prompt Editor Tabs */}
@@ -153,7 +185,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
             <div className="flex items-center mb-2">
               <Sparkle className="h-4 w-4 text-purple-600 mr-2" />
               <Label className="font-medium text-sm text-gray-700">
-                {formData.useTemplate ? "Template Preview" : "Custom Prompt"}
+                {formData.useTemplate ? "Template Preview" : formData.buildCustom ? "Custom Prompt" : "Prompt Preview"}
               </Label>
             </div>
             <Textarea
@@ -164,17 +196,21 @@ const PromptForm: React.FC<PromptFormProps> = ({
                   onChange("promptTemplate", e.target.value);
                 }
               }}
-              className="min-h-[100px] font-medium bg-white border-purple-100 whitespace-pre-line"
+              className={`min-h-[100px] font-medium ${formData.useTemplate ? "bg-white border-purple-100 whitespace-pre-line" : "bg-white border-purple-100"}`}
               placeholder={formData.useTemplate ? 
                 "Your template preview will appear here as you fill in the details below." : 
-                "Write your custom prompt here..."
+                formData.buildCustom ? 
+                "Write your custom prompt here..." :
+                "Your prompt preview will appear here."
               }
               disabled={formData.useTemplate}
             />
             <p className="mt-2 text-xs text-gray-500">
               {formData.useTemplate ? 
                 "Fill in the basic details using the form below. The template will update automatically." : 
-                "You're using a custom prompt. You can still use the form below to help organize your thoughts."
+                formData.buildCustom ?
+                "You're building a custom prompt from scratch. You can still use the form below for inspiration." :
+                "Your prompt preview will update as you make changes."
               }
             </p>
           </div>
@@ -195,19 +231,24 @@ const PromptForm: React.FC<PromptFormProps> = ({
             <div className="flex items-center mb-2">
               <Pencil className="h-4 w-4 text-gray-700 mr-2" />
               <Label className="font-medium text-sm text-gray-700">
-                {formData.useTemplate ? "Edit Template" : "Write Custom Prompt"}
+                {formData.useTemplate ? "Edit Template" : formData.buildCustom ? "Build Custom Prompt" : "Edit Prompt"}
               </Label>
             </div>
             <Textarea
               value={formData.prompt || ""}
               onChange={handleAdvancedEditorChange}
               className="min-h-[200px] font-medium border-gray-200 whitespace-pre-line"
-              placeholder="Enter your prompt here..."
+              placeholder={formData.buildCustom ? 
+                "Start building your custom prompt here..." : 
+                "Enter your prompt here..."
+              }
             />
             <p className="mt-2 text-xs text-gray-500">
               {formData.useTemplate ? 
                 "You can edit the template directly here. This will override automatic updates from the form fields." : 
-                "Write your custom prompt with as much detail as needed. You can still use AI enhancement later."
+                formData.buildCustom ?
+                "Create your prompt from scratch with complete creative freedom. The form fields below can still help structure your thoughts." :
+                "Write your prompt with as much detail as needed. You can still use AI enhancement later."
               }
             </p>
           </div>
