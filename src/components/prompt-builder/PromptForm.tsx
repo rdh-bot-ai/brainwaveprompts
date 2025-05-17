@@ -73,6 +73,15 @@ const PromptForm: React.FC<PromptFormProps> = ({
       if (formData.constraints) {
         updatedPrompt = updatedPrompt.replace(/\[constraints\]/g, formData.constraints);
       }
+      if (taskType === "image" && formData.subject) {
+        updatedPrompt = updatedPrompt.replace(/\[subject\]/g, formData.subject);
+      }
+      if (taskType === "image" && formData.style) {
+        updatedPrompt = updatedPrompt.replace(/\[style\]/g, formData.style);
+      }
+      if (taskType === "image" && formData.details) {
+        updatedPrompt = updatedPrompt.replace(/\[details\]/g, formData.details);
+      }
       
       // Only update if something changed
       if (updatedPrompt !== formData.prompt) {
@@ -81,13 +90,15 @@ const PromptForm: React.FC<PromptFormProps> = ({
     }
   }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, 
       formData.language, formData.functionality, formData.challenge, formData.context, 
-      formData.constraints, formData.useTemplate, formData.buildCustom, onChange]);
+      formData.constraints, formData.subject, formData.style, formData.details,
+      formData.useTemplate, formData.buildCustom, onChange]);
 
   // Toggle between template and custom prompt
   const handleUseTemplateChange = (checked: boolean) => {
     onChange("useTemplate", checked);
+    
     if (checked) {
-      // Switch to template mode and turn off custom mode
+      // Switch to template mode 
       onChange("buildCustom", false);
       if (selectedSubCategory) {
         const basicTemplate = selectedSubCategory.defaultPrompt;
@@ -100,14 +111,14 @@ const PromptForm: React.FC<PromptFormProps> = ({
   // Toggle between custom prompt and template
   const handleBuildCustomPrompt = (checked: boolean) => {
     onChange("buildCustom", checked);
+    
     if (checked) {
-      // Switch to custom mode and turn off template mode
+      // Switch to custom mode 
       onChange("useTemplate", false);
-      // Start with an empty prompt in custom mode to make it clear user should write from scratch
-      onChange("prompt", "");
-    } else if (!formData.useTemplate) {
-      // If turning off custom without enabling template, default to template mode
-      handleUseTemplateChange(true);
+      
+      // Don't clear the prompt when switching to custom mode,
+      // let the user start with the current prompt content
+      // This allows them to modify existing templates
     }
   };
 
@@ -115,22 +126,12 @@ const PromptForm: React.FC<PromptFormProps> = ({
   const handleAdvancedEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     onChange("prompt", newValue);
-    
-    // If template mode is on, we need to update the template too
-    if (formData.useTemplate) {
-      onChange("promptTemplate", newValue);
-    }
   };
 
   // Handle basic editor changes for custom prompt mode
   const handleBasicEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     onChange("prompt", newValue);
-    
-    // In custom mode, update both the prompt and template
-    if (!formData.useTemplate && formData.buildCustom) {
-      onChange("promptTemplate", newValue);
-    }
   };
 
   // Render task-specific form based on task type
@@ -215,7 +216,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
               {formData.useTemplate ? 
                 "Fill in the basic details using the form below. The template will update automatically." : 
                 formData.buildCustom ?
-                "You're building a custom prompt from scratch. You can still use the form below for inspiration." :
+                "You're building a custom prompt. The form fields below can help inspire your content." :
                 "Your prompt preview will update as you make changes."
               }
             </p>
@@ -253,7 +254,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
               {formData.useTemplate ? 
                 "You can edit the template directly here. This will override automatic updates from the form fields." : 
                 formData.buildCustom ?
-                "Create your prompt from scratch with complete creative freedom. The form fields below can still help structure your thoughts." :
+                "Create your prompt with complete creative freedom. The form fields below can still help structure your thoughts." :
                 "Write your prompt with as much detail as needed. You can still use AI enhancement later."
               }
             </p>

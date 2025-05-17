@@ -19,7 +19,7 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({
     
     // Different suggestions based on prompt mode
     if (formData.buildCustom) {
-      suggestions.push("You're in custom prompt mode. Be specific about what you want.");
+      suggestions.push("You're in custom prompt mode. You can write or modify prompts freely.");
       
       if (!formData.prompt || formData.prompt.length < 30) {
         suggestions.push("Start by clearly stating your request or goal in the prompt editor.");
@@ -30,15 +30,33 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({
       switch (taskType) {
         case "content":
           suggestions.push("For content creation, specify target audience, tone, and desired length.");
+          if (!formData.topic) {
+            suggestions.push("Include a clear topic in your prompt for better content generation.");
+          }
           break;
         case "code":
           suggestions.push("For code, mention programming language, functionality, and performance requirements.");
+          if (!formData.language) {
+            suggestions.push("Specify the programming language in your prompt.");
+          }
+          if (!formData.functionality) {
+            suggestions.push("Describe what the code should do in your prompt.");
+          }
           break;
         case "idea":
           suggestions.push("For ideation, define the problem space and any constraints to consider.");
+          if (!formData.challenge) {
+            suggestions.push("Clearly describe the challenge or problem you're addressing.");
+          }
           break;
         case "image":
           suggestions.push("For images, describe subject, style, mood, and composition details.");
+          if (!formData.subject) {
+            suggestions.push("Detail what should appear in the image.");
+          }
+          if (!formData.style) {
+            suggestions.push("Specify the artistic style for your image.");
+          }
           break;
       }
       
