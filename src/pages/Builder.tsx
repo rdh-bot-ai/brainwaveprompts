@@ -14,6 +14,14 @@ const Builder = () => {
     const templateDescription = sessionStorage.getItem("templateDescription");
     
     if (templatePrompt) {
+      console.log("Builder page loading template:", { 
+        templatePrompt, 
+        openInAdvancedEditor, 
+        templateTitle, 
+        templateCategory,
+        templateDescription 
+      });
+      
       // Create a custom event to signal to the PromptBuilder component
       const event = new CustomEvent("loadTemplate", { 
         detail: { 

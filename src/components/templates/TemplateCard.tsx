@@ -54,6 +54,15 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
     sessionStorage.setItem("templateTitle", template.title);
     sessionStorage.setItem("templateCategory", template.category);
     sessionStorage.setItem("templateDescription", template.description);
+    
+    // Log the data being stored to verify it's correct
+    console.log("Storing template data for builder:", {
+      prompt: template.prompt,
+      title: template.title,
+      category: template.category,
+      description: template.description
+    });
+    
     navigate("/builder");
   };
 

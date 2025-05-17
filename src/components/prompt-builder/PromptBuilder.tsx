@@ -1,3 +1,4 @@
+
 import React, { useState, useContext, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,12 +14,8 @@ import { getDefaultPrompt, SUBCATEGORIES } from "./subcategories";
 import { useToast } from "@/hooks/use-toast";
 
 const PromptBuilder: React.FC = () => {
-  const {
-    user
-  } = useContext(AuthContext);
-  const {
-    toast
-  } = useToast();
+  const { user } = useContext(AuthContext);
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
@@ -35,6 +32,7 @@ const PromptBuilder: React.FC = () => {
   const [promptsRemaining, setPromptsRemaining] = useState<number | null>(null);
   const [recentPrompts, setRecentPrompts] = useState<string[]>([]);
   const [isEnhancing, setIsEnhancing] = useState<boolean>(false);
+  const [loadedFromLibrary, setLoadedFromLibrary] = useState<boolean>(false);
 
   useEffect(() => {
     if (user) {
@@ -74,6 +72,7 @@ const PromptBuilder: React.FC = () => {
       
       // Skip to step 2 since we have a prompt
       setCurrentStep(2);
+      setLoadedFromLibrary(true);
       
       // If category is available, try to set the task type and subcategory
       if (category) {
@@ -117,7 +116,7 @@ const PromptBuilder: React.FC = () => {
   useEffect(() => {
     // Only update the form data if we're not using a template from the library
     // This prevents overwriting the template data when switching categories
-    if (selectedTask && selectedSubCategory && !formData.buildCustom) {
+    if (selectedTask && selectedSubCategory && !formData.buildCustom && !loadedFromLibrary) {
       const defaultPrompt = getDefaultPrompt(selectedTask, selectedSubCategory);
 
       // Prefill the form with default values based on the subcategory
@@ -132,7 +131,12 @@ const PromptBuilder: React.FC = () => {
         includeExamples: prev.includeExamples !== undefined ? prev.includeExamples : false
       }));
     }
-  }, [selectedTask, selectedSubCategory, formData.buildCustom]);
+    
+    // Reset the loadedFromLibrary flag after initial load
+    if (loadedFromLibrary) {
+      setLoadedFromLibrary(false);
+    }
+  }, [selectedTask, selectedSubCategory, formData.buildCustom, loadedFromLibrary]);
 
   const handleFormChange = (field: string, value: any) => {
     setFormData(prev => ({
