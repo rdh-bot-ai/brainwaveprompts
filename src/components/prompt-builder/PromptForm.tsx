@@ -6,6 +6,7 @@ import CodeForm from "./forms/CodeForm";
 import IdeaForm from "./forms/IdeaForm";
 import ImageForm from "./forms/ImageForm";
 import CommonForm from "./forms/CommonForm";
+import AISuggestions from "./AISuggestions";
 import { SUBCATEGORIES } from "./subcategories";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -97,6 +98,15 @@ const PromptForm: React.FC<PromptFormProps> = ({
           Placeholders like [topic] will be automatically replaced with your inputs.
         </p>
       </div>
+
+      {/* AI Suggestions */}
+      {taskType && subCategory && (
+        <AISuggestions 
+          taskType={taskType} 
+          subCategory={subCategory} 
+          formData={formData} 
+        />
+      )}
 
       {/* Task specific form inputs */}
       <div className="bg-white rounded-lg p-0">
