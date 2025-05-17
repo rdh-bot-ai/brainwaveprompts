@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { TaskType } from "./TaskIcons";
 import ContentForm from "./forms/ContentForm";
@@ -30,13 +31,13 @@ const PromptForm: React.FC<PromptFormProps> = ({
   // Effect to set initial prompt template when subcategory changes
   useEffect(() => {
     if (selectedSubCategory) {
-      // Only set the initial template, without adding any additional processing
-      const basicTemplate = selectedSubCategory.defaultPrompt;
+      // Create a simplified template that only includes the basic structure
+      const basicTemplate = getSimplifiedTemplate(selectedSubCategory.defaultPrompt, taskType);
       
       // Only update if it's a new selection or template
       if (!formData.promptTemplate || formData.promptTemplate !== basicTemplate) {
-        onChange("promptTemplate", basicTemplate);
-        onChange("prompt", basicTemplate);
+        onChange("promptTemplate", selectedSubCategory.defaultPrompt); // Store the full template for enhancement
+        onChange("prompt", basicTemplate); // Show the simplified template to the user
       }
     }
   }, [taskType, selectedSubCategory, formData.promptTemplate, onChange]);
@@ -44,7 +45,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
   // Effect to update template as user fills in form fields
   useEffect(() => {
     if (selectedSubCategory && formData.promptTemplate) {
-      let updatedPrompt = formData.promptTemplate;
+      let updatedPrompt = getSimplifiedTemplate(selectedSubCategory.defaultPrompt, taskType);
       
       // Replace placeholders with actual values if they exist
       if (taskType === "content" && formData.topic) {
@@ -76,6 +77,29 @@ const PromptForm: React.FC<PromptFormProps> = ({
     }
   }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, formData.language, formData.functionality, formData.challenge, formData.context, formData.constraints, onChange]);
 
+  // Helper function to simplify templates
+  const getSimplifiedTemplate = (template: string, taskType: TaskType) => {
+    // Extract just the first sentence or paragraph that contains the main request
+    const lines = template.split('\n');
+    let simplifiedTemplate = lines[0]; // Default to first line
+    
+    // For different task types, extract just what's needed from user
+    switch (taskType) {
+      case "content":
+        return "Create content about [topic] that includes [key points].";
+      case "code":
+        return "Write [language] code that [functionality].";
+      case "idea":
+        return "Generate ideas for [challenge].";
+      case "image":
+        return "Create an image prompt for [subject] with [details].";
+      default:
+        // If we can't determine a specific format, use first paragraph
+        const firstParagraph = template.split('\n\n')[0];
+        return firstParagraph || template;
+    }
+  };
+
   // Render task-specific form based on task type
   const renderTaskSpecificForm = () => {
     switch (taskType) {
@@ -103,11 +127,11 @@ const PromptForm: React.FC<PromptFormProps> = ({
         <Textarea
           value={formData.prompt || ""}
           onChange={(e) => onChange("prompt", e.target.value)}
-          className="min-h-[150px] font-medium bg-white border-purple-100 whitespace-pre-line"
+          className="min-h-[100px] font-medium bg-white border-purple-100 whitespace-pre-line"
           placeholder="Your prompt template will appear here as you fill in the details below."
         />
         <p className="mt-2 text-xs text-gray-500">
-          Fill in the basic details using the form below. When you generate the enhanced prompt,
+          Fill in only the essential details above. When you generate the enhanced prompt,
           we'll use AI to expand this into a comprehensive, detailed prompt.
         </p>
       </div>

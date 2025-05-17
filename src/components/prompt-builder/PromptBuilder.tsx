@@ -135,82 +135,113 @@ const PromptBuilder: React.FC = () => {
     }
   };
   const generateEnhancedPrompt = () => {
-    // This is a mock implementation of the prompt enhancement algorithm
-    // In a real app, this would call an AI service (like OpenAI) to generate the prompt
-
-    let prompt = formData.prompt || "";
-    let enhancedPrompt = prompt;
-
-    // First, ensure all placeholders are replaced
+    // This simulates using AI to enhance the basic prompt with comprehensive details
+    
+    let basicPrompt = formData.prompt || "";
+    // Get the full template that was stored when user selected the subcategory
+    let fullTemplate = formData.promptTemplate || "";
+    
+    // First, ensure all placeholders are replaced in the full template
     if (selectedTask === "content" && formData.topic) {
-      enhancedPrompt = enhancedPrompt.replace(/\[topic\]/g, formData.topic);
+      fullTemplate = fullTemplate.replace(/\[topic\]/g, formData.topic);
     }
     if (formData.keyPoints) {
-      enhancedPrompt = enhancedPrompt.replace(/\[key points\]/g, formData.keyPoints);
+      fullTemplate = fullTemplate.replace(/\[key points\]/g, formData.keyPoints);
     }
     if (selectedTask === "code" && formData.language) {
-      enhancedPrompt = enhancedPrompt.replace(/\[language\]/g, formData.language);
+      fullTemplate = fullTemplate.replace(/\[language\]/g, formData.language);
     }
     if (selectedTask === "code" && formData.functionality) {
-      enhancedPrompt = enhancedPrompt.replace(/\[functionality\]/g, formData.functionality);
+      fullTemplate = fullTemplate.replace(/\[functionality\]/g, formData.functionality);
     }
     if (selectedTask === "idea" && formData.challenge) {
-      enhancedPrompt = enhancedPrompt.replace(/\[challenge\]/g, formData.challenge);
+      fullTemplate = fullTemplate.replace(/\[challenge\]/g, formData.challenge);
     }
     if (formData.context) {
-      enhancedPrompt = enhancedPrompt.replace(/\[context\]/g, formData.context);
+      fullTemplate = fullTemplate.replace(/\[context\]/g, formData.context);
     }
     if (formData.constraints) {
-      enhancedPrompt = enhancedPrompt.replace(/\[constraints\]/g, formData.constraints);
+      fullTemplate = fullTemplate.replace(/\[constraints\]/g, formData.constraints);
     }
 
-    // Now enhance the prompt depending on the task type
+    // Use the full template as the base for the enhanced prompt
+    let enhancedPrompt = fullTemplate;
+
+    // Add task-specific enhancements beyond what's in the template
     switch (selectedTask) {
       case "content":
-        enhancedPrompt = `${enhancedPrompt}\n\nPlease include the following key sections in your response:\n\n1) An engaging introduction that hooks the reader\n\n2) Well-structured body with clear headings and subheadings\n\n3) Evidence, examples, or data to support main points\n\n4) Actionable takeaways or conclusions\n\n5) Relevant questions to encourage reader engagement`;
+        enhancedPrompt += "\n\n## Additional Content Requirements:\n\n";
+        enhancedPrompt += "1) Create an engaging introduction that establishes relevance and hooks the reader\n\n";
+        enhancedPrompt += "2) Include data points, statistics, or research to support key arguments\n\n";
+        enhancedPrompt += "3) Use illustrative examples or case studies where appropriate\n\n";
+        enhancedPrompt += "4) Maintain a consistent voice and tone throughout the content\n\n";
+        enhancedPrompt += "5) Conclude with actionable takeaways or next steps for the reader";
         break;
       case "code":
-        enhancedPrompt = `${enhancedPrompt}\n\nPlease ensure your code includes:\n\n1) Clear comments explaining the approach and logic\n\n2) Proper error handling and edge cases\n\n3) Efficient algorithms and data structures\n\n4) Maintainable and readable formatting\n\n5) Test cases or usage examples`;
+        enhancedPrompt += "\n\n## Additional Code Requirements:\n\n";
+        enhancedPrompt += "1) Include comprehensive error handling for edge cases\n\n";
+        enhancedPrompt += "2) Add detailed comments explaining the logic behind complex operations\n\n";
+        enhancedPrompt += "3) Optimize for performance and readability\n\n";
+        enhancedPrompt += "4) Follow best practices specific to the language and framework\n\n";
+        enhancedPrompt += "5) Include usage examples demonstrating common scenarios";
         break;
       case "idea":
-        enhancedPrompt = `${enhancedPrompt}\n\nIn your response, please consider:\n\n1) Both conventional and unconventional approaches\n\n2) Pros and cons of each idea\n\n3) Implementation feasibility\n\n4) Potential obstacles and solutions\n\n5) Success metrics for evaluating ideas`;
+        enhancedPrompt += "\n\n## Idea Generation Guidelines:\n\n";
+        enhancedPrompt += "1) Include both conventional and unconventional approaches\n\n";
+        enhancedPrompt += "2) Consider short-term quick wins and long-term strategic solutions\n\n";
+        enhancedPrompt += "3) Evaluate feasibility, impact, and resource requirements for each idea\n\n";
+        enhancedPrompt += "4) Address potential obstacles and how to overcome them\n\n";
+        enhancedPrompt += "5) Suggest metrics to measure success of implementation";
         break;
       case "image":
-        enhancedPrompt = `${enhancedPrompt}\n\nPlease consider these aspects in the image creation:\n\n1) Specific visual elements and their arrangement\n\n2) Color palette and lighting atmosphere\n\n3) Style reference (photorealistic, cartoon, abstract, etc.)\n\n4) Mood and emotional tone\n\n5) Technical specifications (aspect ratio, resolution, etc.)`;
+        enhancedPrompt += "\n\n## Image Creation Guidelines:\n\n";
+        enhancedPrompt += "1) Specify composition elements including foreground, middle ground, and background\n\n";
+        enhancedPrompt += "2) Define lighting direction, quality, and atmosphere\n\n";
+        enhancedPrompt += "3) Include color palette suggestions with emotional impact\n\n";
+        enhancedPrompt += "4) Suggest camera perspective and focal length effects\n\n";
+        enhancedPrompt += "5) Specify style references from notable artists or genres if applicable";
         break;
       default:
         // For other categories, add general enhancements
-        enhancedPrompt = `${enhancedPrompt}\n\nPlease ensure your response is:\n\n1) Comprehensive and detailed\n\n2) Well-structured with clear sections\n\n3) Practical and actionable\n\n4) Backed by reasoning or evidence where applicable\n\n5) Tailored specifically to this request`;
+        enhancedPrompt += "\n\n## Enhancement Guidelines:\n\n";
+        enhancedPrompt += "1) Make the content comprehensive and detailed\n\n";
+        enhancedPrompt += "2) Structure with clear sections and logical flow\n\n";
+        enhancedPrompt += "3) Ensure practical applicability and actionable insights\n\n";
+        enhancedPrompt += "4) Include supporting evidence or examples\n\n";
+        enhancedPrompt += "5) Tailor specifically to the intended audience and purpose";
     }
 
     // Add tone if specified
     if (formData.tone) {
-      enhancedPrompt += `\n\nUse a ${formData.tone} tone in your response.`;
+      enhancedPrompt += `\n\n## Tone and Style:\nUse a ${formData.tone} tone throughout the response.`;
     }
 
     // Add additional context if provided
     if (formData.additionalContext) {
-      enhancedPrompt += `\n\nAdditional context: ${formData.additionalContext}`;
+      enhancedPrompt += `\n\n## Additional Context:\n${formData.additionalContext}`;
     }
 
     // Add examples request if enabled
     if (formData.includeExamples) {
-      enhancedPrompt += "\n\nInclude concrete examples in your response to illustrate key points.";
+      enhancedPrompt += "\n\n## Examples:\nInclude multiple concrete examples to illustrate key points and applications.";
     }
 
     // Add detail level instructions
     const detailLevelMap = {
-      1: "Provide a brief and concise response focusing on the most essential information.",
+      1: "Provide a brief and concise response focusing only on the most essential information.",
       2: "Provide a moderately detailed response with balanced explanations of key concepts.",
       3: "Provide a comprehensive, highly detailed response with thorough explanations and nuanced insights."
     };
-    enhancedPrompt += `\n\n${detailLevelMap[formData.detailLevel || 2]}`;
+    enhancedPrompt += `\n\n## Detail Level:\n${detailLevelMap[formData.detailLevel || 2]}`;
 
     // Add premium features for premium users
     if (user && user.subscription === "premium") {
-      enhancedPrompt += "\n\nInclude strategic insights and advanced considerations that wouldn't be obvious to beginners.";
-      enhancedPrompt += "\n\nOptimize this response for maximum clarity, practical usefulness, and actionable next steps.";
+      enhancedPrompt += "\n\n## Premium Enhancements:\n";
+      enhancedPrompt += "• Include strategic insights and advanced considerations that wouldn't be obvious to beginners\n";
+      enhancedPrompt += "• Optimize this response for maximum clarity, practical usefulness, and actionable next steps\n";
+      enhancedPrompt += "• Provide exclusive content variations or advanced applications";
     }
+    
     return enhancedPrompt;
   };
   const copyToClipboard = () => {
