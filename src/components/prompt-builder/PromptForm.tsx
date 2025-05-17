@@ -43,7 +43,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
         onChange("useTemplate", true);
       }
     }
-  }, [taskType, selectedSubCategory, formData.promptTemplate, onChange]);
+  }, [taskType, subCategory, selectedSubCategory, formData.promptTemplate, onChange]);
   
   // Effect to update template as user fills in form fields
   useEffect(() => {
@@ -90,6 +90,17 @@ const PromptForm: React.FC<PromptFormProps> = ({
       const basicTemplate = selectedSubCategory.defaultPrompt;
       onChange("promptTemplate", basicTemplate);
       onChange("prompt", basicTemplate);
+    }
+  };
+
+  // Handle advanced editor changes
+  const handleAdvancedEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    onChange("prompt", newValue);
+    
+    // If template mode is on, we need to update the template too
+    if (formData.useTemplate) {
+      onChange("promptTemplate", newValue);
     }
   };
 
@@ -189,18 +200,13 @@ const PromptForm: React.FC<PromptFormProps> = ({
             </div>
             <Textarea
               value={formData.prompt || ""}
-              onChange={(e) => {
-                onChange("prompt", e.target.value);
-                if (!formData.useTemplate) {
-                  onChange("promptTemplate", e.target.value);
-                }
-              }}
+              onChange={handleAdvancedEditorChange}
               className="min-h-[200px] font-medium border-gray-200 whitespace-pre-line"
               placeholder="Enter your prompt here..."
             />
             <p className="mt-2 text-xs text-gray-500">
               {formData.useTemplate ? 
-                "Caution: Editing the template directly will override automatic updates from the form fields." : 
+                "You can edit the template directly here. This will override automatic updates from the form fields." : 
                 "Write your custom prompt with as much detail as needed. You can still use AI enhancement later."
               }
             </p>
