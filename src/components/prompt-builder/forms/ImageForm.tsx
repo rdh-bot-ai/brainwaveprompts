@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 
 interface ImageFormProps {
   formData: Record<string, any>;
@@ -30,6 +31,7 @@ const ImageForm: React.FC<ImageFormProps> = ({ formData, onChange }) => {
       <div className="mb-4">
         <Label htmlFor="subject">Subject/Content</Label>
         <Textarea
+          id="subject"
           name="subject"
           placeholder="What should be in the image?"
           value={formData.subject || ""}
@@ -44,7 +46,7 @@ const ImageForm: React.FC<ImageFormProps> = ({ formData, onChange }) => {
           value={formData.style || ""} 
           onValueChange={(value) => handleSelectChange("style", value)}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger id="style" className="w-full">
             <SelectValue placeholder="Select an image style" />
           </SelectTrigger>
           <SelectContent>
@@ -60,6 +62,7 @@ const ImageForm: React.FC<ImageFormProps> = ({ formData, onChange }) => {
       <div className="mb-4">
         <Label htmlFor="details">Visual Details</Label>
         <Textarea
+          id="details"
           name="details"
           placeholder="Describe colors, composition, lighting, mood, etc."
           value={formData.details || ""}
@@ -67,15 +70,26 @@ const ImageForm: React.FC<ImageFormProps> = ({ formData, onChange }) => {
           className="min-h-[80px]"
         />
       </div>
+
+      <div className="mb-4">
+        <Label htmlFor="perspective">Perspective/Angle (Optional)</Label>
+        <Input
+          id="perspective"
+          name="perspective"
+          placeholder="e.g., Bird's eye view, Close-up, Wide shot"
+          value={formData.perspective || ""}
+          onChange={handleChange}
+        />
+      </div>
       
       <div className="mb-4">
-        <Label htmlFor="dimensions">Aspect Ratio (Optional)</Label>
+        <Label htmlFor="dimensions">Aspect Ratio</Label>
         <Select 
           value={formData.dimensions || ""} 
           onValueChange={(value) => handleSelectChange("dimensions", value)}
         >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select aspect ratio (optional)" />
+          <SelectTrigger id="dimensions" className="w-full">
+            <SelectValue placeholder="Select aspect ratio" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="1:1">Square (1:1)</SelectItem>
@@ -85,6 +99,17 @@ const ImageForm: React.FC<ImageFormProps> = ({ formData, onChange }) => {
             <SelectItem value="3:2">Photo (3:2)</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="mb-4">
+        <Label htmlFor="artReferences">Art References (Optional)</Label>
+        <Textarea
+          id="artReferences"
+          name="artReferences"
+          placeholder="Mention any specific artists, works, or styles to reference"
+          value={formData.artReferences || ""}
+          onChange={handleChange}
+        />
       </div>
     </>
   );

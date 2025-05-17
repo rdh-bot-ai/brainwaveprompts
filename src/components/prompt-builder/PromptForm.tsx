@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { TaskType } from "./TaskIcons";
 import ContentForm from "./forms/ContentForm";
@@ -82,6 +81,12 @@ const PromptForm: React.FC<PromptFormProps> = ({
       if (taskType === "image" && formData.details) {
         updatedPrompt = updatedPrompt.replace(/\[details\]/g, formData.details);
       }
+      if (taskType === "image" && formData.perspective) {
+        updatedPrompt = updatedPrompt.replace(/\[perspective\]/g, formData.perspective);
+      }
+      if (taskType === "image" && formData.artReferences) {
+        updatedPrompt = updatedPrompt.replace(/\[art references\]/g, formData.artReferences);
+      }
       
       // Only update if something changed
       if (updatedPrompt !== formData.prompt) {
@@ -91,34 +96,37 @@ const PromptForm: React.FC<PromptFormProps> = ({
   }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, 
       formData.language, formData.functionality, formData.challenge, formData.context, 
       formData.constraints, formData.subject, formData.style, formData.details,
+      formData.perspective, formData.artReferences,
       formData.useTemplate, formData.buildCustom, onChange]);
 
   // Toggle between template and custom prompt
   const handleUseTemplateChange = (checked: boolean) => {
-    onChange("useTemplate", checked);
-    
+    // When enabling template mode
     if (checked) {
-      // Switch to template mode 
+      onChange("useTemplate", true);
       onChange("buildCustom", false);
-      if (selectedSubCategory) {
-        const basicTemplate = selectedSubCategory.defaultPrompt;
-        onChange("promptTemplate", basicTemplate);
-        onChange("prompt", basicTemplate);
+      
+      // Switch to template mode but preserve any current content
+      if (selectedSubCategory && (!formData.prompt || formData.buildCustom)) {
+        onChange("promptTemplate", selectedSubCategory.defaultPrompt);
+        onChange("prompt", selectedSubCategory.defaultPrompt);
       }
+    } else {
+      onChange("useTemplate", false);
     }
   };
 
   // Toggle between custom prompt and template
   const handleBuildCustomPrompt = (checked: boolean) => {
-    onChange("buildCustom", checked);
-    
+    // When enabling custom mode
     if (checked) {
-      // Switch to custom mode 
+      onChange("buildCustom", true);
       onChange("useTemplate", false);
       
-      // Don't clear the prompt when switching to custom mode,
-      // let the user start with the current prompt content
-      // This allows them to modify existing templates
+      // Keep current prompt content for editing
+      // This allows users to start with the template and modify it
+    } else {
+      onChange("buildCustom", false);
     }
   };
 
@@ -158,7 +166,6 @@ const PromptForm: React.FC<PromptFormProps> = ({
           <Checkbox 
             id="useTemplate" 
             checked={formData.useTemplate || false}
-            disabled={formData.buildCustom || false}
             onCheckedChange={handleUseTemplateChange} 
           />
           <Label htmlFor="useTemplate" className="text-sm font-medium text-gray-700">
@@ -169,7 +176,6 @@ const PromptForm: React.FC<PromptFormProps> = ({
           <Checkbox 
             id="buildCustom" 
             checked={formData.buildCustom || false} 
-            disabled={formData.useTemplate || false}
             onCheckedChange={handleBuildCustomPrompt} 
           />
           <Label htmlFor="buildCustom" className="text-sm font-medium text-gray-700">
@@ -210,7 +216,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
                 "Write your custom prompt here..." :
                 "Your prompt preview will appear here."
               }
-              disabled={formData.useTemplate}
+              disabled={formData.useTemplate && !formData.buildCustom}
             />
             <p className="mt-2 text-xs text-gray-500">
               {formData.useTemplate ? 
