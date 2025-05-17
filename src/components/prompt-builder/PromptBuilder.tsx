@@ -55,7 +55,9 @@ const PromptBuilder: React.FC = () => {
   // Listen for the loadTemplate event
   useEffect(() => {
     const handleLoadTemplate = (event: CustomEvent) => {
-      const { prompt, openInAdvancedEditor, title, category } = event.detail;
+      const { prompt, openInAdvancedEditor, title, category, description } = event.detail;
+      
+      console.log("Loading template:", { prompt, title, category, description });
       
       // Set the prompt in the form data
       setFormData(prev => ({
@@ -66,7 +68,8 @@ const PromptBuilder: React.FC = () => {
         useTemplate: false,      // Disable template mode
         defaultEditorTab: openInAdvancedEditor ? "advanced" : "basic", // Open in advanced editor if requested
         title: title || "",      // Store the title of the template
-        category: category || "" // Store the category of the template
+        category: category || "", // Store the category of the template
+        description: description || "" // Store the description of the template
       }));
       
       // Skip to step 2 since we have a prompt
@@ -112,7 +115,9 @@ const PromptBuilder: React.FC = () => {
 
   // Update formData when subcategory changes
   useEffect(() => {
-    if (selectedTask && selectedSubCategory) {
+    // Only update the form data if we're not using a template from the library
+    // This prevents overwriting the template data when switching categories
+    if (selectedTask && selectedSubCategory && !formData.buildCustom) {
       const defaultPrompt = getDefaultPrompt(selectedTask, selectedSubCategory);
 
       // Prefill the form with default values based on the subcategory
@@ -127,7 +132,8 @@ const PromptBuilder: React.FC = () => {
         includeExamples: prev.includeExamples !== undefined ? prev.includeExamples : false
       }));
     }
-  }, [selectedTask, selectedSubCategory]);
+  }, [selectedTask, selectedSubCategory, formData.buildCustom]);
+
   const handleFormChange = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -354,6 +360,7 @@ const PromptBuilder: React.FC = () => {
       });
     });
   };
+  
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
