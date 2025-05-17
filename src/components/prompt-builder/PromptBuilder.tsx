@@ -27,7 +27,8 @@ const PromptBuilder: React.FC = () => {
     buildCustom: false, // New state for building custom prompts
     detailLevel: 2,
     tone: "professional",
-    includeExamples: false
+    includeExamples: false,
+    defaultEditorTab: "basic" // Default editor tab
   });
   const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
   const [canGenerate, setCanGenerate] = useState<boolean>(true);
@@ -50,6 +51,62 @@ const PromptBuilder: React.FC = () => {
       }
     }
   }, [user]);
+  
+  // Listen for the loadTemplate event
+  useEffect(() => {
+    const handleLoadTemplate = (event: CustomEvent) => {
+      const { prompt, openInAdvancedEditor, title, category } = event.detail;
+      
+      // Set the prompt in the form data
+      setFormData(prev => ({
+        ...prev,
+        prompt,
+        promptTemplate: prompt,
+        buildCustom: true,       // Enable custom prompt mode
+        useTemplate: false,      // Disable template mode
+        defaultEditorTab: openInAdvancedEditor ? "advanced" : "basic" // Open in advanced editor if requested
+      }));
+      
+      // Skip to step 2 since we have a prompt
+      setCurrentStep(2);
+      
+      // If category is available, try to set the task type and subcategory
+      if (category) {
+        // Map category to task type based on your app's categorization
+        // This is a simplified example - adjust based on your actual categories
+        const categoryToTaskMap: Record<string, TaskType> = {
+          "Content": "content",
+          "Code": "code", 
+          "Marketing": "content",
+          "Business": "idea",
+          "Data": "content"
+        };
+        
+        const taskType = categoryToTaskMap[category] || "content";
+        setSelectedTask(taskType);
+        
+        // Set a default subcategory for the task type
+        const subCategories = SUBCATEGORIES[taskType];
+        if (subCategories && subCategories.length > 0) {
+          setSelectedSubCategory(subCategories[0].id);
+        }
+      }
+      
+      toast({
+        title: "Template loaded",
+        description: "You can now edit this template in the advanced editor.",
+        duration: 3000
+      });
+    };
+    
+    // Add the event listener
+    document.addEventListener("loadTemplate", handleLoadTemplate as EventListener);
+    
+    // Clean up the event listener when component unmounts
+    return () => {
+      document.removeEventListener("loadTemplate", handleLoadTemplate as EventListener);
+    };
+  }, [toast]);
 
   // Update formData when subcategory changes
   useEffect(() => {

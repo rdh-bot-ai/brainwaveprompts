@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { TaskType } from "./TaskIcons";
 import ContentForm from "./forms/ContentForm";
@@ -185,7 +186,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
       </div>
 
       {/* Prompt Editor Tabs */}
-      <Tabs defaultValue="basic" className="w-full">
+      <Tabs defaultValue={formData.defaultEditorTab || "basic"} className="w-full">
         <TabsList className="grid grid-cols-2 mb-4">
           <TabsTrigger value="basic" className="flex items-center gap-2">
             <File className="h-4 w-4" />
