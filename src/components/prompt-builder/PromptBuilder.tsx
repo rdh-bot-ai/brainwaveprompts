@@ -29,6 +29,7 @@ const PromptBuilder: React.FC = () => {
   const [canGenerate, setCanGenerate] = useState<boolean>(true);
   const [promptsRemaining, setPromptsRemaining] = useState<number | null>(null);
   const [recentPrompts, setRecentPrompts] = useState<string[]>([]);
+  const [customTemplates, setCustomTemplates] = useState<any[]>([]); // Added state for custom templates
   const [isEnhancing, setIsEnhancing] = useState<boolean>(false);
   const [loadedFromLibrary, setLoadedFromLibrary] = useState<boolean>(false);
   const [debugInfo, setDebugInfo] = useState<string>("");
@@ -45,6 +46,19 @@ const PromptBuilder: React.FC = () => {
         } catch (e) {
           console.error("Error parsing saved prompts", e);
         }
+      }
+
+      // Load custom templates from localStorage
+      const savedCustomTemplates = localStorage.getItem(`${user.id}_custom_templates`);
+      if (savedCustomTemplates) {
+        try {
+          setCustomTemplates(JSON.parse(savedCustomTemplates));
+        } catch (e) {
+          console.error("Error parsing custom templates", e);
+          setCustomTemplates([]);
+        }
+      } else {
+        setCustomTemplates([]);
       }
     }
   }, [user]);
@@ -369,6 +383,76 @@ const PromptBuilder: React.FC = () => {
       });
     });
   };
+
+  const handleSaveAsTemplate = (templateName: string) => {
+    if (!user || !selectedTask || !selectedSubCategory) {
+      toast({
+        title: "Error",
+        description: "Cannot save template. User or task details missing.",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { prompt, promptTemplate, useTemplate, buildCustom, ...relevantFormData } = formData;
+
+    const newTemplate = {
+      name: templateName,
+      promptContent: generatedPrompt,
+      taskType: selectedTask,
+      subCategory: selectedSubCategory,
+      formData: relevantFormData, // Save a subset of formData
+      createdAt: new Date().toISOString(),
+    };
+
+    const updatedCustomTemplates = [...customTemplates, newTemplate];
+    setCustomTemplates(updatedCustomTemplates);
+    localStorage.setItem(`${user.id}_custom_templates`, JSON.stringify(updatedCustomTemplates));
+
+    toast({
+      title: "Template Saved!",
+      description: `"${templateName}" has been saved to your custom templates.`,
+      duration: 3000,
+    });
+  };
+
+  const handleLoadCustomTemplate = (template: any) => {
+    setFormData(prev => ({
+      ...prev,
+      ...template.formData, // Spread saved form data first
+      prompt: template.promptContent,
+      buildCustom: true,
+      useTemplate: false,
+      title: template.name, // Or a new field like loadedTemplateName
+      defaultEditorTab: "advanced",
+      // Reset fields that might not be in template.formData or need specific override
+      topic: template.formData?.topic || "", 
+      keyPoints: template.formData?.keyPoints || "",
+      language: template.formData?.language || "",
+      functionality: template.formData?.functionality || "",
+      challenge: template.formData?.challenge || "",
+      context: template.formData?.context || "",
+      constraints: template.formData?.constraints || "",
+      targetAudience: template.formData?.targetAudience || "",
+      // Ensure common fields are reset if not in template
+      detailLevel: template.formData?.detailLevel || prev.detailLevel || 2,
+      tone: template.formData?.tone || prev.tone || "professional",
+      includeExamples: template.formData?.includeExamples !== undefined ? template.formData.includeExamples : (prev.includeExamples || false),
+    }));
+
+    setSelectedTask(template.taskType);
+    setSelectedSubCategory(template.subCategory);
+    setLoadedFromLibrary(true); // Re-use this flag to indicate a template (custom or library) is loaded
+    setCurrentStep(2);
+
+    toast({
+      title: "Custom Template Loaded",
+      description: `"${template.name}" has been loaded into the editor.`,
+      duration: 3000,
+    });
+  };
   
   const renderStepContent = () => {
     switch (currentStep) {
@@ -377,13 +461,15 @@ const PromptBuilder: React.FC = () => {
           <div>
             <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
               <Lightbulb className="mr-2 h-5 w-5 text-purple-500" />
-              Step 1: Select Task Type
+              Step 1: Select Task Type or Load Template
             </h2>
             <TaskSelector 
               selectedTask={selectedTask} 
               selectedSubCategory={selectedSubCategory} 
               onTaskSelect={handleTaskSelection} 
-              onSubCategorySelect={handleSubCategorySelection} 
+              onSubCategorySelect={handleSubCategorySelection}
+              customTemplates={customTemplates}
+              onLoadCustomTemplate={handleLoadCustomTemplate}
             />
             <div className="mt-6 flex justify-end">
               <Button 
@@ -476,6 +562,23 @@ const PromptBuilder: React.FC = () => {
                       Copy to Clipboard
                     </Button>
                   </div>
+                  {user && (
+                    <div className="mt-4">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          const name = window.prompt("Enter a name for your template:");
+                          if (name) {
+                            handleSaveAsTemplate(name);
+                          }
+                        }}
+                        className="w-full flex items-center border-purple-200 hover:bg-purple-50"
+                      >
+                        <Star className="mr-2 h-4 w-4 text-yellow-500" /> 
+                        Save as Template
+                      </Button>
+                    </div>
+                  )}
                 </Card>
               </TabsContent>
               <TabsContent value="before-after">

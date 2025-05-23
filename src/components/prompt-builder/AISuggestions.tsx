@@ -16,6 +16,41 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({
   // Generate context-aware suggestions based on the user's selections
   const getSuggestions = () => {
     const suggestions: string[] = [];
+
+    // Keywords for contextual suggestions
+    const translationKeywords = ["translate", "Spanish", "French", "German", "Japanese", "Chinese", "Italian", "Portuguese", "Russian", "Arabic", "Korean"];
+    const summarizationKeywords = ["summarize", "tl;dr", "summary", "in brief", "short version"];
+    const generalKeywords = [...translationKeywords, ...summarizationKeywords, "define", "explain", "code in", "write a story about", "what is", "how to"];
+
+    // Analyze Prompt Content for keywords
+    const promptText = formData.prompt?.toLowerCase() || "";
+
+    // 1. Translation Example
+    const mentionsTranslate = translationKeywords.some(keyword => promptText.includes(keyword));
+    if (mentionsTranslate && taskType !== "translate") { // Assuming 'translate' could be a taskType
+      suggestions.push("It looks like you're trying to translate something. Consider using a dedicated 'Translation' task/subcategory if available for more specific options, or ensure you specify 'source language' and 'target language' in your prompt.");
+    }
+
+    // 2. Summarization Example
+    const mentionsSummarize = summarizationKeywords.some(keyword => promptText.includes(keyword));
+    if (mentionsSummarize && promptText.length > 100) { // Check if text to summarize seems long
+      suggestions.push("For summaries, ensure you specify the desired length or key aspects to focus on.");
+    }
+
+    // 3. Prompt Length/Complexity
+    if (promptText.length > 500 && !formData.buildCustom) {
+      suggestions.push("Your prompt is getting quite detailed! For more space and better control, you might want to switch to the 'Advanced Editor' or 'Build my own prompt' mode.");
+    } else if (promptText.length > 300) { // General complexity check for long prompts
+      let keywordCount = 0;
+      generalKeywords.forEach(keyword => {
+        if (promptText.includes(keyword)) {
+          keywordCount++;
+        }
+      });
+      if (keywordCount > 1) { // If prompt is long and uses multiple keywords, suggest breaking it down
+        suggestions.push("This is a complex prompt. Consider breaking it down into smaller parts for the AI to handle more effectively.");
+      }
+    }
     
     // Different suggestions based on prompt mode
     if (formData.buildCustom) {

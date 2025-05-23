@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button"; // Added Button import
 import TaskIcon, { TaskType } from "./TaskIcons";
 import { SUBCATEGORIES } from "./subcategories";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Search } from "lucide-react";
+import { Search, FileText } from "lucide-react"; // Added FileText import
 
 interface TaskOption {
   id: TaskType;
@@ -71,13 +72,17 @@ interface TaskSelectorProps {
   selectedSubCategory: string | null;
   onTaskSelect: (task: TaskType) => void;
   onSubCategorySelect: (subCategory: string) => void;
+  customTemplates?: any[]; // Added customTemplates prop
+  onLoadCustomTemplate?: (template: any) => void; // Added onLoadCustomTemplate prop
 }
 
 const TaskSelector: React.FC<TaskSelectorProps> = ({ 
   selectedTask, 
   selectedSubCategory,
   onTaskSelect, 
-  onSubCategorySelect 
+  onSubCategorySelect,
+  customTemplates,
+  onLoadCustomTemplate
 }) => {
   // State to track if subcategories should be shown
   const [showSubCategories, setShowSubCategories] = useState(false);
@@ -114,8 +119,32 @@ const TaskSelector: React.FC<TaskSelectorProps> = ({
 
   return (
     <div className="py-4 space-y-8">
+      {customTemplates && customTemplates.length > 0 && onLoadCustomTemplate && (
+        <div className="mb-8 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+          <h2 className="text-lg font-semibold mb-3 text-gray-800">Load from Your Custom Templates</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {customTemplates.map((template) => (
+              <Button
+                key={template.name} // Assuming name is unique, or use a proper ID if available
+                variant="outline"
+                className="w-full justify-start text-left h-auto py-2 px-3 border-indigo-200 hover:bg-indigo-100"
+                onClick={() => onLoadCustomTemplate(template)}
+              >
+                <FileText className="h-4 w-4 mr-2 text-indigo-600 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-sm text-indigo-800">{template.name}</p>
+                  <p className="text-xs text-gray-500 capitalize">{template.taskType} - {template.subCategory.replace(/-/g, ' ')}</p>
+                </div>
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div>
-        <h2 className="text-lg font-semibold mb-3 text-gray-800">I want AI to:</h2>
+        <h2 className="text-lg font-semibold mb-3 text-gray-800">
+          {customTemplates && customTemplates.length > 0 ? "Or, select a task type to get started:" : "I want AI to:"}
+        </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {TASK_OPTIONS.map((task) => (
             <Card
