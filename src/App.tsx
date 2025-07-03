@@ -14,6 +14,7 @@ import Builder from "./pages/Builder";
 import Pricing from "./pages/Pricing";
 import Templates from "./pages/Templates";
 import Profile from "./pages/Profile";
+import PromptConsulting from "./pages/PromptConsulting";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/templates" element={<Templates />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/consulting" element={<PromptConsulting />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
