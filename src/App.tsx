@@ -15,6 +15,7 @@ import Pricing from "./pages/Pricing";
 import Templates from "./pages/Templates";
 import Profile from "./pages/Profile";
 import PromptConsulting from "./pages/PromptConsulting";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/templates" element={<Templates />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/consulting" element={<PromptConsulting />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

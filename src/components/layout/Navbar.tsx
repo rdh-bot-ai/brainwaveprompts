@@ -34,6 +34,13 @@ export const Navbar = () => {
                   Dashboard
                 </Button>
               </Link>
+              {(user.email === "admin@brainwaveprompts.com" || user.id === "admin") && (
+                <Link to="/admin">
+                  <Button variant="ghost" size="sm">
+                    Admin
+                  </Button>
+                </Link>
+              )}
               <Button variant="outline" size="sm" onClick={signOut}>
                 Sign Out
               </Button>
