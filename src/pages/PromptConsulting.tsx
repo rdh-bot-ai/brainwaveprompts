@@ -94,7 +94,7 @@ const PromptConsulting = () => {
       {/* Hero Section */}
       <section className="pt-24 pb-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Custom Prompt Consulting</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent leading-tight">Custom Prompt Consulting</h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             Transform your AI interactions with professionally crafted, custom prompts designed specifically for your business needs. Our expert team helps you unlock the full potential of AI for your unique use cases.
           </p>
