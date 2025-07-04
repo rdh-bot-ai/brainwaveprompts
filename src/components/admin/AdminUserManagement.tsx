@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
-import { Search, Plus, Edit, Trash2, Crown, User } from "lucide-react";
+import { Search, Plus, Edit, Trash2, Crown, User, Download, UserCheck, UserX } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface AdminUser {
@@ -21,6 +21,7 @@ interface AdminUser {
   joinDate: string;
   lastActive: string;
   totalSpent: number;
+  status: "active" | "inactive";
 }
 
 const AdminUserManagement = () => {
@@ -53,6 +54,7 @@ const AdminUserManagement = () => {
         joinDate: "2024-01-15",
         lastActive: "2024-01-20",
         totalSpent: 29.99,
+        status: "active",
       },
       {
         id: "2",
@@ -64,6 +66,7 @@ const AdminUserManagement = () => {
         joinDate: "2024-01-18",
         lastActive: "2024-01-19",
         totalSpent: 0,
+        status: "active",
       },
       {
         id: "3",
@@ -75,6 +78,7 @@ const AdminUserManagement = () => {
         joinDate: "2024-01-20",
         lastActive: "2024-01-20",
         totalSpent: 0,
+        status: "inactive",
       },
     ];
     setUsers(mockUsers);
@@ -107,6 +111,15 @@ const AdminUserManagement = () => {
     );
   };
 
+  const getStatusBadge = (status: string) => {
+    return (
+      <Badge variant={status === "active" ? "default" : "secondary"} className={status === "active" ? "text-green-600" : "text-red-600"}>
+        {status === "active" ? <UserCheck className="w-3 h-3 mr-1" /> : <UserX className="w-3 h-3 mr-1" />}
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </Badge>
+    );
+  };
+
   const handleEditUser = (user: AdminUser) => {
     setSelectedUser(user);
     form.reset({
@@ -123,6 +136,52 @@ const AdminUserManagement = () => {
     toast({
       title: "User deleted",
       description: "User has been successfully deleted.",
+    });
+  };
+
+  const handleToggleUserStatus = (userId: string) => {
+    setUsers(users.map(user => 
+      user.id === userId 
+        ? { ...user, status: user.status === "active" ? "inactive" : "active" }
+        : user
+    ));
+    const user = users.find(u => u.id === userId);
+    const newStatus = user?.status === "active" ? "inactive" : "active";
+    toast({
+      title: "User status updated",
+      description: `User has been ${newStatus === "active" ? "activated" : "deactivated"}.`,
+    });
+  };
+
+  const handleExportUsers = () => {
+    const csvContent = [
+      ["Name", "Email", "Subscription", "Status", "Prompts Used", "Prompts Remaining", "Join Date", "Last Active", "Total Spent"],
+      ...filteredUsers.map(user => [
+        user.name,
+        user.email,
+        user.subscription,
+        user.status,
+        user.promptsUsed.toString(),
+        user.subscription === "premium" ? "Unlimited" : user.promptsRemaining.toString(),
+        user.joinDate,
+        user.lastActive,
+        `$${user.totalSpent.toFixed(2)}`
+      ])
+    ].map(row => row.join(",")).join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `users_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "Export completed",
+      description: "User data has been exported to CSV.",
     });
   };
 
@@ -147,6 +206,7 @@ const AdminUserManagement = () => {
         joinDate: new Date().toISOString().split('T')[0],
         lastActive: new Date().toISOString().split('T')[0],
         totalSpent: 0,
+        status: "active",
       };
       setUsers([...users, newUser]);
       toast({
@@ -214,13 +274,18 @@ const AdminUserManagement = () => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>User Management</CardTitle>
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={() => { setSelectedUser(null); form.reset(); }}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add User
-                </Button>
-              </DialogTrigger>
+            <div className="flex space-x-2">
+              <Button onClick={handleExportUsers} variant="outline">
+                <Download className="w-4 h-4 mr-2" />
+                Export CSV
+              </Button>
+              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={() => { setSelectedUser(null); form.reset(); }}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add User
+                  </Button>
+                </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Add New User</DialogTitle>
@@ -298,6 +363,7 @@ const AdminUserManagement = () => {
                 </Form>
               </DialogContent>
             </Dialog>
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <Search className="w-4 h-4 text-muted-foreground" />
@@ -315,6 +381,7 @@ const AdminUserManagement = () => {
               <TableRow>
                 <TableHead>User</TableHead>
                 <TableHead>Subscription</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Prompts Used</TableHead>
                 <TableHead>Prompts Remaining</TableHead>
                 <TableHead>Join Date</TableHead>
@@ -333,13 +400,22 @@ const AdminUserManagement = () => {
                     </div>
                   </TableCell>
                   <TableCell>{getSubscriptionBadge(user.subscription)}</TableCell>
+                  <TableCell>{getStatusBadge(user.status)}</TableCell>
                   <TableCell>{user.promptsUsed}</TableCell>
                   <TableCell>{user.subscription === "premium" ? "Unlimited" : user.promptsRemaining}</TableCell>
                   <TableCell>{user.joinDate}</TableCell>
                   <TableCell>{user.lastActive}</TableCell>
                   <TableCell>${user.totalSpent.toFixed(2)}</TableCell>
                   <TableCell>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleToggleUserStatus(user.id)}
+                        className={user.status === "active" ? "text-red-600 hover:text-red-700" : "text-green-600 hover:text-green-700"}
+                      >
+                        {user.status === "active" ? <UserX className="w-3 h-3" /> : <UserCheck className="w-3 h-3" />}
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
