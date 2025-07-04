@@ -2,8 +2,12 @@ import React, { useState, useContext, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertCircle, Sparkle, Copy, ArrowRight, Lightbulb, MessageCircle, CheckCircle, Clock, Star } from "lucide-react";
+import { AlertCircle, Sparkle, Copy, Lightbulb, MessageCircle, CheckCircle, Clock, Star, Menu } from "lucide-react";
 import { AuthContext } from "@/contexts/AuthContext";
+import { 
+  SidebarProvider,
+  SidebarTrigger
+} from "@/components/ui/sidebar";
 import TaskSelector from "./TaskSelector";
 import PromptForm from "./PromptForm";
 import { TaskType } from "./TaskIcons";
@@ -14,16 +18,15 @@ import { useToast } from "@/hooks/use-toast";
 const PromptBuilder: React.FC = () => {
   const { user } = useContext(AuthContext);
   const { toast } = useToast();
-  const [currentStep, setCurrentStep] = useState<number>(1);
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({
-    useTemplate: true, // Default to using templates
-    buildCustom: false, // New state for building custom prompts
+    useTemplate: true,
+    buildCustom: false,
     detailLevel: 2,
     tone: "professional",
     includeExamples: false,
-    defaultEditorTab: "basic" // Default editor tab
+    defaultEditorTab: "basic"
   });
   const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
   const [canGenerate, setCanGenerate] = useState<boolean>(true);
@@ -62,21 +65,18 @@ const PromptBuilder: React.FC = () => {
         ...prev,
         prompt,
         promptTemplate: prompt,
-        buildCustom: true,       // Enable custom prompt mode
-        useTemplate: false,      // Disable template mode
-        defaultEditorTab: openInAdvancedEditor ? "advanced" : "basic", // Open in advanced editor if requested
-        title: title || "",      // Store the title of the template
-        category: category || "", // Store the category of the template
-        description: description || "" // Store the description of the template
+        buildCustom: true,
+        useTemplate: false,
+        defaultEditorTab: openInAdvancedEditor ? "advanced" : "basic",
+        title: title || "",
+        category: category || "",
+        description: description || ""
       }));
       
-      // Skip to step 2 since we have a prompt
-      setCurrentStep(2);
       setLoadedFromLibrary(true);
       
       // If category is available, try to set the task type and subcategory
       if (category) {
-        // Map category to task type based on your app's categorization
         const categoryToTaskMap: Record<string, TaskType> = {
           "Content": "content",
           "Code": "code", 
@@ -88,7 +88,6 @@ const PromptBuilder: React.FC = () => {
         const taskType = categoryToTaskMap[category] || "content";
         setSelectedTask(taskType);
         
-        // Set a default subcategory for the task type
         const subCategories = SUBCATEGORIES[taskType];
         if (subCategories && subCategories.length > 0) {
           setSelectedSubCategory(subCategories[0].id);
@@ -102,10 +101,8 @@ const PromptBuilder: React.FC = () => {
       });
     };
     
-    // Add the event listener
     document.addEventListener("loadTemplate", handleLoadTemplate as EventListener);
     
-    // Clean up the event listener when component unmounts
     return () => {
       document.removeEventListener("loadTemplate", handleLoadTemplate as EventListener);
     };
@@ -113,19 +110,16 @@ const PromptBuilder: React.FC = () => {
 
   // Update formData when subcategory changes, but don't overwrite loaded template
   useEffect(() => {
-    // Only update the form data if we're not using a template from the library
-    // This prevents overwriting the template data when switching categories
     if (selectedTask && selectedSubCategory && !formData.buildCustom && !loadedFromLibrary) {
       const defaultPrompt = getDefaultPrompt(selectedTask, selectedSubCategory);
       console.log("Setting default prompt from subcategory change:", defaultPrompt);
 
-      // Prefill the form with default values based on the subcategory
       setFormData(prev => ({
         ...prev,
-        promptTemplate: defaultPrompt, // Store the original template
-        prompt: defaultPrompt, // Current working prompt
-        useTemplate: true, // Default to using templates
-        buildCustom: false, // Ensure custom prompt mode is off by default
+        promptTemplate: defaultPrompt,
+        prompt: defaultPrompt,
+        useTemplate: true,
+        buildCustom: false,
         detailLevel: prev.detailLevel || 2,
         tone: prev.tone || "professional",
         includeExamples: prev.includeExamples !== undefined ? prev.includeExamples : false
@@ -133,13 +127,6 @@ const PromptBuilder: React.FC = () => {
     } else if (loadedFromLibrary) {
       console.log("Not setting default prompt because loadedFromLibrary is true");
       setDebugInfo(prev => prev + "\nPreserving template data - not overwriting with subcategory defaults");
-    }
-    
-    // Reset the loadedFromLibrary flag after initial load
-    if (loadedFromLibrary) {
-      // We should keep loadedFromLibrary true for the entire session
-      // to prevent the template from being overwritten
-      console.log("Template loaded from library, keeping flag true");
     }
   }, [selectedTask, selectedSubCategory, formData.buildCustom, loadedFromLibrary]);
 
@@ -149,27 +136,19 @@ const PromptBuilder: React.FC = () => {
       [field]: value
     }));
   };
-  const handleNextStep = () => {
-    if (currentStep === 1 && selectedTask) {
-      setCurrentStep(2);
-    }
-  };
-  const handlePrevStep = () => {
-    if (currentStep === 2) {
-      setCurrentStep(1);
-    }
-  };
+
   const handleTaskSelection = (task: TaskType) => {
     setSelectedTask(task);
-    setSelectedSubCategory(null); // Reset subcategory when task changes
+    setSelectedSubCategory(null);
   };
+
   const handleSubCategorySelection = (subCategory: string) => {
     setSelectedSubCategory(subCategory);
   };
+
   const savePromptToHistory = (prompt: string) => {
     if (!user) return;
 
-    // Save to local storage
     const currentPrompts = localStorage.getItem(`${user.id}_recent_prompts`);
     let promptsArray: string[] = [];
     if (currentPrompts) {
@@ -180,43 +159,32 @@ const PromptBuilder: React.FC = () => {
       }
     }
 
-    // Add to beginning, ensure unique, and limit to 10 items
     promptsArray = [prompt, ...promptsArray.filter(p => p !== prompt)].slice(0, 10);
     localStorage.setItem(`${user.id}_recent_prompts`, JSON.stringify(promptsArray));
-
-    // Update state with most recent 3
     setRecentPrompts(promptsArray.slice(0, 3));
   };
+
   const handleGenerate = () => {
-    // Check if user can generate prompts
     if (!canGenerate) {
       return;
     }
     if (user && promptsRemaining !== null && promptsRemaining <= 0) {
-      // User has no prompts remaining
       return;
     }
 
-    // Show enhancing state
     setIsEnhancing(true);
     
-    // Simulate AI processing delay
     setTimeout(() => {
-      // Generate the enhanced prompt
       const enhancedPrompt = generateEnhancedPrompt();
       setGeneratedPrompt(enhancedPrompt);
-      setCurrentStep(3);
       setIsEnhancing(false);
       
-      // Save to history
       savePromptToHistory(enhancedPrompt);
   
-      // Reduce the number of prompts remaining if user is authenticated
       if (user && promptsRemaining !== null) {
         const newPromptsRemaining = promptsRemaining - 1;
         setPromptsRemaining(newPromptsRemaining);
   
-        // Mock updating the user in a real app this would call an API
         const updatedUser = {
           ...user,
           promptsRemaining: newPromptsRemaining
@@ -225,11 +193,10 @@ const PromptBuilder: React.FC = () => {
       }
     }, 1500);
   };
+
   const generateEnhancedPrompt = () => {
-    // Get base prompt (either template-based or custom)
     let basePrompt = formData.prompt || "";
     
-    // Make sure all placeholders are replaced with appropriate default values
     basePrompt = basePrompt
       .replace(/\[topic\]/g, formData.topic || "the selected topic")
       .replace(/\[key points\]/g, formData.keyPoints || "important aspects")
@@ -239,11 +206,8 @@ const PromptBuilder: React.FC = () => {
       .replace(/\[context\]/g, formData.context || "relevant background information")
       .replace(/\[constraints\]/g, formData.constraints || "any limitations");
     
-    // Enhance the prompt based on task type
     let enhancedPrompt = basePrompt;
     
-    // Only add additional context if using template, if the base prompt is short,
-    // or if it's not specifically in buildCustom mode with a substantial prompt
     const shouldAddStructure = formData.useTemplate || 
                               (!formData.buildCustom && basePrompt.length < 100) || 
                               (formData.buildCustom && basePrompt.length < 50);
@@ -329,7 +293,6 @@ const PromptBuilder: React.FC = () => {
           enhancedPrompt += `\n4. Detail Level: ${getDetailLevelDescription(formData.detailLevel || 2)}`;
       }
 
-      // Add premium features for premium users
       if (user && user.subscription === "premium") {
         enhancedPrompt += "\n\n#Premium Enhancements:";
         enhancedPrompt += "\n1. Strategic Insights: Include advanced perspectives and analysis beyond surface-level thinking.";
@@ -340,6 +303,7 @@ const PromptBuilder: React.FC = () => {
     
     return enhancedPrompt;
   };
+
   const getDetailLevelDescription = (level: number) => {
     switch (level) {
       case 1: 
@@ -352,6 +316,7 @@ const PromptBuilder: React.FC = () => {
         return "Provide a balanced level of detail.";
     }
   };
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(generatedPrompt).then(() => {
       toast({
@@ -369,15 +334,16 @@ const PromptBuilder: React.FC = () => {
       });
     });
   };
-  
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        {/* Sidebar */}
+        <div className="w-80 bg-white border-r border-purple-100 p-4">
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-gray-800 flex items-center mb-4">
               <Lightbulb className="mr-2 h-5 w-5 text-purple-500" />
-              Step 1: Select Task Type
+              Select Task Type
             </h2>
             <TaskSelector 
               selectedTask={selectedTask} 
@@ -385,209 +351,200 @@ const PromptBuilder: React.FC = () => {
               onTaskSelect={handleTaskSelection} 
               onSubCategorySelect={handleSubCategorySelection} 
             />
-            <div className="mt-6 flex justify-end">
-              <Button 
-                onClick={handleNextStep} 
-                disabled={!selectedTask || !selectedSubCategory} 
-                className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-              >
-                Next <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
           </div>
-        );
-      case 2:
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
-              <MessageCircle className="mr-2 h-5 w-5 text-purple-500" />
-              Step 2: Customize Your Prompt
-            </h2>
-            {selectedTask && selectedSubCategory && (
-              <PromptForm 
-                taskType={selectedTask} 
-                subCategory={selectedSubCategory} 
-                formData={formData} 
-                onChange={handleFormChange} 
-              />
+
+          {/* Status and Actions */}
+          <div className="space-y-4">
+            {loadedFromLibrary && (
+              <div className="bg-green-50 text-green-700 px-3 py-2 text-sm rounded-md inline-flex items-center">
+                <CheckCircle className="h-4 w-4 mr-2" /> 
+                Template loaded from library
+              </div>
             )}
-            <div className="mt-6 flex justify-between">
-              <Button variant="outline" onClick={handlePrevStep}>
-                Back
-              </Button>
-              <Button 
-                onClick={handleGenerate} 
-                disabled={isEnhancing || !canGenerate || (user && promptsRemaining !== null && promptsRemaining <= 0)} 
-                className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-              >
-                {isEnhancing ? (
-                  <>Enhancing<span className="ml-2 animate-pulse">...</span></>
-                ) : (
-                  <><Sparkle className="mr-2 h-4 w-4" />Enhance with AI</>
-                )}
-              </Button>
-            </div>
             
-            {user && promptsRemaining !== null && promptsRemaining <= 0 && (
-              <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-start">
-                <AlertCircle className="text-amber-500 mt-0.5 mr-2 h-5 w-5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm text-amber-800">
-                    You've used all your prompt enhancements for this month.
-                  </p>
-                  <UpgradePrompt currentTier={user.subscription || "free"} />
+            {user && promptsRemaining !== null && (
+              <div className="text-sm">
+                <div className="font-medium text-gray-700 mb-2">
+                  {user.subscription === "premium" ? 
+                    <span className="flex items-center text-yellow-600">
+                      <Star className="h-4 w-4 mr-1" />
+                      Premium: Unlimited Prompts
+                    </span> 
+                    : 
+                    <span>Prompts remaining: {promptsRemaining}</span>
+                  }
+                </div>
+                {user.subscription !== "premium" && 
+                  <Button variant="link" size="sm" className="text-purple-600 p-0 h-auto" asChild>
+                    <a href="/pricing">Upgrade for more</a>
+                  </Button>
+                }
+              </div>
+            )}
+
+            {!user && (
+              <div className="p-3 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-100 rounded-md">
+                <h3 className="font-semibold mb-2 text-gray-800 text-sm">Get More Features</h3>
+                <p className="text-xs text-gray-700 mb-3">
+                  Sign up for free to save your prompts and get 5 enhanced prompts per month.
+                </p>
+                <div className="flex space-x-2">
+                  <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-xs" asChild>
+                    <a href="/signup">Sign Up</a>
+                  </Button>
+                  <Button variant="outline" size="sm" className="border-purple-200 hover:bg-purple-50 text-xs" asChild>
+                    <a href="/signin">Sign In</a>
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {recentPrompts.length > 0 && (
+              <div>
+                <h3 className="text-sm font-medium text-gray-600 mb-2 flex items-center">
+                  <Clock className="h-4 w-4 mr-1" />
+                  Recent Prompts
+                </h3>
+                <div className="space-y-1">
+                  {recentPrompts.map((prompt, index) => 
+                    <div key={index} 
+                      onClick={() => {
+                        navigator.clipboard.writeText(prompt);
+                        toast({
+                          title: "Copied to clipboard",
+                          duration: 2000
+                        });
+                      }} 
+                      className="p-2 bg-gray-50 border border-gray-200 rounded text-xs text-gray-700 cursor-pointer hover:bg-gray-100 flex justify-between items-center"
+                    >
+                      <span className="truncate">{prompt.substring(0, 60)}...</span>
+                      <Copy className="h-3 w-3 text-gray-500 flex-shrink-0" />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
           </div>
-        );
-      case 3:
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
-              <CheckCircle className="mr-2 h-5 w-5 text-green-500" />
-              Your AI-Enhanced Prompt
-            </h2>
-            <Tabs defaultValue="prompt" className="w-full">
-              <TabsList className="mb-4 grid grid-cols-2 w-full md:w-auto">
-                <TabsTrigger value="prompt">Enhanced Prompt</TabsTrigger>
-                <TabsTrigger value="before-after">Before & After</TabsTrigger>
-              </TabsList>
-              <TabsContent value="prompt" className="w-full">
-                <Card className="p-4 bg-purple-50 border border-purple-200 shadow-sm">
-                  <textarea 
-                    readOnly 
-                    value={generatedPrompt} 
-                    className="min-h-[300px] w-full bg-white border-purple-100 rounded-md p-2 focus-visible:ring-purple-500 whitespace-pre-line" 
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+            {/* Form Section */}
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+                <MessageCircle className="mr-2 h-5 w-5 text-purple-500" />
+                Customize Your Prompt
+              </h2>
+              
+              {selectedTask && selectedSubCategory ? (
+                <div className="space-y-4">
+                  <PromptForm 
+                    taskType={selectedTask} 
+                    subCategory={selectedSubCategory} 
+                    formData={formData} 
+                    onChange={handleFormChange} 
                   />
-                  <div className="mt-4 flex justify-between">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setCurrentStep(2)} 
-                      className="border-purple-200 hover:bg-purple-50"
-                    >
-                      Back to Editor
-                    </Button>
-                    <Button 
-                      onClick={copyToClipboard} 
-                      className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-                    >
-                      <Copy className="mr-2 h-4 w-4" />
-                      Copy to Clipboard
-                    </Button>
-                  </div>
-                </Card>
-              </TabsContent>
-              <TabsContent value="before-after">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="font-medium mb-2 text-gray-700">Original Input</h3>
-                    <div className="p-3 bg-gray-100 rounded-md min-h-[200px] whitespace-pre-line">
-                      <p className="text-sm text-gray-700 whitespace-pre-line">
-                        {formData.useTemplate ? formData.promptTemplate : formData.prompt}
-                      </p>
+                  
+                  <Button 
+                    onClick={handleGenerate} 
+                    disabled={isEnhancing || !canGenerate || (user && promptsRemaining !== null && promptsRemaining <= 0)} 
+                    className="w-full flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                    size="lg"
+                  >
+                    {isEnhancing ? (
+                      <>Enhancing<span className="ml-2 animate-pulse">...</span></>
+                    ) : (
+                      <><Sparkle className="mr-2 h-5 w-5" />Enhance with AI</>
+                    )}
+                  </Button>
+                  
+                  {user && promptsRemaining !== null && promptsRemaining <= 0 && (
+                    <div className="p-3 bg-amber-50 border border-amber-200 rounded-md flex items-start">
+                      <AlertCircle className="text-amber-500 mt-0.5 mr-2 h-5 w-5 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm text-amber-800">
+                          You've used all your prompt enhancements for this month.
+                        </p>
+                        <UpgradePrompt currentTier={user.subscription || "free"} />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="font-medium mb-2 text-gray-700">AI-Enhanced Prompt</h3>
-                    <div className="p-3 bg-purple-50 rounded-md min-h-[200px] border border-purple-100 whitespace-pre-line">
-                      <p className="text-sm text-gray-700 whitespace-pre-line">{generatedPrompt}</p>
-                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-64 text-gray-500">
+                  <div className="text-center">
+                    <Lightbulb className="h-12 w-12 mx-auto mb-4 text-purple-300" />
+                    <p>Select a task type from the sidebar to get started</p>
                   </div>
                 </div>
-              </TabsContent>
-            </Tabs>
+              )}
+            </div>
+
+            {/* Preview Section */}
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+                <CheckCircle className="mr-2 h-5 w-5 text-green-500" />
+                Live Preview
+              </h2>
+              
+              {generatedPrompt ? (
+                <Tabs defaultValue="prompt" className="w-full">
+                  <TabsList className="mb-4 grid grid-cols-2 w-full">
+                    <TabsTrigger value="prompt">Enhanced Prompt</TabsTrigger>
+                    <TabsTrigger value="before-after">Before & After</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="prompt" className="w-full">
+                    <Card className="p-4 bg-purple-50 border border-purple-200">
+                      <textarea 
+                        readOnly 
+                        value={generatedPrompt} 
+                        className="min-h-[400px] w-full bg-white border-purple-100 rounded-md p-3 focus-visible:ring-purple-500 whitespace-pre-line text-sm" 
+                      />
+                      <div className="mt-4 flex justify-end">
+                        <Button 
+                          onClick={copyToClipboard} 
+                          className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                        >
+                          <Copy className="mr-2 h-4 w-4" />
+                          Copy to Clipboard
+                        </Button>
+                      </div>
+                    </Card>
+                  </TabsContent>
+                  <TabsContent value="before-after">
+                    <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <h3 className="font-medium mb-2 text-gray-700">Original Input</h3>
+                        <div className="p-3 bg-gray-100 rounded-md min-h-[180px] whitespace-pre-line">
+                          <p className="text-sm text-gray-700 whitespace-pre-line">
+                            {formData.useTemplate ? formData.promptTemplate : formData.prompt}
+                          </p>
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="font-medium mb-2 text-gray-700">AI-Enhanced Prompt</h3>
+                        <div className="p-3 bg-purple-50 rounded-md min-h-[180px] border border-purple-100 whitespace-pre-line">
+                          <p className="text-sm text-gray-700 whitespace-pre-line">{generatedPrompt}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              ) : (
+                <div className="flex items-center justify-center h-96 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
+                  <div className="text-center">
+                    <Sparkle className="h-12 w-12 mx-auto mb-4 text-purple-300" />
+                    <p>Your enhanced prompt will appear here</p>
+                    <p className="text-sm mt-2">Fill out the form and click "Enhance with AI"</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        );
-      default:
-        return null;
-    }
-  };
-  return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="mb-8 flex justify-between items-center">
-        <div className="space-y-1">
-          {loadedFromLibrary && (
-            <div className="bg-green-50 text-green-700 px-3 py-1 text-sm rounded-full inline-flex items-center">
-              <CheckCircle className="h-3 w-3 mr-1" /> 
-              Template loaded from library
-            </div>
-          )}
-          {debugInfo && (
-            <div className="bg-blue-50 text-blue-700 px-3 py-1 text-sm rounded-full">
-              {debugInfo}
-            </div>
-          )}
         </div>
-        
-        {user && promptsRemaining !== null && 
-          <div className="text-right">
-            <div className="text-sm font-medium text-gray-700">
-              {user.subscription === "premium" ? 
-                <span className="flex items-center">
-                  <Star className="h-4 w-4 text-yellow-500 mr-1" />
-                  Premium: Unlimited Prompts
-                </span> 
-                : 
-                <span>Prompts remaining: {promptsRemaining}</span>
-              }
-            </div>
-            {user.subscription !== "premium" && 
-              <Button variant="link" size="sm" className="text-purple-600 p-0" asChild>
-                <a href="/pricing">Upgrade for more</a>
-              </Button>
-            }
-          </div>
-        }
       </div>
-
-      {!user && 
-        <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-100 rounded-md shadow-sm">
-          <h3 className="font-semibold mb-2 text-gray-800">Get More from AI Prompt Builder</h3>
-          <p className="text-sm text-gray-700 mb-3">
-            Sign up for free to save your prompts and get 5 enhanced prompts per month.
-          </p>
-          <div className="flex space-x-2">
-            <Button size="sm" className="bg-purple-600 hover:bg-purple-700" asChild>
-              <a href="/signup">Sign Up - Free</a>
-            </Button>
-            <Button variant="outline" size="sm" className="border-purple-200 hover:bg-purple-50" asChild>
-              <a href="/signin">Sign In</a>
-            </Button>
-          </div>
-        </div>
-      }
-
-      {recentPrompts.length > 0 && 
-        <div className="mb-6">
-          <h3 className="text-sm font-medium text-gray-600 mb-2 flex items-center">
-            <Clock className="h-4 w-4 mr-1" />
-            Recently Generated
-          </h3>
-          <div className="grid grid-cols-1 gap-2">
-            {recentPrompts.map((prompt, index) => 
-              <div key={index} 
-                onClick={() => {
-                  navigator.clipboard.writeText(prompt);
-                  toast({
-                    title: "Copied to clipboard",
-                    duration: 2000
-                  });
-                }} 
-                className="p-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-700 cursor-pointer hover:bg-gray-100 flex justify-between items-center truncate"
-              >
-                <span className="truncate">{prompt.substring(0, 100)}...</span>
-                <Copy className="h-3 w-3 text-gray-500 flex-shrink-0" />
-              </div>
-            )}
-          </div>
-        </div>
-      }
-
-      <Card className="p-6 shadow-sm border-purple-100">
-        {renderStepContent()}
-      </Card>
-    </div>
+    </SidebarProvider>
   );
 };
 
