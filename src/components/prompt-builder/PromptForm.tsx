@@ -143,8 +143,13 @@ const PromptForm: React.FC<PromptFormProps> = ({
     onChange("prompt", newValue);
   };
 
-  // Render task-specific form based on task type
+  // Render task-specific form based on task type and subcategory
   const renderTaskSpecificForm = () => {
+    // Only show form if both task and subcategory are selected
+    if (!taskType || !subCategory) {
+      return null;
+    }
+
     switch (taskType) {
       case "content":
         return <ContentForm formData={formData} onChange={onChange} />;
@@ -274,10 +279,16 @@ const PromptForm: React.FC<PromptFormProps> = ({
       </Tabs>
 
       {/* Task specific form inputs */}
-      <div className="bg-white rounded-lg p-0">
-        {renderTaskSpecificForm()}
-        <CommonForm formData={formData} onChange={onChange} />
-      </div>
+      {(taskType && subCategory) && (
+        <div className="bg-white rounded-lg p-4 border border-gray-200">
+          <div className="mb-4 pb-3 border-b border-gray-100">
+            <h3 className="font-semibold text-gray-800 text-sm">Customize your prompt</h3>
+            <p className="text-xs text-gray-500 mt-1">Fill in the details below to personalize your prompt</p>
+          </div>
+          {renderTaskSpecificForm()}
+          <CommonForm formData={formData} onChange={onChange} />
+        </div>
+      )}
     </div>
   );
 };

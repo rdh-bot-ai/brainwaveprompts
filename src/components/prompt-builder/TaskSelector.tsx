@@ -113,33 +113,33 @@ const TaskSelector: React.FC<TaskSelectorProps> = ({
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Subcategory Selection Dropdown */}
-      {selectedTask && availableSubcategories.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Select specific type:</h3>
-          <Select value={selectedSubCategory || ""} onValueChange={onSubCategorySelect}>
-            <SelectTrigger className="w-full bg-white border-gray-300 hover:border-purple-400 focus:border-purple-500 focus:ring-purple-500">
-              <SelectValue placeholder="Choose a specific type..." />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200 shadow-lg max-h-60">
-              {availableSubcategories.map((subCat) => (
-                <SelectItem 
-                  key={subCat.id} 
-                  value={subCat.id}
-                  className="hover:bg-purple-50 focus:bg-purple-50 cursor-pointer"
-                >
-                  <div className="flex flex-col">
-                    <span className="font-medium text-gray-900">{subCat.name}</span>
-                    <span className="text-xs text-gray-500 mt-0.5">{subCat.description}</span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
+        {/* Subcategory Selection Dropdown - Immediately after task selection */}
+        {selectedTask && availableSubcategories.length > 0 && (
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <h4 className="text-sm font-medium text-gray-800 mb-3">Select specific type:</h4>
+            <Select value={selectedSubCategory || ""} onValueChange={onSubCategorySelect}>
+              <SelectTrigger className="w-full bg-white border-gray-300 hover:border-purple-400 focus:border-purple-500 focus:ring-purple-500">
+                <SelectValue placeholder="Choose a specific type..." />
+              </SelectTrigger>
+              <SelectContent className="bg-white border border-gray-200 shadow-lg max-h-60 z-50">
+                {availableSubcategories.map((subCat) => (
+                  <SelectItem 
+                    key={subCat.id} 
+                    value={subCat.id}
+                    className="hover:bg-purple-50 focus:bg-purple-50 cursor-pointer"
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-medium text-gray-900">{subCat.name}</span>
+                      <span className="text-xs text-gray-500 mt-0.5">{subCat.description}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
