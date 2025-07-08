@@ -337,9 +337,9 @@ const PromptBuilder: React.FC = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-gray-50">
         {/* Sidebar */}
-        <div className="w-80 bg-gradient-to-b from-gray-50 to-white border-r border-gray-200 overflow-y-auto">
+        <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center mb-6">
               <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center mr-3">
@@ -431,7 +431,7 @@ const PromptBuilder: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6 bg-gray-50">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
             {/* Form Section */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-full">
