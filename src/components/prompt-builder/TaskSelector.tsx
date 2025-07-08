@@ -113,32 +113,36 @@ const TaskSelector: React.FC<TaskSelectorProps> = ({
   }, [searchQuery, selectedTask]);
 
   return (
-    <div className="py-4 space-y-8">
+    <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold mb-3 text-gray-800">I want AI to:</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <h2 className="text-lg font-semibold mb-4 text-gray-800">I want AI to:</h2>
+        <div className="space-y-2">
           {TASK_OPTIONS.map((task) => (
-            <Card
+            <div
               key={task.id}
-              className={`cursor-pointer transition-all hover:shadow-md ${
+              className={`cursor-pointer transition-all rounded-lg p-3 flex items-center space-x-3 ${
                 selectedTask === task.id
-                  ? "border-2 border-purple-500 bg-purple-50 shadow-sm"
-                  : "border border-gray-200 hover:border-purple-300"
+                  ? "bg-gradient-to-r from-purple-50 to-indigo-50 border-l-4 border-purple-500"
+                  : "hover:bg-gray-50 border-l-4 border-transparent"
               }`}
               onClick={() => onTaskSelect(task.id)}
             >
-              <CardContent className="p-4 flex flex-col items-center text-center">
-                <div className={`p-3 rounded-full mb-2 ${
-                  selectedTask === task.id 
-                    ? "bg-purple-100 text-purple-700" 
-                    : "bg-gray-100 text-gray-700"
+              <div className={`p-2 rounded-lg ${
+                selectedTask === task.id 
+                  ? "bg-purple-100 text-purple-700" 
+                  : "bg-gray-100 text-gray-600"
+              }`}>
+                <TaskIcon type={task.id} />
+              </div>
+              <div className="flex-1">
+                <h3 className={`font-medium text-sm ${
+                  selectedTask === task.id ? "text-purple-900" : "text-gray-800"
                 }`}>
-                  <TaskIcon type={task.id} />
-                </div>
-                <h3 className="font-medium text-sm mb-1">{task.name}</h3>
+                  {task.name}
+                </h3>
                 <p className="text-xs text-gray-500">{task.description}</p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       </div>

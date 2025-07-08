@@ -200,33 +200,37 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
         <TabsContent value="basic" className="space-y-4">
           {/* Basic Template Preview */}
-          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-100">
-            <div className="flex items-center mb-2">
-              <Sparkle className="h-4 w-4 text-purple-600 mr-2" />
-              <Label className="font-medium text-sm text-gray-700">
-                {formData.useTemplate ? "Template Preview" : formData.buildCustom ? "Custom Prompt" : "Prompt Preview"}
-              </Label>
+          <div className="bg-white rounded-lg border-2 border-dashed border-gray-200 p-6">
+            <div className="flex items-center mb-4">
+              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center mr-3">
+                <Sparkle className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <Label className="font-semibold text-gray-900">
+                  {formData.useTemplate ? "Template Preview" : formData.buildCustom ? "Custom Prompt" : "Prompt Preview"}
+                </Label>
+                <p className="text-xs text-gray-500 mt-1">
+                  {formData.useTemplate ? 
+                    "Live preview updates as you fill the form below" : 
+                    formData.buildCustom ?
+                    "Build your prompt with complete freedom" :
+                    "Your prompt preview will appear here"
+                  }
+                </p>
+              </div>
             </div>
             <textarea
               value={formData.prompt || ""}
               onChange={handleBasicEditorChange}
-              className={`min-h-[100px] w-full font-medium rounded-md border p-2 ${formData.useTemplate ? "bg-white border-purple-100 whitespace-pre-line" : "bg-white border-purple-100"}`}
+              className="min-h-[120px] w-full bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
               placeholder={formData.useTemplate ? 
-                "Your template preview will appear here as you fill in the details below." : 
+                "Your template will appear here as you complete the form..." : 
                 formData.buildCustom ? 
-                "Write your custom prompt here..." :
-                "Your prompt preview will appear here."
+                "Start writing your custom prompt here..." :
+                "Your prompt preview will appear here..."
               }
               disabled={formData.useTemplate && !formData.buildCustom}
             />
-            <p className="mt-2 text-xs text-gray-500">
-              {formData.useTemplate ? 
-                "Fill in the basic details using the form below. The template will update automatically." : 
-                formData.buildCustom ?
-                "You're building a custom prompt. The form fields below can help inspire your content." :
-                "Your prompt preview will update as you make changes."
-              }
-            </p>
           </div>
 
           {/* AI Suggestions */}

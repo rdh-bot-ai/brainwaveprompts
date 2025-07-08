@@ -339,12 +339,15 @@ const PromptBuilder: React.FC = () => {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         {/* Sidebar */}
-        <div className="w-80 bg-white border-r border-purple-100 p-4">
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 flex items-center mb-4">
-              <Lightbulb className="mr-2 h-5 w-5 text-purple-500" />
-              Select Task Type
-            </h2>
+        <div className="w-80 bg-gradient-to-b from-gray-50 to-white border-r border-gray-200 overflow-y-auto">
+          <div className="p-6 border-b border-gray-200">
+            <div className="flex items-center mb-6">
+              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center mr-3">
+                <Lightbulb className="h-4 w-4 text-white" />
+              </div>
+              <h1 className="text-xl font-bold text-gray-900">Prompt Builder</h1>
+            </div>
+            
             <TaskSelector 
               selectedTask={selectedTask} 
               selectedSubCategory={selectedSubCategory} 
@@ -354,45 +357,45 @@ const PromptBuilder: React.FC = () => {
           </div>
 
           {/* Status and Actions */}
-          <div className="space-y-4">
+          <div className="p-6 space-y-4">
             {loadedFromLibrary && (
-              <div className="bg-green-50 text-green-700 px-3 py-2 text-sm rounded-md inline-flex items-center">
+              <div className="bg-emerald-50 text-emerald-700 px-3 py-2 text-sm rounded-lg inline-flex items-center border border-emerald-200">
                 <CheckCircle className="h-4 w-4 mr-2" /> 
-                Template loaded from library
+                Template loaded successfully
               </div>
             )}
             
             {user && promptsRemaining !== null && (
-              <div className="text-sm">
+              <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
                 <div className="font-medium text-gray-700 mb-2">
                   {user.subscription === "premium" ? 
-                    <span className="flex items-center text-yellow-600">
+                    <span className="flex items-center text-amber-600">
                       <Star className="h-4 w-4 mr-1" />
                       Premium: Unlimited Prompts
                     </span> 
                     : 
-                    <span>Prompts remaining: {promptsRemaining}</span>
+                    <span className="text-gray-900">Prompts remaining: <span className="font-bold text-purple-600">{promptsRemaining}</span></span>
                   }
                 </div>
                 {user.subscription !== "premium" && 
-                  <Button variant="link" size="sm" className="text-purple-600 p-0 h-auto" asChild>
-                    <a href="/pricing">Upgrade for more</a>
+                  <Button variant="outline" size="sm" className="border-purple-200 hover:bg-purple-50 text-purple-600 w-full" asChild>
+                    <a href="/pricing">Upgrade for unlimited</a>
                   </Button>
                 }
               </div>
             )}
 
             {!user && (
-              <div className="p-3 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-100 rounded-md">
-                <h3 className="font-semibold mb-2 text-gray-800 text-sm">Get More Features</h3>
-                <p className="text-xs text-gray-700 mb-3">
+              <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-100">
+                <h3 className="font-semibold mb-2 text-gray-900 text-sm">Get Started Free</h3>
+                <p className="text-xs text-gray-600 mb-3">
                   Sign up for free to save your prompts and get 5 enhanced prompts per month.
                 </p>
-                <div className="flex space-x-2">
-                  <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-xs" asChild>
-                    <a href="/signup">Sign Up</a>
+                <div className="space-y-2">
+                  <Button size="sm" className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-xs w-full" asChild>
+                    <a href="/signup">Sign Up Free</a>
                   </Button>
-                  <Button variant="outline" size="sm" className="border-purple-200 hover:bg-purple-50 text-xs" asChild>
+                  <Button variant="outline" size="sm" className="border-gray-300 hover:bg-gray-50 text-xs w-full" asChild>
                     <a href="/signin">Sign In</a>
                   </Button>
                 </div>
@@ -400,12 +403,12 @@ const PromptBuilder: React.FC = () => {
             )}
 
             {recentPrompts.length > 0 && (
-              <div>
-                <h3 className="text-sm font-medium text-gray-600 mb-2 flex items-center">
-                  <Clock className="h-4 w-4 mr-1" />
+              <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                <h3 className="text-sm font-medium text-gray-900 mb-3 flex items-center">
+                  <Clock className="h-4 w-4 mr-2 text-gray-500" />
                   Recent Prompts
                 </h3>
-                <div className="space-y-1">
+                <div className="space-y-2">
                   {recentPrompts.map((prompt, index) => 
                     <div key={index} 
                       onClick={() => {
@@ -415,10 +418,10 @@ const PromptBuilder: React.FC = () => {
                           duration: 2000
                         });
                       }} 
-                      className="p-2 bg-gray-50 border border-gray-200 rounded text-xs text-gray-700 cursor-pointer hover:bg-gray-100 flex justify-between items-center"
+                      className="p-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs text-gray-700 cursor-pointer transition-colors flex justify-between items-center"
                     >
-                      <span className="truncate">{prompt.substring(0, 60)}...</span>
-                      <Copy className="h-3 w-3 text-gray-500 flex-shrink-0" />
+                      <span className="truncate font-medium">{prompt.substring(0, 50)}...</span>
+                      <Copy className="h-3 w-3 text-gray-400 flex-shrink-0" />
                     </div>
                   )}
                 </div>
@@ -431,115 +434,137 @@ const PromptBuilder: React.FC = () => {
         <div className="flex-1 p-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
             {/* Form Section */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-                <MessageCircle className="mr-2 h-5 w-5 text-purple-500" />
-                Customize Your Prompt
-              </h2>
-              
-              {selectedTask && selectedSubCategory ? (
-                <div className="space-y-4">
-                  <PromptForm 
-                    taskType={selectedTask} 
-                    subCategory={selectedSubCategory} 
-                    formData={formData} 
-                    onChange={handleFormChange} 
-                  />
-                  
-                  <Button 
-                    onClick={handleGenerate} 
-                    disabled={isEnhancing || !canGenerate || (user && promptsRemaining !== null && promptsRemaining <= 0)} 
-                    className="w-full flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-                    size="lg"
-                  >
-                    {isEnhancing ? (
-                      <>Enhancing<span className="ml-2 animate-pulse">...</span></>
-                    ) : (
-                      <><Sparkle className="mr-2 h-5 w-5" />Enhance with AI</>
-                    )}
-                  </Button>
-                  
-                  {user && promptsRemaining !== null && promptsRemaining <= 0 && (
-                    <div className="p-3 bg-amber-50 border border-amber-200 rounded-md flex items-start">
-                      <AlertCircle className="text-amber-500 mt-0.5 mr-2 h-5 w-5 flex-shrink-0" />
-                      <div>
-                        <p className="text-sm text-amber-800">
-                          You've used all your prompt enhancements for this month.
-                        </p>
-                        <UpgradePrompt currentTier={user.subscription || "free"} />
-                      </div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-full">
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center mr-3">
+                      <MessageCircle className="h-4 w-4 text-white" />
                     </div>
+                    <h2 className="text-xl font-bold text-gray-900">Customize Your Prompt</h2>
+                  </div>
+                  {selectedTask && selectedSubCategory && (
+                    <Button 
+                      onClick={handleGenerate} 
+                      disabled={isEnhancing || !canGenerate || (user && promptsRemaining !== null && promptsRemaining <= 0)} 
+                      className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg"
+                      size="lg"
+                    >
+                      {isEnhancing ? (
+                        <>Enhancing<span className="ml-2 animate-pulse">...</span></>
+                      ) : (
+                        <><Sparkle className="mr-2 h-5 w-5" />Enhance with AI</>
+                      )}
+                    </Button>
                   )}
                 </div>
-              ) : (
-                <div className="flex items-center justify-center h-64 text-gray-500">
-                  <div className="text-center">
-                    <Lightbulb className="h-12 w-12 mx-auto mb-4 text-purple-300" />
-                    <p>Select a task type from the sidebar to get started</p>
+              </div>
+              
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+                {selectedTask && selectedSubCategory ? (
+                  <div className="space-y-6">
+                    <PromptForm 
+                      taskType={selectedTask} 
+                      subCategory={selectedSubCategory} 
+                      formData={formData} 
+                      onChange={handleFormChange} 
+                    />
+                    
+                    {user && promptsRemaining !== null && promptsRemaining <= 0 && (
+                      <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg flex items-start">
+                        <AlertCircle className="text-amber-500 mt-0.5 mr-3 h-5 w-5 flex-shrink-0" />
+                        <div>
+                          <p className="text-sm text-amber-800 font-medium mb-2">
+                            You've used all your prompt enhancements for this month.
+                          </p>
+                          <UpgradePrompt currentTier={user.subscription || "free"} />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="flex items-center justify-center h-96 text-gray-500">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Lightbulb className="h-8 w-8 text-purple-400" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-700 mb-2">Let's Get Started</h3>
+                      <p className="text-gray-500">Choose a task type from the sidebar to begin building your prompt</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Preview Section */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-                <CheckCircle className="mr-2 h-5 w-5 text-green-500" />
-                Live Preview
-              </h2>
-              
-              {generatedPrompt ? (
-                <Tabs defaultValue="prompt" className="w-full">
-                  <TabsList className="mb-4 grid grid-cols-2 w-full">
-                    <TabsTrigger value="prompt">Enhanced Prompt</TabsTrigger>
-                    <TabsTrigger value="before-after">Before & After</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="prompt" className="w-full">
-                    <Card className="p-4 bg-purple-50 border border-purple-200">
-                      <textarea 
-                        readOnly 
-                        value={generatedPrompt} 
-                        className="min-h-[400px] w-full bg-white border-purple-100 rounded-md p-3 focus-visible:ring-purple-500 whitespace-pre-line text-sm" 
-                      />
-                      <div className="mt-4 flex justify-end">
-                        <Button 
-                          onClick={copyToClipboard} 
-                          className="flex items-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-                        >
-                          <Copy className="mr-2 h-4 w-4" />
-                          Copy to Clipboard
-                        </Button>
-                      </div>
-                    </Card>
-                  </TabsContent>
-                  <TabsContent value="before-after">
-                    <div className="grid grid-cols-1 gap-4">
-                      <div>
-                        <h3 className="font-medium mb-2 text-gray-700">Original Input</h3>
-                        <div className="p-3 bg-gray-100 rounded-md min-h-[180px] whitespace-pre-line">
-                          <p className="text-sm text-gray-700 whitespace-pre-line">
-                            {formData.useTemplate ? formData.promptTemplate : formData.prompt}
-                          </p>
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="font-medium mb-2 text-gray-700">AI-Enhanced Prompt</h3>
-                        <div className="p-3 bg-purple-50 rounded-md min-h-[180px] border border-purple-100 whitespace-pre-line">
-                          <p className="text-sm text-gray-700 whitespace-pre-line">{generatedPrompt}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              ) : (
-                <div className="flex items-center justify-center h-96 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
-                  <div className="text-center">
-                    <Sparkle className="h-12 w-12 mx-auto mb-4 text-purple-300" />
-                    <p>Your enhanced prompt will appear here</p>
-                    <p className="text-sm mt-2">Fill out the form and click "Enhance with AI"</p>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-full">
+              <div className="p-6 border-b border-gray-100">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center mr-3">
+                    <CheckCircle className="h-4 w-4 text-white" />
                   </div>
+                  <h2 className="text-xl font-bold text-gray-900">Live Preview</h2>
                 </div>
-              )}
+              </div>
+              
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+                {generatedPrompt ? (
+                  <Tabs defaultValue="prompt" className="w-full">
+                    <TabsList className="mb-4 grid grid-cols-2 w-full">
+                      <TabsTrigger value="prompt">Enhanced Prompt</TabsTrigger>
+                      <TabsTrigger value="before-after">Before & After</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="prompt" className="w-full">
+                      <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg border border-purple-200 p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="font-semibold text-gray-800">Your Enhanced Prompt</h3>
+                          <Button 
+                            onClick={copyToClipboard} 
+                            size="sm"
+                            className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                          >
+                            <Copy className="mr-2 h-3 w-3" />
+                            Copy
+                          </Button>
+                        </div>
+                        <textarea 
+                          readOnly 
+                          value={generatedPrompt} 
+                          className="min-h-[300px] w-full bg-white border border-gray-200 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 whitespace-pre-line text-sm resize-none" 
+                        />
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="before-after">
+                      <div className="space-y-4">
+                        <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
+                          <h3 className="font-medium mb-3 text-gray-800">Original Input</h3>
+                          <div className="bg-white p-3 rounded border min-h-[120px] whitespace-pre-line">
+                            <p className="text-sm text-gray-700 whitespace-pre-line">
+                              {formData.useTemplate ? formData.promptTemplate : formData.prompt}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg border border-purple-200 p-4">
+                          <h3 className="font-medium mb-3 text-gray-800">AI-Enhanced Result</h3>
+                          <div className="bg-white p-3 rounded border min-h-[120px] whitespace-pre-line">
+                            <p className="text-sm text-gray-700 whitespace-pre-line">{generatedPrompt}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                ) : (
+                  <div className="flex items-center justify-center h-96 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Sparkle className="h-8 w-8 text-purple-400" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-700 mb-2">Ready for Enhancement</h3>
+                      <p className="text-gray-500">Your AI-enhanced prompt will appear here once generated</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
