@@ -9,9 +9,8 @@ import CommonForm from "./forms/CommonForm";
 import AISuggestions from "./AISuggestions";
 import { SUBCATEGORIES } from "./subcategories";
 import { Label } from "@/components/ui/label";
-import { Sparkle, Pencil, File } from "lucide-react";
+import { Sparkle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface PromptFormProps {
   taskType: TaskType;
@@ -131,14 +130,8 @@ const PromptForm: React.FC<PromptFormProps> = ({
     }
   };
 
-  // Handle advanced editor changes
-  const handleAdvancedEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    onChange("prompt", newValue);
-  };
-
-  // Handle basic editor changes for custom prompt mode
-  const handleBasicEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  // Handle editor changes
+  const handleEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     onChange("prompt", newValue);
   };
@@ -190,93 +183,48 @@ const PromptForm: React.FC<PromptFormProps> = ({
         </div>
       </div>
 
-      {/* Prompt Editor Tabs */}
-      <Tabs defaultValue={formData.defaultEditorTab || "basic"} className="w-full">
-        <TabsList className="grid grid-cols-2 mb-4">
-          <TabsTrigger value="basic" className="flex items-center gap-2">
-            <File className="h-4 w-4" />
-            <span>Basic Editor</span>
-          </TabsTrigger>
-          <TabsTrigger value="advanced" className="flex items-center gap-2">
-            <Pencil className="h-4 w-4" />
-            <span>Advanced Editor</span>
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="basic" className="space-y-4">
-          {/* Basic Template Preview */}
-          <div className="bg-white rounded-lg border-2 border-dashed border-gray-200 p-6">
-            <div className="flex items-center mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center mr-3">
-                <Sparkle className="h-4 w-4 text-white" />
-              </div>
-              <div>
-                <Label className="font-semibold text-gray-900">
-                  {formData.useTemplate ? "Template Preview" : formData.buildCustom ? "Custom Prompt" : "Prompt Preview"}
-                </Label>
-                <p className="text-xs text-gray-500 mt-1">
-                  {formData.useTemplate ? 
-                    "Live preview updates as you fill the form below" : 
-                    formData.buildCustom ?
-                    "Build your prompt with complete freedom" :
-                    "Your prompt preview will appear here"
-                  }
-                </p>
-              </div>
-            </div>
-            <textarea
-              value={formData.prompt || ""}
-              onChange={handleBasicEditorChange}
-              className="min-h-[120px] w-full bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-              placeholder={formData.useTemplate ? 
-                "Your template will appear here as you complete the form..." : 
-                formData.buildCustom ? 
-                "Start writing your custom prompt here..." :
-                "Your prompt preview will appear here..."
-              }
-              disabled={formData.useTemplate && !formData.buildCustom}
-            />
+      {/* Prompt Editor */}
+      <div className="bg-white rounded-lg border-2 border-dashed border-gray-200 p-6">
+        <div className="flex items-center mb-4">
+          <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center mr-3">
+            <Sparkle className="h-4 w-4 text-white" />
           </div>
-
-          {/* AI Suggestions */}
-          {taskType && subCategory && (
-            <AISuggestions 
-              taskType={taskType} 
-              subCategory={subCategory} 
-              formData={formData} 
-            />
-          )}
-        </TabsContent>
-
-        <TabsContent value="advanced" className="space-y-4">
-          {/* Advanced Custom Prompt Editor */}
-          <div className="bg-white border border-gray-200 p-4 rounded-lg">
-            <div className="flex items-center mb-2">
-              <Pencil className="h-4 w-4 text-gray-700 mr-2" />
-              <Label className="font-medium text-sm text-gray-700">
-                {formData.useTemplate ? "Edit Template" : formData.buildCustom ? "Build Custom Prompt" : "Edit Prompt"}
-              </Label>
-            </div>
-            <textarea
-              value={formData.prompt || ""}
-              onChange={handleAdvancedEditorChange}
-              className="min-h-[200px] w-full font-medium border-gray-200 whitespace-pre-line rounded-md border p-2"
-              placeholder={formData.buildCustom ? 
-                "Start building your custom prompt here..." : 
-                "Enter your prompt here..."
-              }
-            />
-            <p className="mt-2 text-xs text-gray-500">
+          <div>
+            <Label className="font-semibold text-gray-900">
+              {formData.useTemplate ? "Template Preview" : formData.buildCustom ? "Custom Prompt" : "Prompt Preview"}
+            </Label>
+            <p className="text-xs text-gray-500 mt-1">
               {formData.useTemplate ? 
-                "You can edit the template directly here. This will override automatic updates from the form fields." : 
+                "Live preview updates as you fill the form below" : 
                 formData.buildCustom ?
-                "Create your prompt with complete creative freedom. The form fields below can still help structure your thoughts." :
-                "Write your prompt with as much detail as needed. You can still use AI enhancement later."
+                "Build your prompt with complete freedom" :
+                "Your prompt preview will appear here"
               }
             </p>
           </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+        <textarea
+          value={formData.prompt || ""}
+          onChange={handleEditorChange}
+          className="min-h-[150px] w-full bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-y"
+          placeholder={formData.useTemplate ? 
+            "Your template will appear here as you complete the form..." : 
+            formData.buildCustom ? 
+            "Start writing your custom prompt here..." :
+            "Your prompt preview will appear here..."
+          }
+          disabled={formData.useTemplate && !formData.buildCustom}
+        />
+      </div>
+
+      {/* AI Suggestions */}
+      {taskType && subCategory && (
+        <AISuggestions 
+          taskType={taskType} 
+          subCategory={subCategory} 
+          formData={formData} 
+        />
+      )}
 
       {/* Task specific form inputs */}
       {(taskType && subCategory) && (
