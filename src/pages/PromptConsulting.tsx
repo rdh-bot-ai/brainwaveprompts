@@ -88,18 +88,19 @@ const PromptConsulting = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-12 px-4">
+      <section className="pt-24 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent leading-tight">Custom Prompt Consulting</h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent leading-tight">
+            Custom Prompt Consulting
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
             Transform your AI interactions with professionally crafted, custom prompts designed specifically for your business needs. Our expert team helps you unlock the full potential of AI for your unique use cases.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button size="lg" className="bg-purple-600 hover:bg-purple-700 min-w-[200px]">
               <MessageCircle className="mr-2 h-5 w-5" />
               Get Started Today
             </Button>
-            
           </div>
         </div>
       </section>
@@ -114,8 +115,9 @@ const PromptConsulting = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
+            {services.map((service, index) => (
+              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow w-full max-w-sm">
                 <CardHeader>
                   <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
                     <service.icon className="h-6 w-6 text-purple-600" />
@@ -125,7 +127,8 @@ const PromptConsulting = () => {
                 <CardContent>
                   <p className="text-gray-600">{service.description}</p>
                 </CardContent>
-              </Card>)}
+              </Card>
+            ))}
           </div>
         </div>
       </section>
