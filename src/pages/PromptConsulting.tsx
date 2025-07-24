@@ -103,9 +103,7 @@ const PromptConsulting = () => {
               <MessageCircle className="mr-2 h-5 w-5" />
               Get Started Today
             </Button>
-            <Button size="lg" variant="outline">
-              View Our Portfolio
-            </Button>
+            
           </div>
         </div>
       </section>
