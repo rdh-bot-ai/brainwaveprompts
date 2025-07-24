@@ -75,10 +75,6 @@ const PromptConsulting = () => {
     title: "AI Workflow Integration",
     description: "Seamlessly integrate custom prompts into your existing workflows and systems."
   }, {
-    icon: Users,
-    title: "Team Training",
-    description: "Train your team on prompt engineering best practices and advanced techniques."
-  }, {
     icon: Award,
     title: "Quality Assurance",
     description: "Rigorous testing and validation to ensure prompts meet your quality standards."
@@ -87,7 +83,7 @@ const PromptConsulting = () => {
     title: "Ongoing Support",
     description: "Continuous monitoring, updates, and refinements to keep prompts performing optimally."
   }];
-  const benefits = ["Save time with professionally crafted prompts", "Achieve more consistent and reliable AI outputs", "Optimize for your specific industry and use case", "Get expert guidance from prompt engineering professionals", "Reduce trial-and-error with proven methodologies", "Scale your AI initiatives with confidence"];
+  const benefits = ["Save time with professionally crafted prompts", "Achieve more consistent and reliable AI outputs", "Optimize for your specific industry and use case", "Get expert guidance from professionals", "Reduce trial-and-error with proven methodologies", "Scale your AI initiatives with confidence"];
   return <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
       <Navbar />
       
