@@ -132,10 +132,124 @@ const PromptForm: React.FC<PromptFormProps> = ({
           if (formData.functionality) {
             updatedPrompt = updatedPrompt.replace(/\[functionality\]/g, formData.functionality);
           }
+          // Code subcategory-specific fields
+          if (formData.parameters) {
+            updatedPrompt = updatedPrompt.replace(/\[parameters\]/g, formData.parameters);
+          }
+          if (formData.returnType) {
+            updatedPrompt = updatedPrompt.replace(/\[return type\]/g, formData.returnType);
+          }
+          if (formData.errorHandling) {
+            updatedPrompt = updatedPrompt.replace(/\[error handling\]/g, formData.errorHandling);
+          }
+          if (formData.framework) {
+            updatedPrompt = updatedPrompt.replace(/\[framework\]/g, formData.framework);
+          }
+          if (formData.props) {
+            updatedPrompt = updatedPrompt.replace(/\[props\]/g, formData.props);
+          }
+          if (formData.styling) {
+            updatedPrompt = updatedPrompt.replace(/\[styling\]/g, formData.styling);
+          }
+          if (formData.complexity) {
+            updatedPrompt = updatedPrompt.replace(/\[complexity\]/g, formData.complexity);
+          }
+          if (formData.apiService) {
+            updatedPrompt = updatedPrompt.replace(/\[specific API\/service\]/g, formData.apiService);
+            updatedPrompt = updatedPrompt.replace(/\[API\/service\]/g, formData.apiService);
+          }
+          if (formData.authMethod) {
+            updatedPrompt = updatedPrompt.replace(/\[auth method\]/g, formData.authMethod);
+          }
+          if (formData.endpoints) {
+            updatedPrompt = updatedPrompt.replace(/\[endpoints\]/g, formData.endpoints);
+          }
+          if (formData.testFramework) {
+            updatedPrompt = updatedPrompt.replace(/\[test framework\]/g, formData.testFramework);
+          }
+          if (formData.testTypes) {
+            updatedPrompt = updatedPrompt.replace(/\[test types\]/g, formData.testTypes);
+          }
+          if (formData.codeToTest) {
+            updatedPrompt = updatedPrompt.replace(/\[code to test\]/g, formData.codeToTest);
+          }
+          if (formData.currentCode) {
+            updatedPrompt = updatedPrompt.replace(/\[paste code\]/g, formData.currentCode);
+          }
+          if (formData.refactorGoals) {
+            updatedPrompt = updatedPrompt.replace(/\[refactor goals\]/g, formData.refactorGoals);
+          }
+          if (formData.databaseType) {
+            updatedPrompt = updatedPrompt.replace(/\[database type\]/g, formData.databaseType);
+          }
+          if (formData.operation) {
+            updatedPrompt = updatedPrompt.replace(/\[operation\]/g, formData.operation);
+          }
+          if (formData.requirements) {
+            updatedPrompt = updatedPrompt.replace(/\[requirements\]/g, formData.requirements);
+          }
           break;
         case "idea":
           if (formData.challenge) {
             updatedPrompt = updatedPrompt.replace(/\[challenge\]/g, formData.challenge);
+          }
+          // Idea subcategory-specific fields
+          if (formData.targetMarket) {
+            updatedPrompt = updatedPrompt.replace(/\[target market\]/g, formData.targetMarket);
+          }
+          if (formData.businessModel) {
+            updatedPrompt = updatedPrompt.replace(/\[business model\]/g, formData.businessModel);
+          }
+          if (formData.investmentLevel) {
+            updatedPrompt = updatedPrompt.replace(/\[investment level\]/g, formData.investmentLevel);
+          }
+          if (formData.targetUsers) {
+            updatedPrompt = updatedPrompt.replace(/\[target users\]/g, formData.targetUsers);
+          }
+          if (formData.productType) {
+            updatedPrompt = updatedPrompt.replace(/\[product type\]/g, formData.productType);
+          }
+          if (formData.painPoints) {
+            updatedPrompt = updatedPrompt.replace(/\[pain points\]/g, formData.painPoints);
+          }
+          if (formData.problemScope) {
+            updatedPrompt = updatedPrompt.replace(/\[problem scope\]/g, formData.problemScope);
+          }
+          if (formData.stakeholders) {
+            updatedPrompt = updatedPrompt.replace(/\[stakeholders\]/g, formData.stakeholders);
+          }
+          if (formData.timeline) {
+            updatedPrompt = updatedPrompt.replace(/\[timeline\]/g, formData.timeline);
+          }
+          if (formData.medium) {
+            updatedPrompt = updatedPrompt.replace(/\[medium\]/g, formData.medium);
+          }
+          if (formData.audience) {
+            updatedPrompt = updatedPrompt.replace(/\[audience\]/g, formData.audience);
+          }
+          if (formData.emotion) {
+            updatedPrompt = updatedPrompt.replace(/\[emotion\]/g, formData.emotion);
+          }
+          if (formData.product) {
+            updatedPrompt = updatedPrompt.replace(/\[product\/service\]/g, formData.product);
+          }
+          if (formData.budget) {
+            updatedPrompt = updatedPrompt.replace(/\[budget\]/g, formData.budget);
+          }
+          if (formData.channels) {
+            updatedPrompt = updatedPrompt.replace(/\[channels\]/g, formData.channels);
+          }
+          if (formData.goals) {
+            updatedPrompt = updatedPrompt.replace(/\[goals\]/g, formData.goals);
+          }
+          if (formData.innovationType) {
+            updatedPrompt = updatedPrompt.replace(/\[innovation type\]/g, formData.innovationType);
+          }
+          if (formData.trends) {
+            updatedPrompt = updatedPrompt.replace(/\[trends\]/g, formData.trends);
+          }
+          if (formData.capabilities) {
+            updatedPrompt = updatedPrompt.replace(/\[capabilities\]/g, formData.capabilities);
           }
           break;
         case "image":
@@ -148,11 +262,105 @@ const PromptForm: React.FC<PromptFormProps> = ({
           if (formData.details) {
             updatedPrompt = updatedPrompt.replace(/\[details\]/g, formData.details);
           }
+          // Image subcategory-specific fields
+          if (formData.artisticInfluence) {
+            updatedPrompt = updatedPrompt.replace(/\[artistic influence\]/g, formData.artisticInfluence);
+            updatedPrompt = updatedPrompt.replace(/\[art references\]/g, formData.artisticInfluence);
+          }
+          if (formData.colorPalette) {
+            updatedPrompt = updatedPrompt.replace(/\[colors\]/g, formData.colorPalette);
+            updatedPrompt = updatedPrompt.replace(/\[color palette\]/g, formData.colorPalette);
+          }
+          if (formData.lighting) {
+            updatedPrompt = updatedPrompt.replace(/\[lighting\]/g, formData.lighting);
+          }
+          if (formData.composition) {
+            updatedPrompt = updatedPrompt.replace(/\[composition\]/g, formData.composition);
+          }
+          if (formData.cameraSettings) {
+            updatedPrompt = updatedPrompt.replace(/\[settings.*?\]/g, formData.cameraSettings);
+            updatedPrompt = updatedPrompt.replace(/\[camera settings\]/g, formData.cameraSettings);
+          }
+          if (formData.lightingConditions) {
+            updatedPrompt = updatedPrompt.replace(/\[lighting conditions\]/g, formData.lightingConditions);
+          }
+          if (formData.photographyStyle) {
+            updatedPrompt = updatedPrompt.replace(/\[photography style\]/g, formData.photographyStyle);
+          }
+          if (formData.postProcessing) {
+            updatedPrompt = updatedPrompt.replace(/\[post processing\]/g, formData.postProcessing);
+          }
+          if (formData.materials) {
+            updatedPrompt = updatedPrompt.replace(/\[materials\]/g, formData.materials);
+          }
+          if (formData.lightingSetup) {
+            updatedPrompt = updatedPrompt.replace(/\[lighting setup\]/g, formData.lightingSetup);
+          }
+          if (formData.renderingStyle) {
+            updatedPrompt = updatedPrompt.replace(/\[rendering style\]/g, formData.renderingStyle);
+          }
+          if (formData.cameraSpecs) {
+            updatedPrompt = updatedPrompt.replace(/\[camera specs\]/g, formData.cameraSpecs);
+          }
+          if (formData.purpose) {
+            updatedPrompt = updatedPrompt.replace(/\[purpose.*?\]/g, formData.purpose);
+          }
+          if (formData.functionalAspects) {
+            updatedPrompt = updatedPrompt.replace(/\[functional aspects\]/g, formData.functionalAspects);
+          }
+          if (formData.worldContext) {
+            updatedPrompt = updatedPrompt.replace(/\[world context\]/g, formData.worldContext);
+          }
+          if (formData.designLanguage) {
+            updatedPrompt = updatedPrompt.replace(/\[design language\]/g, formData.designLanguage);
+          }
+          if (formData.keyFeatures) {
+            updatedPrompt = updatedPrompt.replace(/\[key features\]/g, formData.keyFeatures);
+          }
+          if (formData.studioSetup) {
+            updatedPrompt = updatedPrompt.replace(/\[studio setup\]/g, formData.studioSetup);
+          }
+          if (formData.productAngle) {
+            updatedPrompt = updatedPrompt.replace(/\[product angle\]/g, formData.productAngle);
+          }
+          if (formData.retouchingLevel) {
+            updatedPrompt = updatedPrompt.replace(/\[retouching level\]/g, formData.retouchingLevel);
+          }
+          if (formData.characterType) {
+            updatedPrompt = updatedPrompt.replace(/\[character type\]/g, formData.characterType);
+          }
+          if (formData.personality) {
+            updatedPrompt = updatedPrompt.replace(/\[personality\]/g, formData.personality);
+          }
+          if (formData.physicalAttributes) {
+            updatedPrompt = updatedPrompt.replace(/\[physical attributes\]/g, formData.physicalAttributes);
+          }
+          if (formData.costume) {
+            updatedPrompt = updatedPrompt.replace(/\[costume\]/g, formData.costume);
+          }
+          if (formData.poses) {
+            updatedPrompt = updatedPrompt.replace(/\[poses\]/g, formData.poses);
+          }
+          if (formData.environmentType) {
+            updatedPrompt = updatedPrompt.replace(/\[environment type\]/g, formData.environmentType);
+          }
+          if (formData.atmosphere) {
+            updatedPrompt = updatedPrompt.replace(/\[atmosphere\]/g, formData.atmosphere);
+          }
+          if (formData.architecturalElements) {
+            updatedPrompt = updatedPrompt.replace(/\[architectural elements\]/g, formData.architecturalElements);
+          }
+          if (formData.timeOfDay) {
+            updatedPrompt = updatedPrompt.replace(/\[time of day\]/g, formData.timeOfDay);
+          }
+          if (formData.storytelling) {
+            updatedPrompt = updatedPrompt.replace(/\[storytelling\]/g, formData.storytelling);
+          }
           if (formData.perspective) {
             updatedPrompt = updatedPrompt.replace(/\[perspective\]/g, formData.perspective);
           }
-          if (formData.artReferences) {
-            updatedPrompt = updatedPrompt.replace(/\[art references\]/g, formData.artReferences);
+          if (formData.aspectRatio) {
+            updatedPrompt = updatedPrompt.replace(/\[aspect ratio\]/g, formData.aspectRatio);
           }
           break;
         case "email":
@@ -198,7 +406,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
             updatedPrompt = updatedPrompt.replace(/\[competitor names\]/g, formData.competitors);
           }
           if (formData.analysisAspects) {
-            updatedPrompt = updatedPrompt.replace(/\[specific aspects\]/g, formData.analysisAspects);
+            updatedPrompt = updatedPrompt.replace(/\[analysis aspects\]/g, formData.analysisAspects);
           }
           if (formData.option1) {
             updatedPrompt = updatedPrompt.replace(/\[option 1\]/g, formData.option1);
@@ -208,6 +416,16 @@ const PromptForm: React.FC<PromptFormProps> = ({
           }
           if (formData.criteria) {
             updatedPrompt = updatedPrompt.replace(/\[criteria\]/g, formData.criteria);
+          }
+          // Additional research fields
+          if (formData.researchFocus) {
+            updatedPrompt = updatedPrompt.replace(/\[research focus\]/g, formData.researchFocus);
+          }
+          if (formData.researchTopic) {
+            updatedPrompt = updatedPrompt.replace(/\[research topic\]/g, formData.researchTopic);
+          }
+          if (formData.researchScope) {
+            updatedPrompt = updatedPrompt.replace(/\[research scope\]/g, formData.researchScope);
           }
           break;
         case "seo":
@@ -225,6 +443,22 @@ const PromptForm: React.FC<PromptFormProps> = ({
           if (formData.industry) {
             updatedPrompt = updatedPrompt.replace(/\[industry\]/g, formData.industry);
           }
+          // Additional SEO fields
+          if (formData.secondaryKeywords) {
+            updatedPrompt = updatedPrompt.replace(/\[secondary keywords\]/g, formData.secondaryKeywords);
+          }
+          if (formData.targetKeywords) {
+            updatedPrompt = updatedPrompt.replace(/\[target keywords\]/g, formData.targetKeywords);
+          }
+          if (formData.services) {
+            updatedPrompt = updatedPrompt.replace(/\[services\]/g, formData.services);
+          }
+          if (formData.seoTopic) {
+            updatedPrompt = updatedPrompt.replace(/\[seo topic\]/g, formData.seoTopic);
+          }
+          if (formData.contentGoal) {
+            updatedPrompt = updatedPrompt.replace(/\[content goal\]/g, formData.contentGoal);
+          }
           break;
         case "data":
           if (formData.dataset) {
@@ -238,6 +472,24 @@ const PromptForm: React.FC<PromptFormProps> = ({
             updatedPrompt = updatedPrompt.replace(/\[timeframe\]/g, formData.timeframe);
           }
           break;
+        case "knowledge":
+          // Knowledge-specific replacements
+          if (formData.contentType) {
+            updatedPrompt = updatedPrompt.replace(/\[content type\]/g, formData.contentType);
+          }
+          break;
+        case "other":
+          // Other-specific replacements
+          if (formData.taskDescription) {
+            updatedPrompt = updatedPrompt.replace(/\[task description\]/g, formData.taskDescription);
+          }
+          if (formData.expectedOutput) {
+            updatedPrompt = updatedPrompt.replace(/\[expected output\]/g, formData.expectedOutput);
+          }
+          if (formData.outputFormat) {
+            updatedPrompt = updatedPrompt.replace(/\[output format\]/g, formData.outputFormat);
+          }
+          break;
       }
       
       // Only update if something changed
@@ -248,7 +500,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
   }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, 
       formData.language, formData.functionality, formData.challenge, formData.context, 
       formData.constraints, formData.subject, formData.style, formData.details,
-      formData.perspective, formData.artReferences, formData.targetAudience,
+      formData.targetAudience,
       // Content-specific fields
       formData.tone, formData.wordCount, formData.researchDepth, formData.sources,
       formData.platforms, formData.engagement, formData.emailType, formData.cta,
@@ -261,10 +513,37 @@ const PromptForm: React.FC<PromptFormProps> = ({
       // Research fields  
       formData.market, formData.specificAspects, formData.timePeriod, formData.competitors,
       formData.analysisAspects, formData.option1, formData.option2, formData.criteria,
+      formData.researchFocus, formData.researchTopic, formData.researchScope,
       // SEO fields
       formData.keyword, formData.businessType, formData.location, formData.industry,
+      formData.secondaryKeywords, formData.targetKeywords, formData.services, formData.seoTopic,
+      formData.contentGoal,
       // Data fields
       formData.dataset, formData.audience, formData.timeframe,
+      // Code fields
+      formData.parameters, formData.returnType, formData.errorHandling, formData.framework,
+      formData.props, formData.styling, formData.complexity, formData.apiService, formData.authMethod,
+      formData.endpoints, formData.testFramework, formData.testTypes, formData.codeToTest,
+      formData.currentCode, formData.refactorGoals, formData.databaseType, formData.operation,
+      formData.requirements,
+      // Idea fields
+      formData.targetMarket, formData.businessModel, formData.investmentLevel, formData.targetUsers,
+      formData.productType, formData.painPoints, formData.problemScope, formData.stakeholders,
+      formData.timeline, formData.medium, formData.audience, formData.emotion, formData.budget,
+      formData.channels, formData.goals, formData.innovationType, formData.trends, formData.capabilities,
+      // Image fields
+      formData.artisticInfluence, formData.colorPalette, formData.lighting, formData.composition,
+      formData.cameraSettings, formData.lightingConditions, formData.photographyStyle, formData.postProcessing,
+      formData.materials, formData.lightingSetup, formData.renderingStyle, formData.cameraSpecs,
+      formData.functionalAspects, formData.worldContext, formData.designLanguage, formData.keyFeatures,
+      formData.studioSetup, formData.productAngle, formData.retouchingLevel, formData.characterType,
+      formData.personality, formData.physicalAttributes, formData.costume, formData.poses,
+      formData.environmentType, formData.atmosphere, formData.architecturalElements, formData.timeOfDay,
+      formData.storytelling, formData.perspective, formData.aspectRatio,
+      // Knowledge fields
+      formData.contentType,
+      // Other fields
+      formData.taskDescription, formData.expectedOutput, formData.outputFormat,
       formData.useTemplate, formData.buildCustom, onChange, selectedSubCategory]);
 
   // Toggle between template and custom prompt
