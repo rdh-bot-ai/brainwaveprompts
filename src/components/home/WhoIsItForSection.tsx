@@ -18,33 +18,33 @@ const WhoIsItForSection = () => {
   const userTypes: UserType[] = [
     {
       icon: <PenLine className="h-8 w-8 text-purple-600" />,
-      title: "Content Creators",
-      description: "Generate more engaging blog posts, scripts, and social media captions with AI-optimized prompts."
+      title: "Complete AI Beginners",
+      description: "Never used ChatGPT or any AI? Perfect! Start here and learn how to get great results from your first try."
     },
     {
       icon: <Briefcase className="h-8 w-8 text-purple-600" />,
-      title: "Small Business",
-      description: "Create effective marketing copy, email campaigns, and product descriptions to grow your business."
+      title: "Small Business Owners",
+      description: "Get help writing emails, creating content, and solving business problems without learning complex AI skills."
     },
     {
       icon: <Building className="h-8 w-8 text-purple-600" />,
-      title: "Corporate Users",
-      description: "Draft professional documents, reports, and communications that align with your brand voice."
+      title: "Office Workers",
+      description: "Make your daily tasks easier - from writing reports to brainstorming ideas, AI can help with almost anything."
     },
     {
       icon: <PenLine className="h-8 w-8 text-purple-600" />,
-      title: "Freelancers",
-      description: "Deliver higher quality work faster with prompts tailored to meet your clients' specific needs."
+      title: "Students & Learners",
+      description: "Get help with research, writing, and understanding complex topics. Learn how to use AI as your study buddy."
     },
     {
       icon: <Code className="h-8 w-8 text-purple-600" />,
-      title: "Developers",
-      description: "Write better code, design APIs, and create documentation with structured technical prompts."
+      title: "Creative Professionals",
+      description: "Writers, designers, and creators who want to use AI for inspiration and productivity without the technical hassle."
     },
     {
       icon: <Palette className="h-8 w-8 text-purple-600" />,
-      title: "Designers",
-      description: "Generate creative concepts, describe design elements precisely, and iterate more effectively."
+      title: "Anyone Curious About AI",
+      description: "If you've heard about AI but don't know where to start, this is your simple, friendly introduction."
     }
   ];
 
@@ -52,9 +52,9 @@ const WhoIsItForSection = () => {
     <section className="py-16 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">Who Is It For</h2>
+          <h2 className="text-3xl font-bold mb-4">Perfect for AI Newcomers</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Our AI Prompt Builder serves a wide variety of professionals and creatives.
+            Whether you've never used AI before or just want better results, we make it simple for everyone.
           </p>
         </div>
 

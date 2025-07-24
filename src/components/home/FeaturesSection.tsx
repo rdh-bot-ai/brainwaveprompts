@@ -9,11 +9,10 @@ const FeaturesSection = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-4">
-            Create Better AI Prompts in Minutes
+            Talk to AI Like a Pro in Minutes
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Our step-by-step approach helps you create detailed, effective
-            prompts without needing to be an AI expert.
+            Don't know how to "talk" to AI? We'll guide you step-by-step to create clear instructions that get you exactly what you want from any AI tool.
           </p>
         </div>
 
@@ -24,12 +23,10 @@ const FeaturesSection = () => {
                 <BrainCircuit className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold mb-2">
-                AI-Powered Enhancement
+                Beginner-Friendly Guide
               </h3>
               <p className="text-gray-600">
-                Our system analyzes your inputs and automatically enhances them
-                with specific details, context, and formatting that AI models
-                respond to best.
+                Never used AI before? We translate your simple ideas into the detailed instructions that AI needs to give you great results every time.
               </p>
             </CardContent>
           </Card>
@@ -40,12 +37,10 @@ const FeaturesSection = () => {
                 <PencilLine className="h-6 w-6 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold mb-2">
-                Task-Specific Templates
+                Easy Templates for Everything
               </h3>
               <p className="text-gray-600">
-                Choose from various task types like content creation, coding,
-                brainstorming, and more - each with customized fields for
-                optimal results.
+                Choose what you want to create - write emails, plan projects, get ideas, or solve problems. We have simple forms for each task that anyone can fill out.
               </p>
             </CardContent>
           </Card>
@@ -55,11 +50,9 @@ const FeaturesSection = () => {
               <div className="rounded-full bg-purple-100 w-12 h-12 flex items-center justify-center mb-4">
                 <Zap className="h-6 w-6 text-purple-600" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Consistent Results</h3>
+              <h3 className="text-xl font-bold mb-2">Always Get Good Results</h3>
               <p className="text-gray-600">
-                Get predictably good outputs from AI tools by using our
-                enhanced prompts that follow best practices for clarity and
-                specificity.
+                Stop getting confusing or unhelpful responses from AI. Our prompts ensure you get useful, relevant answers that actually help you accomplish your goals.
               </p>
             </CardContent>
           </Card>

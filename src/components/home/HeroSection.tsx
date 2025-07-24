@@ -7,13 +7,11 @@ const HeroSection = () => {
         <div className="flex flex-col lg:flex-row items-center">
           <div className="lg:w-1/2 mb-10 lg:mb-0 lg:pr-10">
             <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6">
-              <span className="block">Get More From AI</span>
-              <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">With Brainwave Prompts</span>
+              <span className="block">New to AI?</span>
+              <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Start Here & Get Amazing Results</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8">
-              Create powerful AI prompts without being an expert. Turn simple
-              ideas into detailed, effective prompts that generate better
-              results every time.
+              Never used ChatGPT or AI before? No problem! Our simple tool helps you communicate with AI clearly so you get exactly what you need - no technical knowledge required.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button size="lg" asChild className="rounded-full">
