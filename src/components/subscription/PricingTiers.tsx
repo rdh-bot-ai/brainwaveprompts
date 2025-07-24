@@ -65,11 +65,8 @@ const PricingTiers: React.FC = () => {
         <CardContent>
           <div className="space-y-2">
             <PricingFeature included={true} feature="2 prompt enhancements per month" tier="free" />
-            <PricingFeature included={true} feature="GPT-3.5-turbo AI model" tier="free" />
-            <PricingFeature included={true} feature="Basic prompt caching" tier="free" />
             <PricingFeature included={false} feature="Advanced options" tier="free" />
             <PricingFeature included={false} feature="Template access" tier="free" />
-            <PricingFeature included={true} feature="7-day prompt history" tier="free" />
             <PricingFeature included={false} feature="Export options" tier="free" />
             <PricingFeature included={false} feature="Collaboration features" tier="free" />
             <PricingFeature included={false} feature="Priority support" tier="free" />
@@ -102,12 +99,10 @@ const PricingTiers: React.FC = () => {
         <CardContent>
           <div className="space-y-2">
             <PricingFeature included={true} feature="5 prompt enhancements per month" tier="registered" />
-            <PricingFeature included={true} feature="GPT-3.5-turbo AI model" tier="registered" />
             <PricingFeature included={true} feature="Standard prompt caching" tier="registered" />
             <PricingFeature included={true} feature="Limited advanced options" tier="registered" />
             <PricingFeature included={true} feature="Basic templates" tier="registered" />
-            <PricingFeature included={true} feature="30-day prompt history" tier="registered" />
-            <PricingFeature included={true} feature="Limited export (TXT, PDF)" tier="registered" />
+            <PricingFeature included={true} feature="7-day prompt history" tier="registered" />
             <PricingFeature included={false} feature="Collaboration features" tier="registered" />
             <PricingFeature included={false} feature="Priority support" tier="registered" />
           </div>
@@ -129,7 +124,7 @@ const PricingTiers: React.FC = () => {
             </div>}
           <CardTitle className="text-xl">Premium</CardTitle>
           <div className="flex items-baseline">
-            <span className="text-3xl font-bold">$12</span>
+            <span className="text-3xl font-bold">$18</span>
             <span className="ml-1 text-gray-100">/month</span>
           </div>
           <CardDescription className="text-gray-100">
@@ -139,13 +134,10 @@ const PricingTiers: React.FC = () => {
         <CardContent className="pt-6">
           <div className="space-y-2">
             <PricingFeature included={true} feature="Unlimited prompt enhancements" tier="premium" />
-            <PricingFeature included={true} feature="GPT-4 AI model" tier="premium" />
             <PricingFeature included={true} feature="Priority prompt caching" tier="premium" />
             <PricingFeature included={true} feature="Full access to advanced options" tier="premium" />
             <PricingFeature included={true} feature="All templates + Premium" tier="premium" />
-            <PricingFeature included={true} feature="Unlimited prompt history" tier="premium" />
-            <PricingFeature included={true} feature="Comprehensive export options" tier="premium" />
-            <PricingFeature included={true} feature="Collaboration features" tier="premium" />
+            <PricingFeature included={true} feature="30-day prompt history" tier="premium" />
             <PricingFeature included={true} feature="Priority support" tier="premium" />
           </div>
         </CardContent>
