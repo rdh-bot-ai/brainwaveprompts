@@ -5,6 +5,12 @@ import ContentForm from "./forms/ContentForm";
 import CodeForm from "./forms/CodeForm";
 import IdeaForm from "./forms/IdeaForm";
 import ImageForm from "./forms/ImageForm";
+import EmailForm from "./forms/EmailForm";
+import ResearchForm from "./forms/ResearchForm";
+import SEOForm from "./forms/SEOForm";
+import DataForm from "./forms/DataForm";
+import KnowledgeForm from "./forms/KnowledgeForm";
+import OtherForm from "./forms/OtherForm";
 import CommonForm from "./forms/CommonForm";
 import AISuggestions from "./AISuggestions";
 import { SUBCATEGORIES } from "./subcategories";
@@ -50,21 +56,12 @@ const PromptForm: React.FC<PromptFormProps> = ({
     if (selectedSubCategory && formData.promptTemplate && formData.useTemplate && !formData.buildCustom) {
       let updatedPrompt = formData.promptTemplate;
       
-      // Replace placeholders with actual values if they exist
-      if (taskType === "content" && formData.topic) {
+      // Generic replacements that work across all forms
+      if (formData.topic) {
         updatedPrompt = updatedPrompt.replace(/\[topic\]/g, formData.topic);
       }
       if (formData.keyPoints) {
         updatedPrompt = updatedPrompt.replace(/\[key points\]/g, formData.keyPoints);
-      }
-      if (taskType === "code" && formData.language) {
-        updatedPrompt = updatedPrompt.replace(/\[language\]/g, formData.language);
-      }
-      if (taskType === "code" && formData.functionality) {
-        updatedPrompt = updatedPrompt.replace(/\[functionality\]/g, formData.functionality);
-      }
-      if (taskType === "idea" && formData.challenge) {
-        updatedPrompt = updatedPrompt.replace(/\[challenge\]/g, formData.challenge);
       }
       if (formData.context) {
         updatedPrompt = updatedPrompt.replace(/\[context\]/g, formData.context);
@@ -72,20 +69,129 @@ const PromptForm: React.FC<PromptFormProps> = ({
       if (formData.constraints) {
         updatedPrompt = updatedPrompt.replace(/\[constraints\]/g, formData.constraints);
       }
-      if (taskType === "image" && formData.subject) {
-        updatedPrompt = updatedPrompt.replace(/\[subject\]/g, formData.subject);
+      if (formData.targetAudience) {
+        updatedPrompt = updatedPrompt.replace(/\[target audience.*?\]/g, formData.targetAudience);
+        updatedPrompt = updatedPrompt.replace(/\[audience.*?\]/g, formData.targetAudience);
+        updatedPrompt = updatedPrompt.replace(/\[specific audience.*?\]/g, formData.targetAudience);
       }
-      if (taskType === "image" && formData.style) {
-        updatedPrompt = updatedPrompt.replace(/\[style\]/g, formData.style);
-      }
-      if (taskType === "image" && formData.details) {
-        updatedPrompt = updatedPrompt.replace(/\[details\]/g, formData.details);
-      }
-      if (taskType === "image" && formData.perspective) {
-        updatedPrompt = updatedPrompt.replace(/\[perspective\]/g, formData.perspective);
-      }
-      if (taskType === "image" && formData.artReferences) {
-        updatedPrompt = updatedPrompt.replace(/\[art references\]/g, formData.artReferences);
+
+      // Task-specific replacements
+      switch (taskType) {
+        case "content":
+          break;
+        case "code":
+          if (formData.language) {
+            updatedPrompt = updatedPrompt.replace(/\[language\]/g, formData.language);
+          }
+          if (formData.functionality) {
+            updatedPrompt = updatedPrompt.replace(/\[functionality\]/g, formData.functionality);
+          }
+          break;
+        case "idea":
+          if (formData.challenge) {
+            updatedPrompt = updatedPrompt.replace(/\[challenge\]/g, formData.challenge);
+          }
+          break;
+        case "image":
+          if (formData.subject) {
+            updatedPrompt = updatedPrompt.replace(/\[subject\]/g, formData.subject);
+          }
+          if (formData.style) {
+            updatedPrompt = updatedPrompt.replace(/\[style\]/g, formData.style);
+          }
+          if (formData.details) {
+            updatedPrompt = updatedPrompt.replace(/\[details\]/g, formData.details);
+          }
+          if (formData.perspective) {
+            updatedPrompt = updatedPrompt.replace(/\[perspective\]/g, formData.perspective);
+          }
+          if (formData.artReferences) {
+            updatedPrompt = updatedPrompt.replace(/\[art references\]/g, formData.artReferences);
+          }
+          break;
+        case "email":
+          if (formData.purpose) {
+            updatedPrompt = updatedPrompt.replace(/\[purpose.*?\]/g, formData.purpose);
+          }
+          if (formData.objective) {
+            updatedPrompt = updatedPrompt.replace(/\[objective\]/g, formData.objective);
+          }
+          if (formData.company) {
+            updatedPrompt = updatedPrompt.replace(/\[company.*?\]/g, formData.company);
+          }
+          if (formData.issue) {
+            updatedPrompt = updatedPrompt.replace(/\[issue.*?\]/g, formData.issue);
+          }
+          if (formData.specificDetails) {
+            updatedPrompt = updatedPrompt.replace(/\[specific details\]/g, formData.specificDetails);
+          }
+          if (formData.relatedIssues) {
+            updatedPrompt = updatedPrompt.replace(/\[related issues\]/g, formData.relatedIssues);
+          }
+          if (formData.product) {
+            updatedPrompt = updatedPrompt.replace(/\[product\/service\]/g, formData.product);
+          }
+          if (formData.benefits) {
+            updatedPrompt = updatedPrompt.replace(/\[benefits\]/g, formData.benefits);
+          }
+          if (formData.keyBenefits) {
+            updatedPrompt = updatedPrompt.replace(/\[2-3 key benefits\]/g, formData.keyBenefits);
+          }
+          break;
+        case "research":
+          if (formData.market) {
+            updatedPrompt = updatedPrompt.replace(/\[market\/industry\]/g, formData.market);
+          }
+          if (formData.specificAspects) {
+            updatedPrompt = updatedPrompt.replace(/\[specific aspects\]/g, formData.specificAspects);
+          }
+          if (formData.timePeriod) {
+            updatedPrompt = updatedPrompt.replace(/\[time period\]/g, formData.timePeriod);
+          }
+          if (formData.competitors) {
+            updatedPrompt = updatedPrompt.replace(/\[competitor names\]/g, formData.competitors);
+          }
+          if (formData.analysisAspects) {
+            updatedPrompt = updatedPrompt.replace(/\[specific aspects\]/g, formData.analysisAspects);
+          }
+          if (formData.option1) {
+            updatedPrompt = updatedPrompt.replace(/\[option 1\]/g, formData.option1);
+          }
+          if (formData.option2) {
+            updatedPrompt = updatedPrompt.replace(/\[option 2\]/g, formData.option2);
+          }
+          if (formData.criteria) {
+            updatedPrompt = updatedPrompt.replace(/\[criteria\]/g, formData.criteria);
+          }
+          break;
+        case "seo":
+          if (formData.keyword) {
+            updatedPrompt = updatedPrompt.replace(/\[keyword\]/g, formData.keyword);
+            updatedPrompt = updatedPrompt.replace(/\[keyword\/topic\]/g, formData.keyword);
+          }
+          if (formData.businessType) {
+            updatedPrompt = updatedPrompt.replace(/\[business type\]/g, formData.businessType);
+            updatedPrompt = updatedPrompt.replace(/\[business\]/g, formData.businessType);
+          }
+          if (formData.location) {
+            updatedPrompt = updatedPrompt.replace(/\[location\]/g, formData.location);
+          }
+          if (formData.industry) {
+            updatedPrompt = updatedPrompt.replace(/\[industry\]/g, formData.industry);
+          }
+          break;
+        case "data":
+          if (formData.dataset) {
+            updatedPrompt = updatedPrompt.replace(/\[topic\/dataset\]/g, formData.dataset);
+            updatedPrompt = updatedPrompt.replace(/\[dataset\]/g, formData.dataset);
+          }
+          if (formData.audience) {
+            updatedPrompt = updatedPrompt.replace(/\[audience\/purpose\]/g, formData.audience);
+          }
+          if (formData.timeframe) {
+            updatedPrompt = updatedPrompt.replace(/\[timeframe\]/g, formData.timeframe);
+          }
+          break;
       }
       
       // Only update if something changed
@@ -96,7 +202,18 @@ const PromptForm: React.FC<PromptFormProps> = ({
   }, [taskType, subCategory, formData.promptTemplate, formData.topic, formData.keyPoints, 
       formData.language, formData.functionality, formData.challenge, formData.context, 
       formData.constraints, formData.subject, formData.style, formData.details,
-      formData.perspective, formData.artReferences,
+      formData.perspective, formData.artReferences, formData.targetAudience,
+      // Email fields
+      formData.purpose, formData.objective, formData.company, formData.issue,
+      formData.specificDetails, formData.relatedIssues, formData.product, formData.benefits,
+      formData.keyBenefits,
+      // Research fields  
+      formData.market, formData.specificAspects, formData.timePeriod, formData.competitors,
+      formData.analysisAspects, formData.option1, formData.option2, formData.criteria,
+      // SEO fields
+      formData.keyword, formData.businessType, formData.location, formData.industry,
+      // Data fields
+      formData.dataset, formData.audience, formData.timeframe,
       formData.useTemplate, formData.buildCustom, onChange, selectedSubCategory]);
 
   // Toggle between template and custom prompt
@@ -152,6 +269,18 @@ const PromptForm: React.FC<PromptFormProps> = ({
         return <IdeaForm formData={formData} onChange={onChange} />;
       case "image":
         return <ImageForm formData={formData} onChange={onChange} />;
+      case "email":
+        return <EmailForm formData={formData} onChange={onChange} subCategory={subCategory} />;
+      case "research":
+        return <ResearchForm formData={formData} onChange={onChange} subCategory={subCategory} />;
+      case "seo":
+        return <SEOForm formData={formData} onChange={onChange} subCategory={subCategory} />;
+      case "data":
+        return <DataForm formData={formData} onChange={onChange} subCategory={subCategory} />;
+      case "knowledge":
+        return <KnowledgeForm formData={formData} onChange={onChange} subCategory={subCategory} />;
+      case "other":
+        return <OtherForm formData={formData} onChange={onChange} subCategory={subCategory} />;
       default:
         return null;
     }
