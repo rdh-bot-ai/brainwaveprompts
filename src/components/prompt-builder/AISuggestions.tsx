@@ -13,124 +13,167 @@ const AISuggestions: React.FC<AISuggestionsProps> = ({
   subCategory, 
   formData 
 }) => {
-  // Generate context-aware suggestions based on the user's selections
+  // Generate highly dynamic, context-aware suggestions
   const getSuggestions = () => {
     const suggestions: string[] = [];
     
-    // Different suggestions based on prompt mode
-    if (formData.buildCustom) {
-      suggestions.push("You're in custom prompt mode. You can write or modify prompts freely.");
-      
-      if (!formData.prompt || formData.prompt.length < 30) {
-        suggestions.push("Start by clearly stating your request or goal in the prompt editor.");
-        suggestions.push("Try using the advanced editor for more space when writing your prompt.");
-      }
-      
-      // Task-specific custom mode suggestions
-      switch (taskType) {
-        case "content":
-          suggestions.push("For content creation, specify target audience, tone, and desired length.");
-          if (!formData.topic) {
-            suggestions.push("Include a clear topic in your prompt for better content generation.");
-          }
-          break;
-        case "code":
-          suggestions.push("For code, mention programming language, functionality, and performance requirements.");
-          if (!formData.language) {
-            suggestions.push("Specify the programming language in your prompt.");
-          }
-          if (!formData.functionality) {
-            suggestions.push("Describe what the code should do in your prompt.");
-          }
-          break;
-        case "idea":
-          suggestions.push("For ideation, define the problem space and any constraints to consider.");
-          if (!formData.challenge) {
-            suggestions.push("Clearly describe the challenge or problem you're addressing.");
-          }
-          break;
-        case "image":
-          suggestions.push("For images, describe subject, style, mood, and composition details.");
-          if (!formData.subject) {
-            suggestions.push("Detail what should appear in the image.");
-          }
-          if (!formData.style) {
-            suggestions.push("Specify the artistic style for your image.");
-          }
-          break;
-      }
-      
-      // Always suggest to use the form fields for guidance
-      suggestions.push("Fill in the form fields below to help structure your custom prompt.");
-    } else if (!formData.useTemplate) {
-      suggestions.push("Consider using our template for better structure");
-      suggestions.push("Remember to specify your desired tone and detail level");
-    } else {
-      // General template mode suggestions
-      if (!formData.prompt || formData.prompt.length < 30) {
-        suggestions.push("Fill in the basic details to see your template preview");
-      }
+    // Core field suggestions - these are the most important
+    if (!formData.topic) {
+      suggestions.push("📝 Start with your main topic - this is the foundation of your prompt");
     }
     
-    // Task-specific suggestions for template mode
-    if (formData.useTemplate) {
-      switch (taskType) {
-        case "content":
-          if (!formData.topic || formData.topic.length < 5) {
-            suggestions.push("Add a specific topic for better results");
-          } else if (!formData.keyPoints && formData.useTemplate) {
-            suggestions.push("Adding key points will make your content more structured");
+    if (!formData.targetAudience) {
+      suggestions.push("🎯 Define your target audience for more tailored content");
+    }
+    
+    // Task and subcategory-specific suggestions
+    if (taskType === "content") {
+      switch (subCategory) {
+        case "blog":
+          if (!formData.keyPoints) {
+            suggestions.push("💡 Add key points to structure your blog post sections");
           }
-          
-          // Check for target audience in content tasks
-          if (!formData.targetAudience && taskType === "content") {
-            suggestions.push("Specifying a target audience helps tailor the content appropriately");
+          if (!formData.tone) {
+            suggestions.push("🎭 Choose a tone that matches your brand voice");
           }
-          break;
-          
-        case "code":
-          if (!formData.language && formData.useTemplate) {
-            suggestions.push("Selecting a programming language will help AI generate better code");
+          if (!formData.wordCount) {
+            suggestions.push("📏 Set target word count for appropriate depth");
           }
-          if (!formData.functionality || formData.functionality.length < 10) {
-            suggestions.push("Describe the code functionality in detail for better results");
+          if (formData.topic && !formData.keyPoints) {
+            suggestions.push("🔥 Pro tip: Break down your topic into 3-5 key sections for better structure");
           }
           break;
           
-        case "idea":
-          if (!formData.challenge || formData.challenge.length < 10) {
-            suggestions.push("Describe your challenge clearly to get more relevant ideas");
+        case "article":
+          if (!formData.researchDepth) {
+            suggestions.push("🔬 Specify research depth for credible, well-sourced content");
           }
-          if (!formData.constraints && formData.useTemplate) {
-            suggestions.push("Adding constraints helps focus the ideation process");
+          if (!formData.sources && formData.researchDepth === "deep") {
+            suggestions.push("📚 Mention preferred source types for academic-level articles");
+          }
+          if (formData.topic && formData.keyPoints) {
+            suggestions.push("⭐ Great start! Consider adding research requirements for authority");
           }
           break;
           
-        case "image":
-          if (!formData.subject || formData.subject.length < 5) {
-            suggestions.push("Describe what should be in the image for better results");
+        case "social":
+          if (!formData.platforms) {
+            suggestions.push("📱 Select target platforms to optimize format and length");
           }
-          if (!formData.style && formData.useTemplate) {
-            suggestions.push("Selecting an image style will guide the visual aesthetic");
+          if (!formData.engagement) {
+            suggestions.push("🎯 Define your engagement goal for focused messaging");
           }
-          if (!formData.details && formData.useTemplate) {
-            suggestions.push("Adding visual details improves image generation quality");
+          if (formData.platforms && formData.engagement) {
+            suggestions.push("🚀 You're set! Each platform will get optimized content");
+          }
+          break;
+          
+        case "email":
+          if (!formData.emailType) {
+            suggestions.push("📧 Choose email type for appropriate structure and tone");
+          }
+          if (!formData.cta) {
+            suggestions.push("👆 Add your call-to-action for better conversion");
+          }
+          if (formData.emailType && formData.cta) {
+            suggestions.push("💌 Perfect! Your email will be conversion-optimized");
+          }
+          break;
+          
+        case "technical":
+          if (!formData.audienceLevel) {
+            suggestions.push("🎓 Set audience technical level for appropriate complexity");
+          }
+          if (!formData.prerequisites) {
+            suggestions.push("⚙️ List prerequisites to set proper expectations");
+          }
+          if (formData.audienceLevel === "beginner" && !formData.prerequisites) {
+            suggestions.push("🔰 For beginners, detailed prerequisites are essential");
+          }
+          break;
+          
+        case "script":
+          if (!formData.duration) {
+            suggestions.push("⏱️ Set video duration to control pacing and content depth");
+          }
+          if (!formData.platform) {
+            suggestions.push("🎥 Choose platform for format-specific optimization");
+          }
+          if (formData.platform === "tiktok" && !formData.duration) {
+            suggestions.push("⚡ TikTok works best with 30-60 second hooks");
+          }
+          break;
+          
+        case "newsletter":
+          if (!formData.frequency) {
+            suggestions.push("📅 Set frequency to establish reader expectations");
+          }
+          if (!formData.sections) {
+            suggestions.push("📑 Define sections for consistent newsletter structure");
+          }
+          if (formData.frequency && formData.sections) {
+            suggestions.push("📬 Excellent! Your newsletter will have professional structure");
           }
           break;
       }
     }
     
-    // Tone and detail level suggestions
-    if (!formData.tone) {
-      suggestions.push("Selecting a tone helps AI match your communication style");
+    // Other task types with dynamic suggestions
+    else if (taskType === "code") {
+      if (!formData.language) {
+        suggestions.push("💻 Select programming language for syntax-specific code");
+      }
+      if (!formData.functionality) {
+        suggestions.push("⚡ Describe functionality in detail for working code");
+      }
+      if (formData.language && formData.functionality) {
+        suggestions.push("🎯 Ready to generate! Add context for production-ready code");
+      }
     }
     
-    // For premium feature promotion
-    if (!formData.includeExamples && suggestions.length < 4) {
-      suggestions.push("Check 'Include Examples' for more practical, concrete outputs");
+    else if (taskType === "idea") {
+      if (!formData.challenge) {
+        suggestions.push("🧩 Define your challenge clearly for targeted solutions");
+      }
+      if (formData.challenge && !formData.constraints) {
+        suggestions.push("📐 Add constraints to focus ideation and get practical solutions");
+      }
     }
     
-    return suggestions.length > 0 ? suggestions : ["Your prompt is looking good! Click 'Enhance with AI' when ready."];
+    else if (taskType === "image") {
+      if (!formData.subject) {
+        suggestions.push("🎨 Describe your main subject for focused image generation");
+      }
+      if (!formData.style) {
+        suggestions.push("🖼️ Choose artistic style for consistent visual aesthetic");
+      }
+      if (formData.subject && !formData.details) {
+        suggestions.push("✨ Add visual details for richer, more specific images");
+      }
+    }
+    
+    // Common form enhancements
+    if (formData.topic && formData.targetAudience && !formData.tone) {
+      suggestions.push("🎵 You have great basics! A tone selection will perfect the voice");
+    }
+    
+    if (!formData.includeExamples && formData.topic) {
+      suggestions.push("💎 Enable 'Include Examples' for actionable, practical content");
+    }
+    
+    // Advanced suggestions based on completion
+    const completionFields = [formData.topic, formData.targetAudience, formData.keyPoints].filter(Boolean);
+    if (completionFields.length >= 2) {
+      suggestions.push("🔥 You're doing great! Your prompt is taking shape nicely");
+    }
+    
+    // Provide encouragement and next steps
+    if (suggestions.length === 0) {
+      suggestions.push("✅ Excellent! Your prompt is well-structured and ready to generate amazing results");
+      suggestions.push("🚀 Pro tip: Experiment with detail levels and examples for different output styles");
+    }
+    
+    return suggestions;
   };
   
   const suggestions = getSuggestions();

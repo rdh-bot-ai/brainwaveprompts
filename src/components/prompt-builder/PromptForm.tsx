@@ -17,6 +17,7 @@ import { SUBCATEGORIES } from "./subcategories";
 import { Label } from "@/components/ui/label";
 import { Sparkle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PromptFormProps {
   taskType: TaskType;
@@ -78,6 +79,51 @@ const PromptForm: React.FC<PromptFormProps> = ({
       // Task-specific replacements
       switch (taskType) {
         case "content":
+          // Content-specific replacements
+          if (formData.tone) {
+            updatedPrompt = updatedPrompt.replace(/\[tone\]/g, formData.tone);
+          }
+          if (formData.wordCount) {
+            updatedPrompt = updatedPrompt.replace(/\[word count\]/g, formData.wordCount);
+            updatedPrompt = updatedPrompt.replace(/\[duration.*?\]/g, formData.wordCount);
+          }
+          if (formData.researchDepth) {
+            updatedPrompt = updatedPrompt.replace(/\[research depth\]/g, formData.researchDepth);
+          }
+          if (formData.sources) {
+            updatedPrompt = updatedPrompt.replace(/\[sources\]/g, formData.sources);
+          }
+          if (formData.platforms) {
+            updatedPrompt = updatedPrompt.replace(/\[platforms\]/g, formData.platforms);
+          }
+          if (formData.engagement) {
+            updatedPrompt = updatedPrompt.replace(/\[engagement goal\]/g, formData.engagement);
+          }
+          if (formData.emailType) {
+            updatedPrompt = updatedPrompt.replace(/\[email type\]/g, formData.emailType);
+          }
+          if (formData.cta) {
+            updatedPrompt = updatedPrompt.replace(/\[call-to-action\]/g, formData.cta);
+            updatedPrompt = updatedPrompt.replace(/\[cta\]/g, formData.cta);
+          }
+          if (formData.audienceLevel) {
+            updatedPrompt = updatedPrompt.replace(/\[audience level.*?\]/g, formData.audienceLevel);
+          }
+          if (formData.prerequisites) {
+            updatedPrompt = updatedPrompt.replace(/\[prerequisites\]/g, formData.prerequisites);
+          }
+          if (formData.duration) {
+            updatedPrompt = updatedPrompt.replace(/\[duration.*?\]/g, formData.duration);
+          }
+          if (formData.platform) {
+            updatedPrompt = updatedPrompt.replace(/\[platform\]/g, formData.platform);
+          }
+          if (formData.frequency) {
+            updatedPrompt = updatedPrompt.replace(/\[frequency\]/g, formData.frequency);
+          }
+          if (formData.sections) {
+            updatedPrompt = updatedPrompt.replace(/\[sections\]/g, formData.sections);
+          }
           break;
         case "code":
           if (formData.language) {
@@ -203,6 +249,11 @@ const PromptForm: React.FC<PromptFormProps> = ({
       formData.language, formData.functionality, formData.challenge, formData.context, 
       formData.constraints, formData.subject, formData.style, formData.details,
       formData.perspective, formData.artReferences, formData.targetAudience,
+      // Content-specific fields
+      formData.tone, formData.wordCount, formData.researchDepth, formData.sources,
+      formData.platforms, formData.engagement, formData.emailType, formData.cta,
+      formData.audienceLevel, formData.prerequisites, formData.duration, formData.platform,
+      formData.frequency, formData.sections,
       // Email fields
       formData.purpose, formData.objective, formData.company, formData.issue,
       formData.specificDetails, formData.relatedIssues, formData.product, formData.benefits,
@@ -315,13 +366,15 @@ const PromptForm: React.FC<PromptFormProps> = ({
             </p>
           </div>
         </div>
-        <textarea
-          value={formData.prompt || ""}
-          onChange={handleEditorChange}
-          className="min-h-[150px] w-full bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-y"
-          placeholder="Your template will appear here as you complete the form..."
-          disabled={true}
-        />
+        <ScrollArea className="h-[200px] w-full bg-gray-50 border border-gray-200 rounded-lg">
+          <textarea
+            value={formData.prompt || ""}
+            onChange={handleEditorChange}
+            className="min-h-[150px] w-full bg-transparent p-4 text-sm focus:outline-none resize-none"
+            placeholder="Your template will appear here as you complete the form..."
+            disabled={true}
+          />
+        </ScrollArea>
       </div>
 
       {/* AI Suggestions */}
@@ -335,13 +388,17 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
       {/* Task specific form inputs */}
       {(taskType && subCategory) && (
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="mb-4 pb-3 border-b border-gray-100">
+        <div className="bg-white rounded-lg border border-gray-200">
+          <div className="p-4 pb-3 border-b border-gray-100">
             <h3 className="font-semibold text-gray-800 text-sm">Customize your prompt</h3>
             <p className="text-xs text-gray-500 mt-1">Fill in the details below to personalize your prompt</p>
           </div>
-          {renderTaskSpecificForm()}
-          <CommonForm formData={formData} onChange={onChange} />
+          <ScrollArea className="h-[400px] w-full">
+            <div className="p-4">
+              {renderTaskSpecificForm()}
+              <CommonForm formData={formData} onChange={onChange} />
+            </div>
+          </ScrollArea>
         </div>
       )}
     </div>
