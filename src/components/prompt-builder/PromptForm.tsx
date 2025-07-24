@@ -17,6 +17,7 @@ import { SUBCATEGORIES } from "./subcategories";
 import { Label } from "@/components/ui/label";
 import { Sparkle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PromptFormProps {
   taskType: TaskType;
@@ -335,13 +336,17 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
       {/* Task specific form inputs */}
       {(taskType && subCategory) && (
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <div className="mb-4 pb-3 border-b border-gray-100">
+        <div className="bg-white rounded-lg border border-gray-200">
+          <div className="p-4 pb-3 border-b border-gray-100">
             <h3 className="font-semibold text-gray-800 text-sm">Customize your prompt</h3>
             <p className="text-xs text-gray-500 mt-1">Fill in the details below to personalize your prompt</p>
           </div>
-          {renderTaskSpecificForm()}
-          <CommonForm formData={formData} onChange={onChange} />
+          <ScrollArea className="max-h-96">
+            <div className="p-4">
+              {renderTaskSpecificForm()}
+              <CommonForm formData={formData} onChange={onChange} />
+            </div>
+          </ScrollArea>
         </div>
       )}
     </div>

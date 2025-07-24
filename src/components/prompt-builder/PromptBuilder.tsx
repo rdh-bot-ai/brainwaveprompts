@@ -8,6 +8,7 @@ import {
   SidebarProvider,
   SidebarTrigger
 } from "@/components/ui/sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import TaskSelector from "./TaskSelector";
 import PromptForm from "./PromptForm";
 import { TaskType } from "./TaskIcons";
@@ -524,54 +525,62 @@ const PromptBuilder: React.FC = () => {
                 </div>
               </div>
               
-              <div className="flex-1 p-6 overflow-y-auto min-h-0">
+              <div className="flex-1 min-h-0">
                 {generatedPrompt ? (
-                  <Tabs defaultValue="prompt" className="w-full">
-                    <TabsList className="mb-4 grid grid-cols-2 w-full">
-                      <TabsTrigger value="prompt">Enhanced Prompt</TabsTrigger>
-                      <TabsTrigger value="before-after">Before & After</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="prompt" className="w-full">
-                      <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg border border-purple-200 p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="font-semibold text-gray-800">Your Enhanced Prompt</h3>
-                          <Button 
-                            onClick={copyToClipboard} 
-                            size="sm"
-                            className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-                          >
-                            <Copy className="mr-2 h-3 w-3" />
-                            Copy
-                          </Button>
+                  <ScrollArea className="h-full p-6">
+                    <Tabs defaultValue="prompt" className="w-full">
+                      <TabsList className="mb-4 grid grid-cols-2 w-full">
+                        <TabsTrigger value="prompt">Enhanced Prompt</TabsTrigger>
+                        <TabsTrigger value="before-after">Before & After</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="prompt" className="w-full">
+                        <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg border border-purple-200 p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="font-semibold text-gray-800">Your Enhanced Prompt</h3>
+                            <Button 
+                              onClick={copyToClipboard} 
+                              size="sm"
+                              className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                            >
+                              <Copy className="mr-2 h-3 w-3" />
+                              Copy
+                            </Button>
+                          </div>
+                          <ScrollArea className="max-h-96">
+                            <textarea 
+                              readOnly 
+                              value={generatedPrompt} 
+                              className="min-h-[300px] w-full bg-white border border-gray-200 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 whitespace-pre-line text-sm resize-none" 
+                            />
+                          </ScrollArea>
                         </div>
-                        <textarea 
-                          readOnly 
-                          value={generatedPrompt} 
-                          className="min-h-[300px] w-full bg-white border border-gray-200 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 whitespace-pre-line text-sm resize-none" 
-                        />
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="before-after">
-                      <div className="space-y-4">
-                        <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-                          <h3 className="font-medium mb-3 text-gray-800">Original Input</h3>
-                          <div className="bg-white p-3 rounded border min-h-[120px] whitespace-pre-line">
-                            <p className="text-sm text-gray-700 whitespace-pre-line">
-                              {formData.useTemplate ? formData.promptTemplate : formData.prompt}
-                            </p>
+                      </TabsContent>
+                      <TabsContent value="before-after">
+                        <div className="space-y-4">
+                          <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
+                            <h3 className="font-medium mb-3 text-gray-800">Original Input</h3>
+                            <ScrollArea className="max-h-48">
+                              <div className="bg-white p-3 rounded border min-h-[120px] whitespace-pre-line">
+                                <p className="text-sm text-gray-700 whitespace-pre-line">
+                                  {formData.useTemplate ? formData.promptTemplate : formData.prompt}
+                                </p>
+                              </div>
+                            </ScrollArea>
+                          </div>
+                          <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg border border-purple-200 p-4">
+                            <h3 className="font-medium mb-3 text-gray-800">AI-Enhanced Result</h3>
+                            <ScrollArea className="max-h-48">
+                              <div className="bg-white p-3 rounded border min-h-[120px] whitespace-pre-line">
+                                <p className="text-sm text-gray-700 whitespace-pre-line">{generatedPrompt}</p>
+                              </div>
+                            </ScrollArea>
                           </div>
                         </div>
-                        <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg border border-purple-200 p-4">
-                          <h3 className="font-medium mb-3 text-gray-800">AI-Enhanced Result</h3>
-                          <div className="bg-white p-3 rounded border min-h-[120px] whitespace-pre-line">
-                            <p className="text-sm text-gray-700 whitespace-pre-line">{generatedPrompt}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </TabsContent>
-                  </Tabs>
+                      </TabsContent>
+                    </Tabs>
+                  </ScrollArea>
                 ) : (
-                  <div className="flex items-center justify-center flex-1 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
+                  <div className="flex items-center justify-center flex-1 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50 p-6">
                     <div className="text-center">
                       <div className="w-16 h-16 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Sparkle className="h-8 w-8 text-purple-400" />
