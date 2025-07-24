@@ -46,7 +46,10 @@ const PromptBuilder: React.FC = () => {
         try {
           setRecentPrompts(JSON.parse(savedPrompts).slice(0, 3));
         } catch (e) {
-          console.error("Error parsing saved prompts", e);
+          // Silently handle parsing errors in production
+          if (process.env.NODE_ENV === 'development') {
+            console.error("Error parsing saved prompts", e);
+          }
         }
       }
     }
@@ -57,7 +60,10 @@ const PromptBuilder: React.FC = () => {
     const handleLoadTemplate = (event: CustomEvent) => {
       const { prompt, openInAdvancedEditor, title, category, description } = event.detail;
       
-      console.log("Loading template from event:", { prompt, title, category, description });
+      // Template loading for development debugging only
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Loading template from event:", { prompt, title, category, description });
+      }
       setDebugInfo(`Template loaded: ${title} - ${category}`);
       
       // Set the prompt in the form data
@@ -112,7 +118,10 @@ const PromptBuilder: React.FC = () => {
   useEffect(() => {
     if (selectedTask && selectedSubCategory && !formData.buildCustom && !loadedFromLibrary) {
       const defaultPrompt = getDefaultPrompt(selectedTask, selectedSubCategory);
-      console.log("Setting default prompt from subcategory change:", defaultPrompt);
+      // Development logging only
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Setting default prompt from subcategory change:", defaultPrompt);
+      }
 
       setFormData(prev => ({
         ...prev,
@@ -125,7 +134,10 @@ const PromptBuilder: React.FC = () => {
         includeExamples: prev.includeExamples !== undefined ? prev.includeExamples : false
       }));
     } else if (loadedFromLibrary) {
-      console.log("Not setting default prompt because loadedFromLibrary is true");
+      // Development logging only
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Not setting default prompt because loadedFromLibrary is true");
+      }
       setDebugInfo(prev => prev + "\nPreserving template data - not overwriting with subcategory defaults");
     }
   }, [selectedTask, selectedSubCategory, formData.buildCustom, loadedFromLibrary]);
@@ -325,7 +337,10 @@ const PromptBuilder: React.FC = () => {
         duration: 3000
       });
     }, err => {
-      console.error("Could not copy text: ", err);
+      // Log errors appropriately based on environment
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Could not copy text: ", err);
+      }
       toast({
         title: "Copy failed",
         description: "Could not copy to clipboard. Please try again.",

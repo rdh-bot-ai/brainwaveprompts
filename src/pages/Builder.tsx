@@ -11,13 +11,16 @@ const Builder = () => {
     const templateCategory = sessionStorage.getItem("templateCategory");
     const templateDescription = sessionStorage.getItem("templateDescription");
     if (templatePrompt) {
-      console.log("Builder page loading template:", {
-        templatePrompt,
-        openInAdvancedEditor,
-        templateTitle,
-        templateCategory,
-        templateDescription
-      });
+      // Development logging only
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Builder page loading template:", {
+          templatePrompt,
+          openInAdvancedEditor,
+          templateTitle,
+          templateCategory,
+          templateDescription
+        });
+      }
 
       // Create a custom event to signal to the PromptBuilder component
       const event = new CustomEvent("loadTemplate", {
@@ -33,7 +36,10 @@ const Builder = () => {
       // Add a slight delay to ensure the PromptBuilder component is mounted
       setTimeout(() => {
         document.dispatchEvent(event);
-        console.log("Dispatched loadTemplate event");
+        // Development logging only
+        if (process.env.NODE_ENV === 'development') {
+          console.log("Dispatched loadTemplate event");
+        }
 
         // Clear the stored data after it's been used
         sessionStorage.removeItem("templatePrompt");

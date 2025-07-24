@@ -43,7 +43,10 @@ const PromptForm: React.FC<PromptFormProps> = ({
       
       // Only update if it's a new selection or template
       if (!formData.promptTemplate || formData.promptTemplate !== basicTemplate) {
-        console.log("Setting template from subcategory:", basicTemplate);
+        // Development logging only
+        if (process.env.NODE_ENV === 'development') {
+          console.log("Setting template from subcategory:", basicTemplate);
+        }
         onChange("promptTemplate", basicTemplate);
         onChange("prompt", basicTemplate);
         onChange("useTemplate", true);

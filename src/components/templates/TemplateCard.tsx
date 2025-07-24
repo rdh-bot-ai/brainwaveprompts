@@ -62,13 +62,15 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
     sessionStorage.setItem("templateCategory", template.category);
     sessionStorage.setItem("templateDescription", template.description);
     
-    // Log the data being stored to verify it's correct
-    console.log("Storing template data for builder:", {
-      prompt: template.prompt,
-      title: template.title,
-      category: template.category,
-      description: template.description
-    });
+    // Development logging only
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Storing template data for builder:", {
+        prompt: template.prompt,
+        title: template.title,
+        category: template.category,
+        description: template.description
+      });
+    }
     
     // Navigate to the builder page
     navigate("/builder");
@@ -102,14 +104,10 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
       </CardContent>
       <CardFooter>
         {canAccessTemplate(template.tier) ? (
-          <div className="w-full grid grid-cols-3 gap-2">
+          <div className="w-full grid grid-cols-2 gap-2">
             <Button variant="outline" className="w-full flex items-center" onClick={handleCopyPrompt}>
               <Copy className="mr-2 h-4 w-4" />
               Copy
-            </Button>
-            <Button variant="outline" className="w-full flex items-center" onClick={handleCopyPrompt}>
-              <Clipboard className="mr-2 h-4 w-4" />
-              Prompt
             </Button>
             <Button className="w-full flex items-center gap-1" onClick={handleOpenInBuilder}>
               <ExternalLink className="h-4 w-4" />

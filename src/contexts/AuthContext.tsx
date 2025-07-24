@@ -53,7 +53,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(mockUser);
       localStorage.setItem("user", JSON.stringify(mockUser));
     } catch (error) {
-      console.error("Sign in error:", error);
+      // Only log errors in development
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Sign in error:", error);
+      }
       throw error;
     } finally {
       setIsLoading(false);
@@ -75,7 +78,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(mockUser);
       localStorage.setItem("user", JSON.stringify(mockUser));
     } catch (error) {
-      console.error("Sign up error:", error);
+      // Only log errors in development
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Sign up error:", error);
+      }
       throw error;
     } finally {
       setIsLoading(false);
