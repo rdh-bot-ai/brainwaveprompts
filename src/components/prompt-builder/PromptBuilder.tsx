@@ -429,10 +429,10 @@ const PromptBuilder: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-6 bg-gray-50">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+        <div className="flex-1 p-6 bg-gray-50 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full min-h-0">
             {/* Form Section */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-full">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col min-h-0">
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
@@ -477,7 +477,7 @@ const PromptBuilder: React.FC = () => {
                 )}
               </div>
               
-              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+              <div className="flex-1 p-6 overflow-y-auto min-h-0">
                 {selectedTask && selectedSubCategory ? (
                   <div className="space-y-6">
                     <PromptForm 
@@ -500,7 +500,7 @@ const PromptBuilder: React.FC = () => {
                     )}
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center h-96 text-gray-500">
+                  <div className="flex items-center justify-center flex-1 text-gray-500">
                     <div className="text-center">
                       <div className="w-16 h-16 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Lightbulb className="h-8 w-8 text-purple-400" />
@@ -514,7 +514,7 @@ const PromptBuilder: React.FC = () => {
             </div>
 
             {/* Preview Section */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-full">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex flex-col min-h-0">
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center mr-3">
@@ -524,7 +524,7 @@ const PromptBuilder: React.FC = () => {
                 </div>
               </div>
               
-              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+              <div className="flex-1 p-6 overflow-y-auto min-h-0">
                 {generatedPrompt ? (
                   <Tabs defaultValue="prompt" className="w-full">
                     <TabsList className="mb-4 grid grid-cols-2 w-full">
@@ -571,7 +571,7 @@ const PromptBuilder: React.FC = () => {
                     </TabsContent>
                   </Tabs>
                 ) : (
-                  <div className="flex items-center justify-center h-96 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
+                  <div className="flex items-center justify-center flex-1 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
                     <div className="text-center">
                       <div className="w-16 h-16 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Sparkle className="h-8 w-8 text-purple-400" />
