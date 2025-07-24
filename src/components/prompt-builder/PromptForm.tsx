@@ -159,28 +159,16 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Prompt Mode Selection */}
-      <div className="flex flex-col space-y-2">
-        <div className="flex items-center space-x-2">
-          <Checkbox 
-            id="useTemplate" 
-            checked={formData.useTemplate || false}
-            onCheckedChange={handleUseTemplateChange} 
-          />
-          <Label htmlFor="useTemplate" className="text-sm font-medium text-gray-700">
-            Use template structure (recommended)
-          </Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox 
-            id="buildCustom" 
-            checked={formData.buildCustom || false} 
-            onCheckedChange={handleBuildCustomPrompt} 
-          />
-          <Label htmlFor="buildCustom" className="text-sm font-medium text-gray-700">
-            Build my own prompt
-          </Label>
-        </div>
+      {/* Prompt Mode Selection - Only Template */}
+      <div className="flex items-center space-x-2 mb-4">
+        <Checkbox 
+          id="useTemplate" 
+          checked={true}
+          disabled={true}
+        />
+        <Label htmlFor="useTemplate" className="text-sm font-medium text-gray-700">
+          Use template structure (always enabled)
+        </Label>
       </div>
 
       {/* Prompt Editor */}
@@ -191,15 +179,10 @@ const PromptForm: React.FC<PromptFormProps> = ({
           </div>
           <div>
             <Label className="font-semibold text-gray-900">
-              {formData.useTemplate ? "Template Preview" : formData.buildCustom ? "Custom Prompt" : "Prompt Preview"}
+              Template Preview
             </Label>
             <p className="text-xs text-gray-500 mt-1">
-              {formData.useTemplate ? 
-                "Live preview updates as you fill the form below" : 
-                formData.buildCustom ?
-                "Build your prompt with complete freedom" :
-                "Your prompt preview will appear here"
-              }
+              Live preview updates as you fill the form below
             </p>
           </div>
         </div>
@@ -207,13 +190,8 @@ const PromptForm: React.FC<PromptFormProps> = ({
           value={formData.prompt || ""}
           onChange={handleEditorChange}
           className="min-h-[150px] w-full bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-y"
-          placeholder={formData.useTemplate ? 
-            "Your template will appear here as you complete the form..." : 
-            formData.buildCustom ? 
-            "Start writing your custom prompt here..." :
-            "Your prompt preview will appear here..."
-          }
-          disabled={formData.useTemplate && !formData.buildCustom}
+          placeholder="Your template will appear here as you complete the form..."
+          disabled={true}
         />
       </div>
 

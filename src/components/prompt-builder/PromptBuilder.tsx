@@ -350,9 +350,7 @@ const PromptBuilder: React.FC = () => {
             
             <TaskSelector 
               selectedTask={selectedTask} 
-              selectedSubCategory={selectedSubCategory} 
               onTaskSelect={handleTaskSelection} 
-              onSubCategorySelect={handleSubCategorySelection} 
             />
           </div>
 
@@ -458,6 +456,25 @@ const PromptBuilder: React.FC = () => {
                     </Button>
                   )}
                 </div>
+                
+                {/* Subcategory Selection at the top */}
+                {selectedTask && SUBCATEGORIES[selectedTask] && SUBCATEGORIES[selectedTask].length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="text-sm font-medium text-gray-800 mb-3">Select specific type:</h4>
+                    <select 
+                      value={selectedSubCategory || ""} 
+                      onChange={(e) => handleSubCategorySelection(e.target.value)}
+                      className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    >
+                      <option value="">Choose a specific type...</option>
+                      {SUBCATEGORIES[selectedTask].map((subCat) => (
+                        <option key={subCat.id} value={subCat.id}>
+                          {subCat.name} - {subCat.description}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
               
               <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
