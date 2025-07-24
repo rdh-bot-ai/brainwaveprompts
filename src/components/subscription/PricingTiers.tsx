@@ -48,7 +48,7 @@ const PricingTiers: React.FC = () => {
   const currentPlan = getCurrentPlan();
   return <div className="grid gap-8 md:grid-cols-3">
       {/* Free Tier */}
-      <Card className={`border ${currentPlan === "free" ? "border-blue-200 bg-blue-50" : ""}`}>
+      <Card className={`border flex flex-col h-full ${currentPlan === "free" ? "border-blue-200 bg-blue-50" : ""}`}>
         <CardHeader>
           {currentPlan === "free" && <div className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
               Current Plan
@@ -62,7 +62,7 @@ const PricingTiers: React.FC = () => {
             Start getting better results from AI with basic prompt enhancement.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-grow">
           <div className="space-y-2">
             <PricingFeature included={true} feature="2 prompt enhancements per month" tier="free" />
             <PricingFeature included={false} feature="Advanced options" tier="free" />
@@ -72,7 +72,7 @@ const PricingTiers: React.FC = () => {
             <PricingFeature included={false} feature="Priority support" tier="free" />
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="mt-auto">
           {currentPlan === "free" ? <Button className="w-full" disabled>
               Current Plan
             </Button> : <Button variant="outline" className="w-full" onClick={() => handleUpgrade("free")}>
@@ -82,7 +82,7 @@ const PricingTiers: React.FC = () => {
       </Card>
 
       {/* Registered Tier */}
-      <Card className={`border ${currentPlan === "registered" ? "border-green-200 bg-green-50" : ""}`}>
+      <Card className={`border flex flex-col h-full ${currentPlan === "registered" ? "border-green-200 bg-green-50" : ""}`}>
         <CardHeader>
           {currentPlan === "registered" && <div className="mb-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
               Current Plan
@@ -96,7 +96,7 @@ const PricingTiers: React.FC = () => {
             Take your AI interactions to the next level with enhanced prompts.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-grow">
           <div className="space-y-2">
             <PricingFeature included={true} feature="5 prompt enhancements per month" tier="registered" />
             <PricingFeature included={true} feature="Standard prompt caching" tier="registered" />
@@ -107,7 +107,7 @@ const PricingTiers: React.FC = () => {
             <PricingFeature included={false} feature="Priority support" tier="registered" />
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="mt-auto">
           {currentPlan === "registered" ? <Button className="w-full" disabled>
               Current Plan
             </Button> : <Button className="w-full" onClick={() => handleUpgrade("registered")} variant={currentPlan === "premium" ? "outline" : "default"}>
@@ -117,7 +117,7 @@ const PricingTiers: React.FC = () => {
       </Card>
 
       {/* Premium Tier */}
-      <Card className={`border ${currentPlan === "premium" ? "border-purple-200 bg-purple-50" : "border-purple-100"}`}>
+      <Card className={`border flex flex-col h-full ${currentPlan === "premium" ? "border-purple-200 bg-purple-50" : "border-purple-100"}`}>
         <CardHeader className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-t-lg">
           {currentPlan === "premium" && <div className="mb-2 inline-block rounded-full bg-white bg-opacity-20 px-3 py-1 text-xs font-medium text-white">
               Current Plan
@@ -131,7 +131,7 @@ const PricingTiers: React.FC = () => {
             Unlock the full potential of AI with our most powerful prompt enhancements.
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 flex-grow">
           <div className="space-y-2">
             <PricingFeature included={true} feature="Unlimited prompt enhancements" tier="premium" />
             <PricingFeature included={true} feature="Priority prompt caching" tier="premium" />
@@ -141,7 +141,7 @@ const PricingTiers: React.FC = () => {
             <PricingFeature included={true} feature="Priority support" tier="premium" />
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="mt-auto">
           {currentPlan === "premium" ? <Button className="w-full" disabled>
               Current Plan
             </Button> : <Button className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700" onClick={() => handleUpgrade("premium")}>
