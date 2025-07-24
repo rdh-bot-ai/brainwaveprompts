@@ -262,13 +262,13 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
     switch (taskType) {
       case "content":
-        return <ContentForm formData={formData} onChange={onChange} />;
+        return <ContentForm formData={formData} onChange={onChange} subCategory={subCategory} />;
       case "code":
-        return <CodeForm formData={formData} onChange={onChange} />;
+        return <CodeForm formData={formData} onChange={onChange} subCategory={subCategory} />;
       case "idea":
-        return <IdeaForm formData={formData} onChange={onChange} />;
+        return <IdeaForm formData={formData} onChange={onChange} subCategory={subCategory} />;
       case "image":
-        return <ImageForm formData={formData} onChange={onChange} />;
+        return <ImageForm formData={formData} onChange={onChange} subCategory={subCategory} />;
       case "email":
         return <EmailForm formData={formData} onChange={onChange} subCategory={subCategory} />;
       case "research":
