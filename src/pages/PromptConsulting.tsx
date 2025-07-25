@@ -287,9 +287,7 @@ const PromptConsulting = () => {
             <Card className="border-0 shadow-2xl bg-white">
               <CardHeader className="pb-6">
                 <CardTitle className="text-3xl font-bold text-slate-900">Submit Your Requirements</CardTitle>
-                <CardDescription className="text-lg text-slate-600">
-                  Fill out the form below and we'll get back to you within 24 hours with a custom strategy
-                </CardDescription>
+                <CardDescription className="text-lg text-slate-600">Fill out the form below and we'll get back to you within 24 hours* </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
