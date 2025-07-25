@@ -115,20 +115,42 @@ const PromptConsulting = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center">
-            {services.map((service, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow w-full max-w-sm">
-                <CardHeader>
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                    <service.icon className="h-6 w-6 text-purple-600" />
-                  </div>
-                  <CardTitle className="text-xl">{service.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">{service.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid gap-8">
+            {/* First row with 3 cards */}
+            <div className="grid md:grid-cols-3 gap-8">
+              {services.slice(0, 3).map((service, index) => (
+                <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow h-full">
+                  <CardHeader>
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                      <service.icon className="h-6 w-6 text-purple-600" />
+                    </div>
+                    <CardTitle className="text-xl">{service.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600">{service.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            {/* Second row with 2 centered cards */}
+            <div className="flex justify-center">
+              <div className="grid md:grid-cols-2 gap-8 max-w-2xl w-full">
+                {services.slice(3, 5).map((service, index) => (
+                  <Card key={index + 3} className="border-0 shadow-lg hover:shadow-xl transition-shadow h-full">
+                    <CardHeader>
+                      <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <service.icon className="h-6 w-6 text-purple-600" />
+                      </div>
+                      <CardTitle className="text-xl">{service.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-600">{service.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
