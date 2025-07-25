@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "@/components/layout/Navbar";
 import PricingTiers from "@/components/subscription/PricingTiers";
+import ComparisonTable from "@/components/marketing/ComparisonTable";
 const Pricing = () => {
   return <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -16,7 +17,7 @@ const Pricing = () => {
           </div>
 
           <PricingTiers />
-
+          <ComparisonTable />
           
         </div>
       </div>
