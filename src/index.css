@@ -76,6 +76,14 @@
   }
 }
 
+/* Mobile pricing cards optimization */
+@media (max-width: 360px) {
+  .pricing-cards {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
 @layer utilities {
   .animate-fadeIn {
     animation: fadeIn 0.3s ease-in-out;

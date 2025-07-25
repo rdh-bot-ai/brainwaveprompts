@@ -15,6 +15,8 @@ import UpgradePrompt from "../subscription/UpgradePrompt";
 import { getDefaultPrompt, SUBCATEGORIES } from "./subcategories";
 import { useToast } from "@/hooks/use-toast";
 import { validateFormData, extractPlaceholders } from "@/utils/placeholderValidator";
+import { consumeCredit, getRemainingCredits } from "@/utils/credits";
+import AdvancedOptionsPanel from "./AdvancedOptionsPanel";
 
 const PromptBuilder: React.FC = () => {
   const { user, creditUsage, canUsePrompt, usePrompt } = useContext(AuthContext);
@@ -36,6 +38,14 @@ const PromptBuilder: React.FC = () => {
   const [isEnhancing, setIsEnhancing] = useState<boolean>(false);
   const [loadedFromLibrary, setLoadedFromLibrary] = useState<boolean>(false);
   const [debugInfo, setDebugInfo] = useState<string>("");
+  const [advancedOptions, setAdvancedOptions] = useState({
+    temperature: 0.7,
+    topP: 1.0,
+    maxTokens: 2000,
+    frequencyPenalty: 0.0,
+    presencePenalty: 0.0,
+    streamResponse: false,
+  });
 
   useEffect(() => {
     if (user && creditUsage) {
@@ -185,6 +195,21 @@ const PromptBuilder: React.FC = () => {
       return;
     }
 
+    // Use new credit system for enhancement
+    if (user) {
+      try {
+        consumeCredit(user.plan);
+      } catch (error) {
+        toast({
+          title: "Monthly quota reached",
+          description: "Upgrade to continue enhancing prompts.",
+          variant: "destructive",
+          duration: 5000
+        });
+        return;
+      }
+    }
+
     setIsEnhancing(true);
     
     setTimeout(() => {
@@ -194,15 +219,9 @@ const PromptBuilder: React.FC = () => {
       
       savePromptToHistory(enhancedPrompt);
   
-      if (user && promptsRemaining !== null) {
-        const newPromptsRemaining = promptsRemaining - 1;
-        setPromptsRemaining(newPromptsRemaining);
-  
-        const updatedUser = {
-          ...user,
-          promptsRemaining: newPromptsRemaining
-        };
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+      // Update displayed remaining count
+      if (user) {
+        setPromptsRemaining(getRemainingCredits(user.plan));
       }
     }, 1500);
   };
@@ -522,6 +541,14 @@ const PromptBuilder: React.FC = () => {
                       formData={formData} 
                       onChange={handleFormChange} 
                     />
+                    
+                    {user && (
+                      <AdvancedOptionsPanel
+                        userPlan={user.plan}
+                        options={advancedOptions}
+                        onOptionsChange={setAdvancedOptions}
+                      />
+                    )}
                     
                     {user && promptsRemaining !== null && promptsRemaining <= 0 && (
                       <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg flex items-start">

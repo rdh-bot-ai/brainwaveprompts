@@ -54,7 +54,7 @@ const PricingTiers: React.FC = () => {
     return planMap[user.plan] || "free";
   };
   const currentPlan = getCurrentPlan();
-  return <div className="grid gap-8 md:grid-cols-3">
+  return <div className="grid gap-8 md:grid-cols-3 pricing-cards">
       {/* Free Tier */}
       <Card className={`border flex flex-col h-full ${currentPlan === "free" ? "border-blue-200 bg-blue-50" : ""}`}>
         <CardHeader>

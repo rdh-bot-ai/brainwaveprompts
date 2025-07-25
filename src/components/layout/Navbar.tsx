@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useContext, useState } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import CreditCounter from "@/components/ui/credit-counter";
 
 export const Navbar = () => {
   const { user, signOut } = useContext(AuthContext);
@@ -29,6 +30,7 @@ export const Navbar = () => {
         <div className="flex items-center lg:order-2">
           {user ? (
             <div className="flex items-center space-x-4">
+              <CreditCounter />
               <Link to="/dashboard">
                 <Button variant="ghost" size="sm">
                   Dashboard

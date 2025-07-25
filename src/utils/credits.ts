@@ -1,4 +1,5 @@
-import { Plan, getPlanConfig } from '@/config/planMatrix';
+import dayjs from 'dayjs';
+import {PlanMatrix, Plan} from '@/config/planMatrix';
 
 export interface CreditUsage {
   used: number;
@@ -7,6 +8,29 @@ export interface CreditUsage {
   month: string;
 }
 
+export function consumeCredit(plan: string){
+  const {quota} = PlanMatrix[plan as keyof typeof PlanMatrix];
+  if(!isFinite(quota)) return;
+  const key = `credits:${plan}:${dayjs().format('YYYYMM')}`;
+  const used = +(localStorage.getItem(key) || 0);
+  if(used >= quota) throw new Error('quota');
+  localStorage.setItem(key, (used+1).toString());
+}
+
+export function getRemainingCredits(plan: Plan): number {
+  const {quota} = PlanMatrix[plan];
+  if(!isFinite(quota)) return Infinity;
+  const key = `credits:${plan}:${dayjs().format('YYYYMM')}`;
+  const used = +(localStorage.getItem(key) || 0);
+  return Math.max(0, quota - used);
+}
+
+export function getUsedCredits(plan: Plan): number {
+  const key = `credits:${plan}:${dayjs().format('YYYYMM')}`;
+  return +(localStorage.getItem(key) || 0);
+}
+
+// Legacy functions for backward compatibility
 const getCurrentMonth = () => {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -18,7 +42,7 @@ export const getCreditUsage = (userId: string, plan: Plan): CreditUsage => {
   const key = getCreditKey(userId);
   const stored = localStorage.getItem(key);
   const used = stored ? parseInt(stored, 10) : 0;
-  const limit = getPlanConfig(plan).quota;
+  const limit = PlanMatrix[plan].quota;
   
   return {
     used,

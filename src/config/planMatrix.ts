@@ -1,25 +1,7 @@
 export const PlanMatrix = {
-  FREE_TIER: { 
-    quota: 2, 
-    cache: "none", 
-    advOpts: "none", 
-    templates: "core", 
-    historyDays: 0 
-  },
-  REGISTERED: { 
-    quota: 5, 
-    cache: "std", 
-    advOpts: "limited", 
-    templates: "basic", 
-    historyDays: 7 
-  },
-  PREMIUM: { 
-    quota: Infinity, 
-    cache: "priority", 
-    advOpts: "full", 
-    templates: "all", 
-    historyDays: 30 
-  }
+  FREE_TIER:  { quota:2,  historyDays:0,  cacheTTL:0,  adv:"none",    templates:"core"   },
+  REGISTERED: { quota:5,  historyDays:7,  cacheTTL:7,  adv:"limited", templates:"basic"  },
+  PREMIUM:    { quota:Infinity, historyDays:30, cacheTTL:30, adv:"full", templates:"all" }
 } as const;
 
 export type Plan = keyof typeof PlanMatrix;
@@ -27,7 +9,7 @@ export type Plan = keyof typeof PlanMatrix;
 export const getPlanConfig = (plan: Plan) => PlanMatrix[plan];
 
 export const canAccessTemplate = (plan: Plan, templateTier: string) => {
-  const config = getPlanMatrix(plan);
+  const config = getPlanConfig(plan);
   switch (config.templates) {
     case "core":
       return templateTier === "free";
@@ -39,5 +21,3 @@ export const canAccessTemplate = (plan: Plan, templateTier: string) => {
       return false;
   }
 };
-
-export const getPlanMatrix = (plan: Plan) => PlanMatrix[plan];

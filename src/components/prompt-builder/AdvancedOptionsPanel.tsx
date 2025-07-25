@@ -27,12 +27,12 @@ const AdvancedOptionsPanel: React.FC<AdvancedOptionsPanelProps> = ({
   const planConfig = getPlanConfig(userPlan);
   
   // Don't show advanced options for free tier
-  if (planConfig.advOpts === "none") {
+  if (planConfig.adv === "none") {
     return null;
   }
 
-  const isLimited = planConfig.advOpts === "limited";
-  const isFull = planConfig.advOpts === "full";
+  const isLimited = planConfig.adv === "limited";
+  const isFull = planConfig.adv === "full";
 
   const updateOption = (key: string, value: number | boolean) => {
     onOptionsChange({
