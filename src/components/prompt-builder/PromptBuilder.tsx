@@ -14,6 +14,7 @@ import { TaskType } from "./TaskIcons";
 import UpgradePrompt from "../subscription/UpgradePrompt";
 import { getDefaultPrompt, SUBCATEGORIES } from "./subcategories";
 import { useToast } from "@/hooks/use-toast";
+import { validateFormData, extractPlaceholders } from "@/utils/placeholderValidator";
 
 const PromptBuilder: React.FC = () => {
   const { user } = useContext(AuthContext);
@@ -330,6 +331,26 @@ const PromptBuilder: React.FC = () => {
   };
 
   const copyToClipboard = () => {
+    // Validate placeholders before copying
+    const placeholders = extractPlaceholders(generatedPrompt);
+    const missingFields: string[] = [];
+    
+    placeholders.forEach(placeholder => {
+      if (!formData[placeholder] || formData[placeholder].toString().trim() === '') {
+        missingFields.push(placeholder);
+      }
+    });
+    
+    if (missingFields.length > 0) {
+      toast({
+        title: "Validation Error",
+        description: `Missing required fields: ${missingFields.join(', ')}`,
+        variant: "destructive",
+        duration: 5000
+      });
+      return;
+    }
+    
     navigator.clipboard.writeText(generatedPrompt).then(() => {
       toast({
         title: "Copied to clipboard",
