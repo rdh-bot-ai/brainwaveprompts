@@ -105,38 +105,12 @@ const PromptConsulting = () => {
               Get professionally crafted, custom prompts that deliver consistent, high-quality results. 
               <span className="font-medium text-slate-800"> Stop wasting time on trial and error.</span>
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <div className="flex justify-center">
               <Button size="lg" className="group bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
                 <MessageCircle className="mr-3 h-5 w-5" />
                 Start Your Project
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="outline" size="lg" className="px-8 py-4 text-lg font-semibold border-2 border-slate-300 hover:border-purple-300 hover:bg-purple-50 transition-all duration-300">
-                View Case Studies
-              </Button>
-            </div>
-          </div>
-          
-          {/* Trust Indicators */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 opacity-70">
-            <div className="text-center group hover:opacity-100 transition-opacity duration-300">
-              <div className="text-3xl font-bold text-purple-600 mb-2">500+</div>
-              <div className="text-sm text-slate-600">Projects Delivered</div>
-            </div>
-            <div className="text-center group hover:opacity-100 transition-opacity duration-300">
-              <div className="text-3xl font-bold text-indigo-600 mb-2">98%</div>
-              <div className="text-sm text-slate-600">Success Rate</div>
-            </div>
-            <div className="text-center group hover:opacity-100 transition-opacity duration-300">
-              <div className="text-3xl font-bold text-purple-600 mb-2">24hr</div>
-              <div className="text-sm text-slate-600">Response Time</div>
-            </div>
-            <div className="text-center group hover:opacity-100 transition-opacity duration-300">
-              <div className="text-3xl font-bold text-indigo-600 mb-2">5.0</div>
-              <div className="text-sm text-slate-600 flex items-center justify-center">
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                Client Rating
-              </div>
             </div>
           </div>
         </div>
