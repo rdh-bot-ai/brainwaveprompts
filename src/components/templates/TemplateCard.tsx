@@ -15,7 +15,7 @@ interface TemplateCardProps {
 
 const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
   const { user } = useContext(AuthContext);
-  const userTier = user?.subscription || "free";
+  const userTier = user?.plan === "FREE_TIER" ? "free" : user?.plan === "REGISTERED" ? "registered" : user?.plan === "PREMIUM" ? "premium" : "free";
   const { toast } = useToast();
   const navigate = useNavigate();
 

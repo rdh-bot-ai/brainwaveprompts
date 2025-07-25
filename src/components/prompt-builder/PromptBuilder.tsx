@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { validateFormData, extractPlaceholders } from "@/utils/placeholderValidator";
 
 const PromptBuilder: React.FC = () => {
-  const { user } = useContext(AuthContext);
+  const { user, creditUsage, canUsePrompt, usePrompt } = useContext(AuthContext);
   const { toast } = useToast();
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
@@ -38,8 +38,8 @@ const PromptBuilder: React.FC = () => {
   const [debugInfo, setDebugInfo] = useState<string>("");
 
   useEffect(() => {
-    if (user) {
-      setPromptsRemaining(user.promptsRemaining || 0);
+    if (user && creditUsage) {
+      setPromptsRemaining(creditUsage.remaining);
 
       // Load recent prompts from localStorage if user is logged in
       const savedPrompts = localStorage.getItem(`${user.id}_recent_prompts`);
@@ -306,7 +306,7 @@ const PromptBuilder: React.FC = () => {
           enhancedPrompt += `\n4. Detail Level: ${getDetailLevelDescription(formData.detailLevel || 2)}`;
       }
 
-      if (user && user.subscription === "premium") {
+      if (user && user.plan === "PREMIUM") {
         enhancedPrompt += "\n\n#Premium Enhancements:";
         enhancedPrompt += "\n1. Strategic Insights: Include advanced perspectives and analysis beyond surface-level thinking.";
         enhancedPrompt += "\n2. Efficiency Optimization: Structure the response for maximum clarity and practical usefulness.";
@@ -402,7 +402,7 @@ const PromptBuilder: React.FC = () => {
             {user && promptsRemaining !== null && (
               <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
                 <div className="font-medium text-gray-700 mb-2">
-                  {user.subscription === "premium" ? 
+                  {user.plan === "PREMIUM" ? 
                     <span className="flex items-center text-amber-600">
                       <Star className="h-4 w-4 mr-1" />
                       Premium: Unlimited Prompts
@@ -411,7 +411,7 @@ const PromptBuilder: React.FC = () => {
                     <span className="text-gray-900">Prompts remaining: <span className="font-bold text-purple-600">{promptsRemaining}</span></span>
                   }
                 </div>
-                {user.subscription !== "premium" && 
+                {user.plan !== "PREMIUM" && 
                   <Button variant="outline" size="sm" className="border-purple-200 hover:bg-purple-50 text-purple-600 w-full" asChild>
                     <a href="/pricing">Upgrade for unlimited</a>
                   </Button>
@@ -530,7 +530,7 @@ const PromptBuilder: React.FC = () => {
                           <p className="text-sm text-amber-800 font-medium mb-2">
                             You've used all your prompt enhancements for this month.
                           </p>
-                          <UpgradePrompt currentTier={user.subscription || "free"} />
+                          <UpgradePrompt currentTier={user.plan === "FREE_TIER" ? "free" : user.plan === "REGISTERED" ? "registered" : "premium"} />
                         </div>
                       </div>
                     )}

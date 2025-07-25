@@ -3,6 +3,7 @@ import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AuthContext } from "@/contexts/AuthContext";
+import { Plan } from "@/config/planMatrix";
 const PricingFeature: React.FC<{
   included: boolean;
   feature: string;
@@ -17,7 +18,8 @@ const PricingFeature: React.FC<{
   </div>;
 const PricingTiers: React.FC = () => {
   const {
-    user
+    user,
+    upgradePlan
   } = useContext(AuthContext);
 
   // Mock upgrade function - in a real app, this would handle payment processing
@@ -27,15 +29,15 @@ const PricingTiers: React.FC = () => {
       window.location.href = "/signup";
       return;
     }
+    
+    const planMap: Record<string, Plan> = {
+      "free": "FREE_TIER",
+      "registered": "REGISTERED",
+      "premium": "PREMIUM"
+    };
+    
     if (tier === "registered") {
-      // Mock updating user to registered tier
-      const updatedUser = {
-        ...user,
-        subscription: "registered",
-        promptsRemaining: 5
-      };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      window.location.reload();
+      upgradePlan(planMap[tier]);
     } else if (tier === "premium") {
       // In a real app, this would redirect to payment gateway
       alert("This would redirect to a payment gateway in a real application");
@@ -43,7 +45,13 @@ const PricingTiers: React.FC = () => {
   };
   const getCurrentPlan = () => {
     if (!user) return null;
-    return user.subscription || "free";
+    // Map new plan to old pricing tier names for UI compatibility
+    const planMap: Record<string, string> = {
+      "FREE_TIER": "free",
+      "REGISTERED": "registered", 
+      "PREMIUM": "premium"
+    };
+    return planMap[user.plan] || "free";
   };
   const currentPlan = getCurrentPlan();
   return <div className="grid gap-8 md:grid-cols-3">

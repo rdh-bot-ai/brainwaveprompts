@@ -17,7 +17,7 @@ interface PromptHistoryItem {
 }
 
 const Dashboard = () => {
-  const { user, isLoading } = useContext(AuthContext);
+  const { user, isLoading, creditUsage } = useContext(AuthContext);
   const [promptHistory, setPromptHistory] = useState<PromptHistoryItem[]>([]);
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <DashboardStats user={user} />
+          <DashboardStats user={user} creditUsage={creditUsage} />
 
           <div className="mt-8">
             <Tabs defaultValue="history" className="w-full">
@@ -94,7 +94,7 @@ const Dashboard = () => {
                 <PromptHistory promptHistory={promptHistory} />
               </TabsContent>
               <TabsContent value="templates">
-                <TemplatesSection subscription={user.subscription || "free"} />
+                <TemplatesSection subscription={user.plan === "FREE_TIER" ? "free" : user.plan === "REGISTERED" ? "registered" : "premium"} />
               </TabsContent>
             </Tabs>
           </div>

@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
 const Profile = () => {
-  const { user, signOut } = useContext(AuthContext);
+  const { user, signOut, creditUsage } = useContext(AuthContext);
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
@@ -112,7 +112,7 @@ const Profile = () => {
     }, 1000);
   };
 
-  const subscriptionStatus = user.subscription || "free";
+  const subscriptionStatus = user.plan === "FREE_TIER" ? "free" : user.plan === "REGISTERED" ? "registered" : "premium";
   const nextBillingDate = subscriptionStatus !== "free" 
     ? new Date(new Date().setMonth(new Date().getMonth() + 1)).toLocaleDateString() 
     : "No active subscription";
@@ -196,7 +196,7 @@ const Profile = () => {
                     </div>
                     <div className="space-y-1">
                       <Label className="text-muted-foreground">Remaining Prompts</Label>
-                      <div className="font-medium">{user.promptsRemaining || "Unlimited"}</div>
+                      <div className="font-medium">{creditUsage?.remaining || "Unlimited"}</div>
                     </div>
                     <div className="space-y-1">
                       <Label className="text-muted-foreground">Next Billing Date</Label>
@@ -299,11 +299,11 @@ const Profile = () => {
             <CardContent className="space-y-2">
               <div className="flex justify-between items-center">
                 <div className="font-medium">Prompts Used This Month</div>
-                <div>{user.subscription === "premium" ? "Unlimited" : (5 - (user.promptsRemaining || 0)) + "/5"}</div>
+                <div>{user.plan === "PREMIUM" ? "Unlimited" : (creditUsage?.used || 0) + "/" + (creditUsage?.limit || 0)}</div>
               </div>
               <div className="flex justify-between items-center">
                 <div className="font-medium">Prompts Remaining</div>
-                <div>{user.subscription === "premium" ? "Unlimited" : user.promptsRemaining || 0}</div>
+                <div>{user.plan === "PREMIUM" ? "Unlimited" : creditUsage?.remaining || 0}</div>
               </div>
               <div className="flex justify-between items-center">
                 <div className="font-medium">Account Creation Date</div>

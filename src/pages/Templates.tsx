@@ -115,7 +115,7 @@ const Templates = () => {
                   <h1 className="text-3xl font-bold mb-4">Prompt Library</h1>
                   <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                     Start with professionally crafted templates for common use cases.
-                    {user?.subscription === "free" && " Upgrade to access more templates."}
+                    {user?.plan === "FREE_TIER" && " Upgrade to access more templates."}
                   </p>
                   
                   <div className="mt-6 max-w-md mx-auto">

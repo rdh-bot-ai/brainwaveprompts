@@ -4,14 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Settings, BarChart } from "lucide-react";
 
+import { CreditUsage } from "@/contexts/AuthContext";
+
 interface DashboardStatsProps {
   user: {
-    subscription?: "free" | "registered" | "premium";
-    promptsRemaining?: number;
+    plan: string;
   };
+  creditUsage: CreditUsage | null;
 }
 
-const DashboardStats: React.FC<DashboardStatsProps> = ({ user }) => {
+const DashboardStats: React.FC<DashboardStatsProps> = ({ user, creditUsage }) => {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       <Card>
@@ -21,19 +23,19 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ user }) => {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {user.subscription === "premium" ? (
+            {user.plan === "PREMIUM" ? (
               "Unlimited"
             ) : (
               <>
-                {user.promptsRemaining || 0}/
-                {user.subscription === "registered" ? "5" : "2"}
+                {creditUsage?.used || 0}/
+                {creditUsage?.limit || 0}
               </>
             )}
           </div>
           <p className="text-xs text-muted-foreground">
-            {user.subscription === "premium"
+            {user.plan === "PREMIUM"
               ? "Premium subscription"
-              : user.subscription === "registered"
+              : user.plan === "REGISTERED"
               ? "Registered tier"
               : "Free tier"}
           </p>
@@ -46,15 +48,15 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ user }) => {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold capitalize">
-            {user.subscription || "Free"}
+            {user.plan === "FREE_TIER" ? "Free" : user.plan === "REGISTERED" ? "Registered" : "Premium"}
           </div>
           <div className="flex justify-between items-center">
             <p className="text-xs text-muted-foreground">
-              {user.subscription === "premium"
+              {user.plan === "PREMIUM"
                 ? "Unlimited access"
                 : "Limited access"}
             </p>
-            {user.subscription !== "premium" && (
+            {user.plan !== "PREMIUM" && (
               <Button variant="outline" size="sm" asChild>
                 <a href="/pricing">Upgrade</a>
               </Button>
@@ -70,11 +72,11 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ user }) => {
         <CardContent>
           <div className="text-2xl font-bold">{0}</div>
           <p className="text-xs text-muted-foreground">
-            {user.subscription === "premium"
+            {user.plan === "PREMIUM"
               ? "Unlimited history"
-              : user.subscription === "registered"
-              ? "30-day history"
-              : "7-day history"}
+              : user.plan === "REGISTERED"
+              ? "7-day history"
+              : "No history"}
           </p>
         </CardContent>
       </Card>
