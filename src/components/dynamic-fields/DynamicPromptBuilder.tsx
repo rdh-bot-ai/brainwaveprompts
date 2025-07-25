@@ -35,7 +35,8 @@ const DynamicPromptBuilder: React.FC = () => {
       placeholders.forEach(placeholder => {
         const value = formData[placeholder];
         if (value) {
-          prompt = prompt.replace(new RegExp(`{${placeholder}}`, 'g'), value);
+          const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
+          prompt = prompt.replace(new RegExp(`{${placeholder}}`, 'g'), displayValue);
         }
       });
       
@@ -123,6 +124,8 @@ const DynamicPromptBuilder: React.FC = () => {
               <MarkdownPreview 
                 content={generatedPrompt} 
                 title="Generated Prompt Preview"
+                formState={formData}
+                template={selectedUseCase?.promptTemplate}
               />
             </div>
           </div>

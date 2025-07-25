@@ -1,5 +1,5 @@
+import { fixUseCasePlaceholders, validatePlaceholders, convertSnakeCaseToCamelCase } from "./placeholderValidator";
 import { USE_CASES } from "@/data/useCases";
-import { fixUseCasePlaceholders, convertSnakeCaseToCamelCase } from "./placeholderValidator";
 
 // Function to process and fix all use cases
 export function processUseCases() {
@@ -19,12 +19,41 @@ export function processUseCases() {
   return processedUseCases;
 }
 
-// Auto-fix function that can be run during development
+// Utility to auto-fix use cases and report changes
 export function autoFixUseCases() {
-  const fixed = processUseCases();
+  console.log('🔧 Auto-fixing use cases...\n');
   
-  // In a real implementation, this would write back to the file
-  console.log("Fixed use cases:", JSON.stringify(fixed, null, 2));
+  let hasChanges = false;
   
-  return fixed;
+  const fixedUseCases = USE_CASES.map(useCase => {
+    const validation = validatePlaceholders(useCase);
+    
+    if (!validation.isValid || validation.unusedFields.length > 0) {
+      hasChanges = true;
+      console.log(`📝 Fixing ${useCase.name}:`);
+      
+      if (validation.missingFields.length > 0) {
+        console.log(`  + Adding fields: ${validation.missingFields.join(', ')}`);
+      }
+      
+      if (validation.unusedFields.length > 0) {
+        console.log(`  ⚠ Marking unused: ${validation.unusedFields.join(', ')}`);
+      }
+      
+      return fixUseCasePlaceholders(useCase);
+    }
+    
+    return useCase;
+  });
+  
+  if (!hasChanges) {
+    console.log('✅ All use cases are already valid!');
+  } else {
+    console.log('\n🎉 Auto-fix completed!');
+  }
+  
+  return fixedUseCases;
 }
+
+// Export individual functions for testing
+export { fixUseCasePlaceholders } from "./placeholderValidator";

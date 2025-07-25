@@ -1,7 +1,7 @@
 export interface FieldConfig {
   id: string;
   label: string;
-  type: "text" | "textarea" | "select" | "number";
+  type: "text" | "textarea" | "select" | "number" | "tags";
   required: boolean;
   optional?: boolean;
   tooltip?: string;
@@ -60,5 +60,28 @@ export const USE_CASES: UseCase[] = [
       { id: "targetAudience", label: "Target Audience", type: "text", required: false }
     ],
     promptTemplate: "Conduct {researchDepth} research on {researchTopic}. Use these sources: {sources}. Present findings for {targetAudience}."
+  },
+  {
+    id: "seo-optimization",
+    name: "SEO Optimization",
+    fields: [
+      { id: "keywords", label: "Keywords", type: "tags", required: true },
+      { id: "contentType", label: "Content Type", type: "select", required: true, options: ["blog post", "product page", "landing page", "category page"] },
+      { id: "targetAudience", label: "Target Audience", type: "text", required: true },
+      { id: "businessType", label: "Business Type", type: "text", required: false }
+    ],
+    promptTemplate: "Create SEO-optimized {contentType} targeting keywords {keywords} for {targetAudience}. Business context: {businessType}."
+  },
+  {
+    id: "persona-generator",
+    name: "Persona Generator",
+    fields: [
+      { id: "industry", label: "Industry", type: "text", required: true },
+      { id: "targetMarket", label: "Target Market", type: "text", required: true },
+      { id: "productType", label: "Product Type", type: "text", required: true },
+      { id: "demographics", label: "Demographics", type: "textarea", required: true },
+      { id: "painPoints", label: "Pain Points", type: "textarea", required: true }
+    ],
+    promptTemplate: "Generate detailed customer personas for {industry} targeting {targetMarket} for {productType}. Include demographics: {demographics} and address pain points: {painPoints}."
   }
 ];

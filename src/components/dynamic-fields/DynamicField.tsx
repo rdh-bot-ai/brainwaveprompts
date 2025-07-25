@@ -15,7 +15,7 @@ interface DynamicFieldProps {
 }
 
 const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChange }) => {
-  const inputId = React.useMemo(() => nanoid(), []);
+  const inputId = React.useRef(nanoid()).current;
 
   const handleChange = (newValue: any) => {
     onChange(field.id, newValue);
@@ -73,6 +73,52 @@ const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChange }) =
               ))}
             </SelectContent>
           </Select>
+        );
+      
+      case "tags":
+        return (
+          <div className="space-y-2">
+            <Input
+              id={inputId}
+              type="text"
+              placeholder="Enter tags separated by commas"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  const inputValue = e.currentTarget.value.trim();
+                  if (inputValue) {
+                    const currentTags = Array.isArray(value) ? value : [];
+                    const newTags = inputValue.split(',').map(tag => tag.trim()).filter(tag => tag);
+                    const updatedTags = [...new Set([...currentTags, ...newTags])];
+                    handleChange(updatedTags);
+                    e.currentTarget.value = '';
+                  }
+                }
+              }}
+            />
+            {Array.isArray(value) && value.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {value.map((tag: string, index: number) => (
+                  <span
+                    key={index}
+                    className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-sm flex items-center gap-1"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updatedTags = value.filter((_: string, i: number) => i !== index);
+                        handleChange(updatedTags);
+                      }}
+                      className="ml-1 text-blue-600 hover:text-blue-800"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         );
       
       default:
