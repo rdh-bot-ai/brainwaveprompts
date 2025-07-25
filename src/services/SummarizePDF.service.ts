@@ -7,7 +7,7 @@ interface OpenAIResponse {
 }
 
 export class SummarizePDFService {
-  private static readonly MAX_TOKENS = 8000;
+  public static readonly MAX_TOKENS = 8000;
   private static readonly OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
   static async splitByTokens(text: string, maxTokens: number): Promise<string[]> {
@@ -99,7 +99,18 @@ export class SummarizePDFService {
 
   static async processPDF(file: File, apiKey?: string): Promise<{ documentSummary: string }> {
     try {
+      // Guard against large files (>10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error('File too large (max 10MB)');
+      }
+
       const text = await this.pdfToText(file);
+      
+      // Guard against token limit (>120k tokens ≈ 480k chars)
+      if (text.length > 480000) {
+        throw new Error('PDF exceeds token limit (120k tokens)');
+      }
+
       const chunks = await this.splitByTokens(text, this.MAX_TOKENS);
       
       if (!apiKey) {
@@ -114,6 +125,9 @@ export class SummarizePDFService {
       return { documentSummary: summaries.join(' ') };
     } catch (error) {
       console.error('Error processing PDF:', error);
+      if (error instanceof Error) {
+        return { documentSummary: `Error: ${error.message}` };
+      }
       return { documentSummary: `Error processing PDF: ${file.name}` };
     }
   }

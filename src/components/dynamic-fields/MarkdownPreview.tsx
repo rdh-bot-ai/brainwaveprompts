@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useDebounce } from "use-debounce";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
@@ -32,8 +32,8 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
   template 
 }) => {
   // Debounce the content and form state to reduce re-renders by ~70%
-  const debouncedContent = useDebounce(content, 300);
-  const debouncedFormState = useDebounce(formState, 300);
+  const [debouncedContent] = useDebounce(content, 300);
+  const [debouncedFormState] = useDebounce(formState, 300);
   
   // Memoize markdown rendering for performance
   const renderedContent = useMemo(() => {

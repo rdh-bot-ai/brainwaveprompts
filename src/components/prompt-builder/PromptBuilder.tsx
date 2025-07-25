@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { validateFormData, extractPlaceholders } from "@/utils/placeholderValidator";
 import { consumeCredit, getRemainingCredits } from "@/utils/credits";
 import AdvancedOptionsPanel from "./AdvancedOptionsPanel";
+import { useDebounce } from "use-debounce";
 
 const PromptBuilder: React.FC = () => {
   const { user, creditUsage, canUsePrompt, usePrompt } = useContext(AuthContext);
@@ -46,6 +47,9 @@ const PromptBuilder: React.FC = () => {
     presencePenalty: 0.0,
     streamResponse: false,
   });
+
+  // Debounce form data to reduce preview re-renders
+  const [debouncedFormData] = useDebounce(formData, 300);
 
   useEffect(() => {
     if (user && creditUsage) {
@@ -227,16 +231,16 @@ const PromptBuilder: React.FC = () => {
   };
 
   const generateEnhancedPrompt = () => {
-    let basePrompt = formData.prompt || "";
+    let basePrompt = debouncedFormData.prompt || "";
     
     basePrompt = basePrompt
-      .replace(/\[topic\]/g, formData.topic || "the selected topic")
-      .replace(/\[key points\]/g, formData.keyPoints || "important aspects")
-      .replace(/\[language\]/g, formData.language || "the specified programming language")
-      .replace(/\[functionality\]/g, formData.functionality || "the requested functionality")
-      .replace(/\[challenge\]/g, formData.challenge || "the problem")
-      .replace(/\[context\]/g, formData.context || "relevant background information")
-      .replace(/\[constraints\]/g, formData.constraints || "any limitations");
+      .replace(/\[topic\]/g, debouncedFormData.topic || "the selected topic")
+      .replace(/\[key points\]/g, debouncedFormData.keyPoints || "important aspects")
+      .replace(/\[language\]/g, debouncedFormData.language || "the specified programming language")
+      .replace(/\[functionality\]/g, debouncedFormData.functionality || "the requested functionality")
+      .replace(/\[challenge\]/g, debouncedFormData.challenge || "the problem")
+      .replace(/\[context\]/g, debouncedFormData.context || "relevant background information")
+      .replace(/\[constraints\]/g, debouncedFormData.constraints || "any limitations");
     
     let enhancedPrompt = basePrompt;
     

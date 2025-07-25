@@ -99,26 +99,27 @@ const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChange }) =
             {Array.isArray(value) && value.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {value.map((tag: string, index: number) => (
-                  <span
-                    key={index}
-                    className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-sm flex items-center gap-1"
-                  >
+                  <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
                     {tag}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updatedTags = value.filter((_: string, i: number) => i !== index);
-                        handleChange(updatedTags);
-                      }}
-                      className="ml-1 text-blue-600 hover:text-blue-800"
-                    >
-                      ×
-                    </button>
                   </span>
                 ))}
               </div>
             )}
           </div>
+        );
+
+      case "file":
+        return (
+          <Input
+            id={inputId}
+            type="file"
+            accept={field.accept}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleChange(file);
+            }}
+            className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          />
         );
       
       default:
