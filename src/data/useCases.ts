@@ -125,7 +125,7 @@ export const USE_CASES: UseCase[] = [
     id: "summarize-pdf",
     name: "Summarize PDF",
     fields: [
-      { id: "pdfFile", label: "PDF File", type: "file", required: true, accept: ".pdf", tooltip: "Upload a PDF file (max 10MB)" },
+      { id: "pdfFile", label: "PDF File (max 5 MB)", type: "file", required: true, accept: ".pdf", tooltip: "Upload a PDF file (max 5MB)" },
       { id: "documentType", label: "Document Type", type: "text", required: true },
       { id: "targetAudience", label: "Target Audience", type: "text", required: true },
       { id: "summaryLength", label: "Summary Length", type: "select", required: true, options: ["brief", "detailed", "comprehensive"] },

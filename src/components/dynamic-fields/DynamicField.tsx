@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import { FieldConfig } from "@/data/useCases";
+import { useToast } from "@/hooks/use-toast";
 
 interface DynamicFieldProps {
   field: FieldConfig;
@@ -16,6 +17,8 @@ interface DynamicFieldProps {
 
 const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChange }) => {
   const inputId = React.useRef(nanoid()).current;
+  const [fileInfo, setFileInfo] = React.useState<{name: string; sizeMB: number} | null>(null);
+  const { toast } = useToast();
 
   const handleChange = (newValue: any) => {
     onChange(field.id, newValue);
@@ -110,16 +113,43 @@ const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChange }) =
 
       case "file":
         return (
-          <Input
-            id={inputId}
-            type="file"
-            accept={field.accept}
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) handleChange(file);
-            }}
-            className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-          />
+          <div>
+            <Input
+              id={inputId}
+              type="file"
+              accept={field.accept}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) {
+                  setFileInfo(null);
+                  return;
+                }
+                
+                const sizeMB = +(file.size / (1024 * 1024)).toFixed(2);
+                setFileInfo({ name: file.name, sizeMB });
+                
+                // Check for 5MB limit on PDF files
+                if (field.accept === ".pdf" && file.size > 5 * 1024 * 1024) {
+                  toast({
+                    variant: "destructive",
+                    title: "File too large",
+                    description: `PDF is 5 MB max (you uploaded ${sizeMB} MB)`,
+                  });
+                  e.target.value = '';
+                  setFileInfo(null);
+                  return;
+                }
+                
+                handleChange(file);
+              }}
+              className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+            {fileInfo && (
+              <p className="text-sm text-muted-foreground mt-1">
+                {fileInfo.name} – {fileInfo.sizeMB} MB
+              </p>
+            )}
+          </div>
         );
       
       default:

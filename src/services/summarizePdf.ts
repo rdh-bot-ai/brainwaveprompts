@@ -1,8 +1,8 @@
 import { SummarizePDFService } from './SummarizePDF.service';
 
 export async function summarisePdf(file: File): Promise<string> {
-  if (file.size > 10 * 1024 * 1024) {
-    throw new Error('File too large (max 10MB)');
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error('File too large (>5 MB)');
   }
 
   // Extract text from PDF (currently uses placeholder implementation)

@@ -99,9 +99,9 @@ export class SummarizePDFService {
 
   static async processPDF(file: File, apiKey?: string): Promise<{ documentSummary: string }> {
     try {
-      // Guard against large files (>10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        throw new Error('File too large (max 10MB)');
+      // Guard against large files (>5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error('File too large (max 5MB)');
       }
 
       const text = await this.pdfToText(file);
