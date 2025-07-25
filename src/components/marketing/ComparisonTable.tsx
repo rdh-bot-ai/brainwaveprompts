@@ -54,7 +54,7 @@ export default function ComparisonTable() {
         </div>
 
         {/* CTA Banner */}
-        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center bg-primary/5 dark:bg-primary/10 p-6 rounded-2xl shadow-inner">
+        <div className="mt-10 flex flex-col items-center gap-4 bg-primary/5 dark:bg-primary/10 p-6 rounded-2xl shadow-inner">
           <h3 className="text-xl font-semibold">Ready to level‑up your prompts?</h3>
           <Button asChild size="lg" className="px-6 py-4 text-base">
             <a href="/signup?plan=premium" className="flex items-center gap-2">
