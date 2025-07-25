@@ -90,20 +90,29 @@ const PromptConsulting = () => {
       
       {/* Hero Section */}
       <section className="relative pt-24 pb-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/5 to-indigo-600/5"></div>
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80')"
+          }}
+        />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-purple-900/75 to-indigo-900/85"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-slate-900/30"></div>
         <div className="relative max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <Badge variant="secondary" className="mb-4 px-4 py-2 text-sm font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors">
+            <Badge variant="secondary" className="mb-4 px-4 py-2 text-sm font-medium bg-white/10 text-white hover:bg-white/20 transition-colors backdrop-blur-sm">
               <Sparkles className="w-4 h-4 mr-2" />
               Expert Prompt Engineering
             </Badge>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 bg-clip-text text-transparent leading-tight animate-fade-in">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-white via-purple-200 to-indigo-200 bg-clip-text text-transparent leading-tight animate-fade-in">
               Transform AI Into Your 
-              <span className="block text-indigo-600">Competitive Advantage</span>
+              <span className="block bg-gradient-to-r from-purple-300 to-indigo-300 bg-clip-text text-transparent">Competitive Advantage</span>
             </h1>
-            <p className="text-xl md:text-2xl text-slate-600 mb-12 max-w-4xl mx-auto leading-relaxed font-light">
+            <p className="text-xl md:text-2xl text-slate-200 mb-12 max-w-4xl mx-auto leading-relaxed font-light">
               Get professionally crafted, custom prompts that deliver consistent, high-quality results. 
-              <span className="font-medium text-slate-800"> Stop wasting time on trial and error.</span>
+              <span className="font-medium text-white"> Stop wasting time on trial and error.</span>
             </p>
             <div className="flex justify-center">
               <Button size="lg" className="group bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
