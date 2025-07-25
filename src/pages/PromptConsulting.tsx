@@ -91,12 +91,9 @@ const PromptConsulting = () => {
       {/* Hero Section */}
       <section className="relative pt-24 pb-20 px-4 overflow-hidden">
         {/* Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80')"
-          }}
-        />
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
+        backgroundImage: "url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80')"
+      }} />
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-purple-900/75 to-indigo-900/85"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-slate-900/30"></div>
@@ -144,8 +141,7 @@ const PromptConsulting = () => {
           <div className="grid gap-8">
             {/* First row with 3 cards */}
             <div className="grid md:grid-cols-3 gap-8">
-              {services.slice(0, 3).map((service, index) => (
-                <Card key={index} className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500 h-full bg-gradient-to-br from-white to-slate-50/50 hover:from-purple-50/30 hover:to-indigo-50/30 transform hover:-translate-y-2">
+              {services.slice(0, 3).map((service, index) => <Card key={index} className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500 h-full bg-gradient-to-br from-white to-slate-50/50 hover:from-purple-50/30 hover:to-indigo-50/30 transform hover:-translate-y-2">
                   <CardHeader className="pb-4">
                     <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                       <service.icon className="h-8 w-8 text-purple-600 group-hover:text-indigo-600 transition-colors" />
@@ -158,15 +154,13 @@ const PromptConsulting = () => {
                       Learn more <ArrowRight className="ml-2 h-4 w-4" />
                     </div>
                   </CardContent>
-                </Card>
-              ))}
+                </Card>)}
             </div>
             
             {/* Second row with 2 centered cards */}
             <div className="flex justify-center">
               <div className="grid md:grid-cols-2 gap-8 max-w-4xl w-full">
-                {services.slice(3, 5).map((service, index) => (
-                  <Card key={index + 3} className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500 h-full bg-gradient-to-br from-white to-slate-50/50 hover:from-purple-50/30 hover:to-indigo-50/30 transform hover:-translate-y-2">
+                {services.slice(3, 5).map((service, index) => <Card key={index + 3} className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500 h-full bg-gradient-to-br from-white to-slate-50/50 hover:from-purple-50/30 hover:to-indigo-50/30 transform hover:-translate-y-2">
                     <CardHeader className="pb-4">
                       <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                         <service.icon className="h-8 w-8 text-purple-600 group-hover:text-indigo-600 transition-colors" />
@@ -179,8 +173,7 @@ const PromptConsulting = () => {
                         Learn more <ArrowRight className="ml-2 h-4 w-4" />
                       </div>
                     </CardContent>
-                  </Card>
-                ))}
+                  </Card>)}
               </div>
             </div>
           </div>
@@ -204,16 +197,14 @@ const PromptConsulting = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {benefits.map((benefit, index) => (
-              <div key={index} className="group flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            {benefits.map((benefit, index) => <div key={index} className="group flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                 <div className="flex-shrink-0">
                   <div className="w-8 h-8 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <CheckCircle className="h-5 w-5 text-green-600" />
                   </div>
                 </div>
                 <span className="text-slate-700 font-medium text-lg leading-relaxed group-hover:text-slate-900 transition-colors">{benefit}</span>
-              </div>
-            ))}
+              </div>)}
           </div>
           
           {/* CTA in Benefits */}
@@ -295,7 +286,7 @@ const PromptConsulting = () => {
             {/* Contact Form */}
             <Card className="border-0 shadow-2xl bg-white">
               <CardHeader className="pb-6">
-                <CardTitle className="text-3xl font-bold text-slate-900">Get Your Free Consultation</CardTitle>
+                <CardTitle className="text-3xl font-bold text-slate-900">Submit Your Requirements</CardTitle>
                 <CardDescription className="text-lg text-slate-600">
                   Fill out the form below and we'll get back to you within 24 hours with a custom strategy
                 </CardDescription>
@@ -305,113 +296,51 @@ const PromptConsulting = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="name" className="text-sm font-medium text-slate-700">Full Name *</Label>
-                      <Input 
-                        id="name" 
-                        name="name" 
-                        value={formData.name} 
-                        onChange={handleInputChange} 
-                        placeholder="Your full name" 
-                        required 
-                        className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500"
-                      />
+                      <Input id="name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Your full name" required className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email" className="text-sm font-medium text-slate-700">Email Address *</Label>
-                      <Input 
-                        id="email" 
-                        name="email" 
-                        type="email" 
-                        value={formData.email} 
-                        onChange={handleInputChange} 
-                        placeholder="your.email@company.com" 
-                        required 
-                        className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500"
-                      />
+                      <Input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} placeholder="your.email@company.com" required className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500" />
                     </div>
                   </div>
                   
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="company" className="text-sm font-medium text-slate-700">Company/Organization</Label>
-                      <Input 
-                        id="company" 
-                        name="company" 
-                        value={formData.company} 
-                        onChange={handleInputChange} 
-                        placeholder="Your company name" 
-                        className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500"
-                      />
+                      <Input id="company" name="company" value={formData.company} onChange={handleInputChange} placeholder="Your company name" className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="projectType" className="text-sm font-medium text-slate-700">Project Type</Label>
-                      <Input 
-                        id="projectType" 
-                        name="projectType" 
-                        value={formData.projectType} 
-                        onChange={handleInputChange} 
-                        placeholder="Content Generation, Support, etc." 
-                        className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500"
-                      />
+                      <Input id="projectType" name="projectType" value={formData.projectType} onChange={handleInputChange} placeholder="Content Generation, Support, etc." className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500" />
                     </div>
                   </div>
                   
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="timeline" className="text-sm font-medium text-slate-700">Desired Timeline</Label>
-                      <Input 
-                        id="timeline" 
-                        name="timeline" 
-                        value={formData.timeline} 
-                        onChange={handleInputChange} 
-                        placeholder="2-3 weeks, ASAP, etc." 
-                        className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500"
-                      />
+                      <Input id="timeline" name="timeline" value={formData.timeline} onChange={handleInputChange} placeholder="2-3 weeks, ASAP, etc." className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="budget" className="text-sm font-medium text-slate-700">Budget Range</Label>
-                      <Input 
-                        id="budget" 
-                        name="budget" 
-                        value={formData.budget} 
-                        onChange={handleInputChange} 
-                        placeholder="$5,000-$10,000" 
-                        className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500"
-                      />
+                      <Input id="budget" name="budget" value={formData.budget} onChange={handleInputChange} placeholder="$5,000-$10,000" className="h-12 border-slate-200 focus:border-purple-500 focus:ring-purple-500" />
                     </div>
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="description" className="text-sm font-medium text-slate-700">Project Description *</Label>
-                    <Textarea 
-                      id="description" 
-                      name="description" 
-                      value={formData.description} 
-                      onChange={handleInputChange} 
-                      placeholder="Describe your project, goals, and specific requirements. What challenges are you facing with AI prompts?" 
-                      className="min-h-[140px] border-slate-200 focus:border-purple-500 focus:ring-purple-500 resize-none" 
-                      required 
-                    />
+                    <Textarea id="description" name="description" value={formData.description} onChange={handleInputChange} placeholder="Describe your project, goals, and specific requirements. What challenges are you facing with AI prompts?" className="min-h-[140px] border-slate-200 focus:border-purple-500 focus:ring-purple-500 resize-none" required />
                   </div>
                   
                   <div className="pt-4">
-                    <Button 
-                      type="submit" 
-                      size="lg" 
-                      disabled={isSubmitting} 
-                      className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]"
-                    >
-                      {isSubmitting ? (
-                        <>
+                    <Button type="submit" size="lg" disabled={isSubmitting} className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02]">
+                      {isSubmitting ? <>
                           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
                           Submitting...
-                        </>
-                      ) : (
-                        <>
+                        </> : <>
                           <Sparkles className="mr-3 h-5 w-5" />
                           Get My Free Consultation
                           <ArrowRight className="ml-3 h-5 w-5" />
-                        </>
-                      )}
+                        </>}
                     </Button>
                   </div>
                 </form>
