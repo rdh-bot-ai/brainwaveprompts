@@ -1,0 +1,69 @@
+slug,title,short_description,content,category_slug,category_name,category_description,visibility,status,tags,is_featured,sort_order,version
+research-assistant-problem-framing,Research Assistant — Problem Framing,"Turn vague asks into tight research questions and a search plan.","Task: Convert a broad topic into precise research questions, sources, and a search plan.
+Output:
+
+Problem statement (1–2 lines)
+
+5–7 research questions grouped by theme
+
+Hypotheses to test
+
+Search strings (Google/Bing, Scholar)
+
+10 suggested sources with why-they-matter
+Constraints: Cite with inline [#] markers; flag weak evidence.",research-assistant,Research Assistant,"Prompts that structure rigorous desk research, verification, and synthesis.",FREE,PUBLISHED,"research|evidence|planning",true,10,1
+research-assistant-lit-review,Literature Review — Rapid Synthesis,"Summarize papers into a defensible, gap-aware narrative.","Goal: Produce a concise literature review on <TOPIC> with proper structure.
+Deliver:
+
+Executive summary (120–180 words)
+
+Methods: databases, inclusion/exclusion
+
+Findings: 3–5 synthesized themes with citations
+
+Gaps & limitations
+
+Implications & next steps
+Notes: Use numbered references and keep quotes under 25 words.",research-assistant,Research Assistant,"Prompts that structure rigorous desk research, verification, and synthesis.",PREMIUM,PUBLISHED,"research|synthesis|literature-review",false,11,1
+marketing-writer-landing-hero,Landing Page — Hero Block that Converts,"Craft a sharp hero: promise, proof, CTA. No fluff.","Create a landing-page hero for <PRODUCT> targeting <AUDIENCE>.
+Output:
+
+H1 (≤10 words) — outcome-led
+
+Subhead (≤22 words) — how it works + evidence
+
+3 proof bullets (metrics, logos, awards)
+
+Primary CTA + secondary trust CTA
+
+Alt variations x3",marketing-writer,Marketing Writer,"Copy frameworks for pages, ads, emails, and offers.",ANON,PUBLISHED,"copywriting|landing-page|conversion",true,5,1
+marketing-email-nurture-a1,Email Nurture — Problem → Insight → Next Step,"Short, skimmable email that earns the next click.","Compose a 120–150 word email.
+Structure:
+
+Lead with a sharp problem your ICP feels weekly
+
+Insert 1 surprising data point
+
+Offer a helpful asset (guide/checklist)
+
+CTA with benefit
+Tone: pragmatic, expert, non-salesy.",marketing-writer,Marketing Writer,"Copy frameworks for pages, ads, emails, and offers.",FREE,PUBLISHED,"email|nurture|b2b",false,6,1
+seo-audit-quick-scan,SEO Audit — 15‑Minute Quick Scan,"Fast technical + content snapshot with prioritized fixes.","Audit <DOMAIN>. Produce:
+
+Technical: index coverage, core vitals, sitemaps, robots
+
+Content: top pages, gaps, cannibalization
+
+Links: anchors, toxic risks
+
+5 highest-impact fixes with effort/impact matrix",seo-auditor,SEO Auditor,"Operational SEO checks and action lists.",FREE,DRAFT,"seo|audit|technical",false,20,1
+code-review-risks-first,Code Review — Risks First,"Find the scary stuff before nitpicks.","Review this codebase focusing on: security, data handling, performance, and race conditions.
+Output:
+
+Top risks (why it matters, exploit path, blast radius)
+
+Evidence snippets (file:line)
+
+Fix sketch or refactor direction
+
+Fast wins vs structural changes",code-review,Code Review,"Structured reviews with actionable fixes.",PREMIUM,PUBLISHED,"code|security|performance",false,30,1

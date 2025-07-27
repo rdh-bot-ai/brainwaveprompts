@@ -1,0 +1,42 @@
+[
+  {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "slug": "research-assistant",
+    "name": "Research Assistant",
+    "description": "Prompts that structure rigorous desk research, verification, and synthesis.",
+    "sortOrder": 10,
+    "isFeatured": true,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "slug": "marketing-writer",
+    "name": "Marketing Writer",
+    "description": "Copy frameworks for pages, ads, emails, and offers.",
+    "sortOrder": 5,
+    "isFeatured": true,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "33333333-3333-4333-8333-333333333333",
+    "slug": "seo-auditor",
+    "name": "SEO Auditor",
+    "description": "Operational SEO checks and action lists.",
+    "sortOrder": 20,
+    "isFeatured": false,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "44444444-4444-4444-8444-444444444444",
+    "slug": "code-review",
+    "name": "Code Review",
+    "description": "Structured reviews with actionable fixes.",
+    "sortOrder": 30,
+    "isFeatured": false,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  }
+]

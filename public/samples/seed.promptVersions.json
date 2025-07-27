@@ -1,0 +1,9 @@
+[
+  {
+    "id": "vvvvvvv1-0000-4000-8000-000000000001",
+    "promptId": "aaaaaaa1-0000-4000-8000-000000000001",
+    "version": 1,
+    "content": "Task: Convert a broad topic into precise research questions, sources, and a search plan.\nOutput:\n- Problem statement (1–2 lines)\n- 5–7 research questions grouped by theme\n- Hypotheses to test\n- Search strings (Google/Bing, Scholar)\n- 10 suggested sources with why-they-matter\nConstraints: Cite with inline [#] markers; flag weak evidence.",
+    "createdAt": "2025-01-02T00:00:00.000Z"
+  }
+]

@@ -1,9 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AuthContext } from "@/contexts/AuthContext";
 import Navbar from "@/components/layout/Navbar";
-import { Users, BarChart3, DollarSign, Settings } from "lucide-react";
+import { Users, BarChart3, DollarSign, Settings, FileText } from "lucide-react";
 import AdminUserManagement from "@/components/admin/AdminUserManagement";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminSettings from "@/components/admin/AdminSettings";
@@ -47,7 +48,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="users" className="w-full">
-            <TabsList className="mb-6 grid w-full lg:w-auto lg:grid-cols-4">
+            <TabsList className="mb-6 grid w-full lg:w-auto lg:grid-cols-5">
               <TabsTrigger value="users">
                 <Users className="mr-2 h-4 w-4" />
                 User Management
@@ -59,6 +60,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="billing">
                 <DollarSign className="mr-2 h-4 w-4" />
                 Billing & Usage
+              </TabsTrigger>
+              <TabsTrigger value="prompts">
+                <FileText className="mr-2 h-4 w-4" />
+                Prompt Management
               </TabsTrigger>
               <TabsTrigger value="settings">
                 <Settings className="mr-2 h-4 w-4" />
@@ -76,6 +81,18 @@ const AdminDashboard = () => {
             
             <TabsContent value="billing">
               <AdminAnalytics showBilling={true} />
+            </TabsContent>
+            
+            <TabsContent value="prompts">
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-4">Prompt Management has been moved to a dedicated area.</p>
+                <Button asChild>
+                  <Link to="/super-admin/prompt-management/overview">
+                    <FileText className="mr-2 h-4 w-4" />
+                    Go to Prompt Management
+                  </Link>
+                </Button>
+              </div>
             </TabsContent>
             
             <TabsContent value="settings">
