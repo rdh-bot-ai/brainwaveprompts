@@ -18,14 +18,36 @@ import Templates from "./pages/Templates";
 import Profile from "./pages/Profile";
 import PromptConsulting from "./pages/PromptConsulting";
 import AdminDashboard from "./pages/AdminDashboard";
+import PromptManagementOverview from "./pages/super-admin/PromptManagementOverview";
+import PromptManagementCategories from "./pages/super-admin/PromptManagementCategories";
+import PromptManagementPrompts from "./pages/super-admin/PromptManagementPrompts";
+import PromptManagementBulkImport from "./pages/super-admin/PromptManagementBulkImport";
+import PromptManagementLayout from "./components/prompt-management/PromptManagementLayout";
+import { usePromptManagementStore } from "./stores/promptManagementStore";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
+
+// Component to initialize store data
+function StoreInitializer() {
+  const { loadSeeds, categories } = usePromptManagementStore();
+
+  useEffect(() => {
+    // Load seed data if store is empty
+    if (categories.length === 0) {
+      loadSeeds();
+    }
+  }, [loadSeeds, categories.length]);
+
+  return null;
+}
 
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
+          <StoreInitializer />
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -41,6 +63,15 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/consulting" element={<PromptConsulting />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              
+              {/* Super Admin Prompt Management Routes */}
+              <Route path="/super-admin/prompt-management" element={<PromptManagementLayout />}>
+                <Route path="overview" element={<PromptManagementOverview />} />
+                <Route path="categories" element={<PromptManagementCategories />} />
+                <Route path="prompts" element={<PromptManagementPrompts />} />
+                <Route path="bulk-import" element={<PromptManagementBulkImport />} />
+              </Route>
+              
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
