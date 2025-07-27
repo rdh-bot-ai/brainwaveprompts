@@ -3,8 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
-import { DollarSign, Zap, TrendingUp, Users, Crown, Activity } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tooltip as TooltipProvider, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
+import { DollarSign, Zap, TrendingUp, Users, Crown, Activity, Info, CreditCard, Target, PieChart as PieChartIcon } from "lucide-react";
+import { getRevenueCostSummary, getRevenuePoints, getTokenPointsByPlan, type RevenueCostSummary } from "@/lib/analytics/revenueCostAdapters";
 
 interface AnalyticsData {
   month: string;
@@ -32,6 +35,8 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ showBilling = false }) 
   const [selectedPeriod, setSelectedPeriod] = useState("last6months");
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData[]>([]);
   const [userUsageData, setUserUsageData] = useState<UserUsageData[]>([]);
+  const [revenueCostView, setRevenueCostView] = useState<'summary' | 'revenue' | 'cost' | 'tokens'>('summary');
+  const [revenueCostData, setRevenueCostData] = useState<RevenueCostSummary | null>(null);
 
   useEffect(() => {
     // Mock analytics data
@@ -94,6 +99,10 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ showBilling = false }) 
 
     setAnalyticsData(mockAnalytics);
     setUserUsageData(mockUserUsage);
+    
+    // Load revenue and cost data
+    const summary = getRevenueCostSummary(selectedPeriod);
+    setRevenueCostData(summary);
   }, [selectedPeriod]);
 
   const currentMonth = analyticsData[analyticsData.length - 1];
@@ -121,6 +130,271 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ showBilling = false }) 
   const totalCost = currentMonth?.totalCost || 0;
   const totalUsage = currentMonth?.totalUsage || 0;
   const averageCostPerUser = totalUsers > 0 ? (totalCost / totalUsers).toFixed(2) : "0";
+
+  const formatCurrency = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+  const formatNumber = (num: number) => num.toLocaleString();
+
+  const renderRevenueCostCards = () => {
+    if (!revenueCostData) return null;
+
+    const EstimatedBadge = () => (
+      revenueCostData.estimated ? (
+        <TooltipProvider>
+          <TooltipTrigger asChild>
+            <Badge variant="outline" className="ml-2 text-xs">
+              <Info className="h-3 w-3 mr-1" />
+              estimated
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Calculated using configured token rates</p>
+          </TooltipContent>
+        </TooltipProvider>
+      ) : null
+    );
+
+    switch (revenueCostView) {
+      case 'summary':
+        return (
+          <>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Revenue (Paid Users)</CardTitle>
+                <CreditCard className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatCurrency(revenueCostData.totalRevenueCentsPaid)}</div>
+                <p className="text-xs text-muted-foreground">
+                  From paid subscriptions
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total API Cost (All Users)</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {formatCurrency(revenueCostData.totalApiCostCentsAll)}
+                  <EstimatedBadge />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  OpenAI API costs
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Tokens (All Users)</CardTitle>
+                <Zap className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatNumber(revenueCostData.totalTokensAll)}</div>
+                <p className="text-xs text-muted-foreground">
+                  Tokens consumed
+                </p>
+              </CardContent>
+            </Card>
+          </>
+        );
+
+      case 'revenue':
+        return (
+          <>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Revenue (Paid Users)</CardTitle>
+                <CreditCard className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatCurrency(revenueCostData.totalRevenueCentsPaid)}</div>
+                <p className="text-xs text-muted-foreground">
+                  Gross revenue from subscriptions
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">MRR (Paid)</CardTitle>
+                <Target className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {revenueCostData.mrrCents ? formatCurrency(revenueCostData.mrrCents) : "—"}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Monthly recurring revenue
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">ARPU (Paid)</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {revenueCostData.arpuCents ? formatCurrency(revenueCostData.arpuCents) : "—"}
+                  <TooltipProvider>
+                    <TooltipTrigger asChild>
+                      <Info className="inline h-3 w-3 ml-1 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Revenue ÷ Paid Users for selected period</p>
+                    </TooltipContent>
+                  </TooltipProvider>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Average revenue per user
+                </p>
+              </CardContent>
+            </Card>
+          </>
+        );
+
+      case 'cost':
+        return (
+          <>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">API Cost — Paid Users</CardTitle>
+                <Crown className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {formatCurrency(revenueCostData.apiCostCentsPaid)}
+                  <EstimatedBadge />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Premium subscription costs
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">API Cost — Registered Users</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {formatCurrency(revenueCostData.apiCostCentsRegistered)}
+                  <EstimatedBadge />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Free registered user costs
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">API Cost — Free Users</CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {formatCurrency(revenueCostData.apiCostCentsFree)}
+                  <EstimatedBadge />
+                  <TooltipProvider>
+                    <TooltipTrigger asChild>
+                      <Info className="inline h-3 w-3 ml-1 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Anonymous/unauthenticated user costs</p>
+                    </TooltipContent>
+                  </TooltipProvider>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Anonymous user costs
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total API Cost — All Users</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {formatCurrency(revenueCostData.totalApiCostCentsAll)}
+                  <EstimatedBadge />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Sum of all segments
+                </p>
+              </CardContent>
+            </Card>
+          </>
+        );
+
+      case 'tokens':
+        return (
+          <>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Tokens — Paid Users</CardTitle>
+                <Crown className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatNumber(revenueCostData.tokensPaid)}</div>
+                <p className="text-xs text-muted-foreground">
+                  Premium user tokens
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Tokens — Registered Users</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatNumber(revenueCostData.tokensRegistered)}</div>
+                <p className="text-xs text-muted-foreground">
+                  Free registered tokens
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Tokens — Free Users</CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatNumber(revenueCostData.tokensFree)}</div>
+                <p className="text-xs text-muted-foreground">
+                  Anonymous user tokens
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Tokens — All Users</CardTitle>
+                <Zap className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatNumber(revenueCostData.totalTokensAll)}</div>
+                <p className="text-xs text-muted-foreground">
+                  Sum of all segments
+                </p>
+              </CardContent>
+            </Card>
+          </>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -198,6 +472,52 @@ const AdminAnalytics: React.FC<AdminAnalyticsProps> = ({ showBilling = false }) 
           </CardContent>
         </Card>
       </div>
+
+      {/* Revenue & Cost Breakdown Section - Only show when showBilling is true */}
+      {showBilling && (
+        <>
+          <div className="mt-8">
+            <h3 className="text-lg font-semibold mb-4">Revenue & Cost Breakdown</h3>
+            
+            {/* View Selector */}
+            <div className="flex gap-1 mb-6 p-1 bg-muted rounded-lg w-fit">
+              <Button
+                variant={revenueCostView === 'summary' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setRevenueCostView('summary')}
+              >
+                Summary
+              </Button>
+              <Button
+                variant={revenueCostView === 'revenue' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setRevenueCostView('revenue')}
+              >
+                Revenue
+              </Button>
+              <Button
+                variant={revenueCostView === 'cost' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setRevenueCostView('cost')}
+              >
+                Cost by Segment
+              </Button>
+              <Button
+                variant={revenueCostView === 'tokens' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setRevenueCostView('tokens')}
+              >
+                Tokens by Segment
+              </Button>
+            </div>
+
+            {/* Dynamic Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+              {renderRevenueCostCards()}
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
