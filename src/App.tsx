@@ -54,18 +54,38 @@ const App = () => (
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
+              <Route path="/signin" element={
+                <ErrorBoundary>
+                  <SignIn />
+                </ErrorBoundary>
+              } />
+              <Route path="/signup" element={
+                <ErrorBoundary>
+                  <SignUp />
+                </ErrorBoundary>
+              } />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/builder" element={<Builder />} />
+              <Route path="/builder" element={
+                <ErrorBoundary>
+                  <Builder />
+                </ErrorBoundary>
+              } />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/templates" element={<Templates />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/consulting" element={<PromptConsulting />} />
-              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin" element={
+                <ErrorBoundary>
+                  <AdminDashboard />
+                </ErrorBoundary>
+              } />
               
               {/* Super Admin Prompt Management Routes */}
-              <Route path="/super-admin/prompt-management" element={<PromptManagementLayout />}>
+              <Route path="/super-admin/prompt-management" element={
+                <ErrorBoundary>
+                  <PromptManagementLayout />
+                </ErrorBoundary>
+              }>
                 <Route path="overview" element={<PromptManagementOverview />} />
                 <Route path="categories" element={<PromptManagementCategories />} />
                 <Route path="prompts" element={<PromptManagementPrompts />} />

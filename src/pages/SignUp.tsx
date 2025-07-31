@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AuthContext } from "@/contexts/AuthContext";
 import Navbar from "@/components/layout/Navbar";
+import { signUpSchema, getPasswordStrength, getPasswordStrengthLabel, getPasswordStrengthColor } from "@/utils/validation-schemas";
+import { sanitizeEmail } from "@/utils/sanitization";
+import { Progress } from "@/components/ui/progress";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -17,29 +20,37 @@ const SignUp = () => {
   const { signUp } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const passwordStrength = getPasswordStrength(password);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
-      return;
-    }
-
-    setIsLoading(true);
-
+    // Validate form data with schema
     try {
-      await signUp(email, password, name);
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Error creating account. Please try again.");
-    } finally {
-      setIsLoading(false);
+      const validatedData = signUpSchema.parse({
+        name: name.trim(),
+        email: sanitizeEmail(email),
+        password,
+        confirmPassword
+      });
+
+      setIsLoading(true);
+
+      try {
+        await signUp(validatedData.email, validatedData.password, validatedData.name);
+        navigate("/dashboard");
+      } catch (err) {
+        setError("Error creating account. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    } catch (validationError: any) {
+      if (validationError.errors && validationError.errors.length > 0) {
+        setError(validationError.errors[0].message);
+      } else {
+        setError("Please check your input and try again.");
+      }
     }
   };
 
@@ -98,7 +109,36 @@ const SignUp = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      placeholder="Enter a strong password"
                     />
+                    {password && (
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-500">Password strength:</span>
+                          <span 
+                            className="text-xs font-medium"
+                            style={{ color: getPasswordStrengthColor(passwordStrength.score) }}
+                          >
+                            {getPasswordStrengthLabel(passwordStrength.score)}
+                          </span>
+                        </div>
+                        <Progress 
+                          value={(passwordStrength.score / 5) * 100} 
+                          className="h-2"
+                          style={{ 
+                            backgroundColor: '#e5e7eb',
+                            '--progress-color': getPasswordStrengthColor(passwordStrength.score) 
+                          } as React.CSSProperties}
+                        />
+                        {passwordStrength.feedback.length > 0 && (
+                          <ul className="text-xs text-gray-500 space-y-1">
+                            {passwordStrength.feedback.map((tip, index) => (
+                              <li key={index}>• {tip}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="confirmPassword">Confirm Password</Label>

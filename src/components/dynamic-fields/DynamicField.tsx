@@ -9,10 +9,12 @@ import { HelpCircle } from "lucide-react";
 import { FieldConfig } from "@/data/useCases";
 import { useToast } from "@/hooks/use-toast";
 
+type FieldValue = string | number | string[] | boolean | null;
+
 interface DynamicFieldProps {
   field: FieldConfig;
-  value: any;
-  onChange: (fieldId: string, value: any) => void;
+  value: FieldValue;
+  onChange: (fieldId: string, value: FieldValue) => void;
 }
 
 const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChange }) => {
@@ -20,7 +22,7 @@ const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChange }) =
   const [fileInfo, setFileInfo] = React.useState<{name: string; sizeMB: number} | null>(null);
   const { toast } = useToast();
 
-  const handleChange = (newValue: any) => {
+  const handleChange = (newValue: FieldValue) => {
     onChange(field.id, newValue);
   };
 
@@ -35,6 +37,9 @@ const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChange }) =
             onChange={(e) => handleChange(e.target.value)}
             placeholder={`Enter ${field.label.toLowerCase()}`}
             required={field.required}
+            aria-label={field.label}
+            aria-required={field.required}
+            aria-describedby={field.helpText ? `${inputId}-help` : undefined}
           />
         );
       
@@ -47,6 +52,9 @@ const DynamicField: React.FC<DynamicFieldProps> = ({ field, value, onChange }) =
             onChange={(e) => handleChange(Number(e.target.value))}
             placeholder={`Enter ${field.label.toLowerCase()}`}
             required={field.required}
+            aria-label={field.label}
+            aria-required={field.required}
+            aria-describedby={field.helpText ? `${inputId}-help` : undefined}
           />
         );
       

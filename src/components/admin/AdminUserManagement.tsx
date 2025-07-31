@@ -185,7 +185,14 @@ const AdminUserManagement = () => {
     });
   };
 
-  const handleSaveUser = (data: any) => {
+  interface UserFormData {
+    email: string;
+    name: string;
+    subscription: "free" | "registered" | "premium";
+    promptsRemaining: number;
+  }
+
+  const handleSaveUser = (data: UserFormData) => {
     if (selectedUser) {
       // Update existing user
       setUsers(users.map(user => 
@@ -413,6 +420,7 @@ const AdminUserManagement = () => {
                         size="sm"
                         onClick={() => handleToggleUserStatus(user.id)}
                         className={user.status === "active" ? "text-red-600 hover:text-red-700" : "text-green-600 hover:text-green-700"}
+                        aria-label={user.status === "active" ? `Deactivate user ${user.name}` : `Activate user ${user.name}`}
                       >
                         {user.status === "active" ? <UserX className="w-3 h-3" /> : <UserCheck className="w-3 h-3" />}
                       </Button>
@@ -420,6 +428,7 @@ const AdminUserManagement = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => handleEditUser(user)}
+                        aria-label={`Edit user ${user.name}`}
                       >
                         <Edit className="w-3 h-3" />
                       </Button>
@@ -428,6 +437,7 @@ const AdminUserManagement = () => {
                         size="sm"
                         onClick={() => handleDeleteUser(user.id)}
                         className="text-destructive hover:text-destructive"
+                        aria-label={`Delete user ${user.name}`}
                       >
                         <Trash2 className="w-3 h-3" />
                       </Button>

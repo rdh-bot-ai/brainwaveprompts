@@ -6,9 +6,44 @@ interface OpenAIResponse {
   }>;
 }
 
+/**
+ * PDF Summarization Service
+ * 
+ * SECURITY WARNING: This service requires an OpenAI API key.
+ * 
+ * IMPORTANT: Never expose API keys in client-side code!
+ * 
+ * For production use:
+ * 1. Move all API calls to a secure backend service
+ * 2. Store API keys in environment variables on the server
+ * 3. Implement proper authentication and rate limiting
+ * 4. Never send API keys from the client
+ * 
+ * Current implementation expects the API key to be provided at runtime,
+ * which is only suitable for development/testing.
+ */
 export class SummarizePDFService {
   public static readonly MAX_TOKENS = 8000;
   private static readonly OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+  
+  /**
+   * Get API key from environment or runtime
+   * In production, this should be handled server-side only
+   */
+  private static getApiKey(providedKey?: string): string | null {
+    // Check if API key is provided
+    if (providedKey) {
+      return providedKey;
+    }
+    
+    // Check environment variable (only for development)
+    if (import.meta.env.VITE_OPENAI_API_KEY && import.meta.env.DEV) {
+      console.warn('Using API key from environment. This is only acceptable in development!');
+      return import.meta.env.VITE_OPENAI_API_KEY;
+    }
+    
+    return null;
+  }
 
   static async splitByTokens(text: string, maxTokens: number): Promise<string[]> {
     // Rough estimation: 1 token ≈ 4 characters
@@ -48,6 +83,11 @@ export class SummarizePDFService {
 
   static async summarizeChunk(chunk: string, apiKey: string): Promise<string> {
     try {
+      // Validate API key format (basic check)
+      if (!apiKey || !apiKey.startsWith('sk-') || apiKey.length < 40) {
+        throw new Error('Invalid API key format');
+      }
+
       const response = await fetch(this.OPENAI_API_URL, {
         method: 'POST',
         headers: {
@@ -78,7 +118,16 @@ export class SummarizePDFService {
       const data: OpenAIResponse = await response.json();
       return data.choices[0]?.message?.content || '';
     } catch (error) {
-      console.error('Error summarizing chunk:', error);
+      // Don't log sensitive error details in production
+      if (import.meta.env.DEV) {
+        console.error('Error summarizing chunk:', error);
+      }
+      
+      // Return generic error message without exposing details
+      if (error instanceof Error && error.message.includes('API key')) {
+        throw new Error('API key validation failed');
+      }
+      
       return chunk.substring(0, 200) + '...'; // Fallback to truncation
     }
   }
@@ -113,20 +162,36 @@ export class SummarizePDFService {
 
       const chunks = await this.splitByTokens(text, this.MAX_TOKENS);
       
-      if (!apiKey) {
+      // Get API key securely
+      const validApiKey = this.getApiKey(apiKey);
+      
+      if (!validApiKey) {
+        // Show warning in development
+        if (import.meta.env.DEV) {
+          console.warn('No API key available. In production, implement server-side API calls.');
+        }
         // Return truncated version if no API key
         return { documentSummary: chunks[0]?.substring(0, 1000) + '...' || '' };
       }
       
       const summaries = await Promise.all(
-        chunks.map(chunk => this.summarizeChunk(chunk, apiKey))
+        chunks.map(chunk => this.summarizeChunk(chunk, validApiKey))
       );
       
       return { documentSummary: summaries.join(' ') };
     } catch (error) {
-      console.error('Error processing PDF:', error);
+      // Don't log sensitive error details in production
+      if (import.meta.env.DEV) {
+        console.error('Error processing PDF:', error);
+      }
+      
       if (error instanceof Error) {
-        return { documentSummary: `Error: ${error.message}` };
+        // Sanitize error messages to avoid exposing sensitive info
+        const sanitizedMessage = error.message
+          .replace(/sk-[A-Za-z0-9]+/g, 'sk-***')  // Hide API keys
+          .replace(/Bearer [A-Za-z0-9\-._~+\/]+=*/g, 'Bearer ***');  // Hide tokens
+          
+        return { documentSummary: `Error: ${sanitizedMessage}` };
       }
       return { documentSummary: `Error processing PDF: ${file.name}` };
     }
