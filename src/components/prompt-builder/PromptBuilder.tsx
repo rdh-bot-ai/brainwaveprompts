@@ -15,6 +15,7 @@ import UpgradePrompt from "../subscription/UpgradePrompt";
 import { getDefaultPrompt, SUBCATEGORIES } from "./subcategories";
 import { useToast } from "@/hooks/use-toast";
 import { validateFormData, extractPlaceholders } from "@/utils/placeholderValidator";
+import { validatePromptForm } from "@/utils/validation-schemas";
 import { consumeCredit, getRemainingCredits } from "@/utils/credits";
 import AdvancedOptionsPanel from "./AdvancedOptionsPanel";
 import { useDebounce } from "use-debounce";
@@ -199,6 +200,30 @@ const PromptBuilder: React.FC = () => {
       return;
     }
 
+    // Validate form data before generating
+    const validation = validatePromptForm(formData);
+    if (!validation.isValid) {
+      const errorMessages = Object.values(validation.errors).join(', ');
+      toast({
+        title: "Please fix the following errors",
+        description: errorMessages,
+        variant: "destructive",
+        duration: 5000
+      });
+      return;
+    }
+
+    // Check if prompt has content
+    if (!formData.prompt || formData.prompt.trim().length < 10) {
+      toast({
+        title: "Prompt too short",
+        description: "Please provide more content or fill in the required fields.",
+        variant: "destructive",
+        duration: 5000
+      });
+      return;
+    }
+
     // Use new credit system for enhancement
     if (user) {
       try {
@@ -231,22 +256,12 @@ const PromptBuilder: React.FC = () => {
   };
 
   const generateEnhancedPrompt = () => {
-    let basePrompt = debouncedFormData.prompt || "";
-    
-    basePrompt = basePrompt
-      .replace(/\[topic\]/g, debouncedFormData.topic || "the selected topic")
-      .replace(/\[key points\]/g, debouncedFormData.keyPoints || "important aspects")
-      .replace(/\[language\]/g, debouncedFormData.language || "the specified programming language")
-      .replace(/\[functionality\]/g, debouncedFormData.functionality || "the requested functionality")
-      .replace(/\[challenge\]/g, debouncedFormData.challenge || "the problem")
-      .replace(/\[context\]/g, debouncedFormData.context || "relevant background information")
-      .replace(/\[constraints\]/g, debouncedFormData.constraints || "any limitations");
-    
-    let enhancedPrompt = basePrompt;
+    // The prompt already has placeholders replaced by PromptForm
+    let enhancedPrompt = debouncedFormData.prompt || "";
     
     const shouldAddStructure = formData.useTemplate || 
-                              (!formData.buildCustom && basePrompt.length < 100) || 
-                              (formData.buildCustom && basePrompt.length < 50);
+                              (!formData.buildCustom && enhancedPrompt.length < 100) || 
+                              (formData.buildCustom && enhancedPrompt.length < 50);
     
     if (shouldAddStructure) {
       switch (selectedTask) {

@@ -430,6 +430,13 @@ const PromptForm: React.FC<PromptFormProps> = ({
           if (formData.researchScope) {
             updatedPrompt = updatedPrompt.replace(/\[research scope\]/g, formData.researchScope);
           }
+          // Missing research placeholders
+          if (formData.fieldIndustry) {
+            updatedPrompt = updatedPrompt.replace(/\[field\/industry\]/g, formData.fieldIndustry);
+          }
+          if (formData.industrySector) {
+            updatedPrompt = updatedPrompt.replace(/\[industry\/sector\]/g, formData.industrySector);
+          }
           break;
         case "seo":
           if (formData.keyword) {
@@ -447,6 +454,9 @@ const PromptForm: React.FC<PromptFormProps> = ({
             updatedPrompt = updatedPrompt.replace(/\[industry\]/g, formData.industry);
           }
           // Additional SEO fields
+          if (formData.websitePage) {
+            updatedPrompt = updatedPrompt.replace(/\[website\/page\]/g, formData.websitePage);
+          }
           if (formData.secondaryKeywords) {
             updatedPrompt = updatedPrompt.replace(/\[secondary keywords\]/g, formData.secondaryKeywords);
           }
@@ -474,11 +484,49 @@ const PromptForm: React.FC<PromptFormProps> = ({
           if (formData.timeframe) {
             updatedPrompt = updatedPrompt.replace(/\[timeframe\]/g, formData.timeframe);
           }
+          // Missing data category placeholders
+          if (formData.processFunnel) {
+            updatedPrompt = updatedPrompt.replace(/\[process\/funnel\]/g, formData.processFunnel);
+          }
+          if (formData.customerBase) {
+            updatedPrompt = updatedPrompt.replace(/\[customer base\]/g, formData.customerBase);
+          }
+          if (formData.objectiveGoal) {
+            updatedPrompt = updatedPrompt.replace(/\[objective\/goal\]/g, formData.objectiveGoal);
+          }
+          if (formData.metricTrend) {
+            updatedPrompt = updatedPrompt.replace(/\[metric\/trend\]/g, formData.metricTrend);
+          }
+          if (formData.historicalData) {
+            updatedPrompt = updatedPrompt.replace(/\[historical data\]/g, formData.historicalData);
+          }
           break;
         case "knowledge":
           // Knowledge-specific replacements
           if (formData.contentType) {
             updatedPrompt = updatedPrompt.replace(/\[content type\]/g, formData.contentType);
+          }
+          // Missing knowledge category placeholders
+          if (formData.processTask) {
+            updatedPrompt = updatedPrompt.replace(/\[process\/task\]/g, formData.processTask);
+          }
+          if (formData.number) {
+            updatedPrompt = updatedPrompt.replace(/\[number\]/g, formData.number);
+          }
+          if (formData.topicIndustry) {
+            updatedPrompt = updatedPrompt.replace(/\[topic\/industry\]/g, formData.topicIndustry);
+          }
+          if (formData.productFeatureSystem) {
+            updatedPrompt = updatedPrompt.replace(/\[product\/feature\/system\]/g, formData.productFeatureSystem);
+          }
+          if (formData.topicSkill) {
+            updatedPrompt = updatedPrompt.replace(/\[topic\/skill\]/g, formData.topicSkill);
+          }
+          if (formData.process) {
+            updatedPrompt = updatedPrompt.replace(/\[process\]/g, formData.process);
+          }
+          if (formData.topicTool) {
+            updatedPrompt = updatedPrompt.replace(/\[topic\/tool\]/g, formData.topicTool);
           }
           break;
         case "other":
@@ -522,7 +570,9 @@ const PromptForm: React.FC<PromptFormProps> = ({
       formData.secondaryKeywords, formData.targetKeywords, formData.services, formData.seoTopic,
       formData.contentGoal,
       // Data fields
-      formData.dataset, formData.audience, formData.timeframe,
+      formData.dataset, formData.audience, formData.timeframe, formData.processFunnel, 
+      formData.customerBase, formData.objectiveGoal, formData.metricTrend, formData.historicalData,
+      formData.fieldIndustry, formData.industrySector, formData.websitePage,
       // Code fields
       formData.parameters, formData.returnType, formData.errorHandling, formData.framework,
       formData.props, formData.styling, formData.complexity, formData.apiService, formData.authMethod,
@@ -544,7 +594,8 @@ const PromptForm: React.FC<PromptFormProps> = ({
       formData.environmentType, formData.atmosphere, formData.architecturalElements, formData.timeOfDay,
       formData.storytelling, formData.perspective, formData.aspectRatio,
       // Knowledge fields
-      formData.contentType,
+      formData.contentType, formData.processTask, formData.number, formData.topicIndustry,
+      formData.productFeatureSystem, formData.topicSkill, formData.process, formData.topicTool,
       // Other fields
       formData.taskDescription, formData.expectedOutput, formData.outputFormat,
       formData.useTemplate, formData.buildCustom, onChange, selectedSubCategory]);

@@ -205,3 +205,53 @@ export function getPasswordStrengthColor(score: number): string {
   const colors = ['#dc2626', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981'];
   return colors[score] || colors[0];
 }
+
+/**
+ * Prompt form validation schema
+ */
+export const promptFormSchema = z.object({
+  topic: z.string().min(3, 'Topic must be at least 3 characters').max(200, 'Topic must not exceed 200 characters').optional(),
+  keyPoints: z.string().min(10, 'Key points must be at least 10 characters').max(1000, 'Key points must not exceed 1000 characters').optional(),
+  targetAudience: z.string().min(3, 'Target audience must be at least 3 characters').max(200, 'Target audience must not exceed 200 characters').optional(),
+  context: z.string().max(500, 'Context must not exceed 500 characters').optional(),
+  constraints: z.string().max(500, 'Constraints must not exceed 500 characters').optional(),
+  tone: z.string().optional(),
+  language: z.string().optional(),
+  wordCount: z.string().optional(),
+  duration: z.string().optional(),
+  platform: z.string().optional(),
+  platforms: z.string().optional(),
+  style: z.string().optional(),
+  details: z.string().max(500, 'Details must not exceed 500 characters').optional(),
+  prompt: z.string().min(10, 'Prompt must be at least 10 characters').max(10000, 'Prompt must not exceed 10,000 characters').optional(),
+  promptTemplate: z.string().optional(),
+}).refine((data) => {
+  // At least one of topic or prompt must be provided
+  return data.topic || data.prompt;
+}, {
+  message: "Either topic or prompt content is required",
+  path: ["topic"],
+});
+
+/**
+ * Validate prompt form data
+ */
+export function validatePromptForm(formData: Record<string, any>): {
+  isValid: boolean;
+  errors: Record<string, string>;
+} {
+  try {
+    promptFormSchema.parse(formData);
+    return { isValid: true, errors: {} };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const errors: Record<string, string> = {};
+      error.errors.forEach((err) => {
+        const field = err.path.join('.');
+        errors[field] = err.message;
+      });
+      return { isValid: false, errors };
+    }
+    return { isValid: false, errors: { general: 'Validation failed' } };
+  }
+}

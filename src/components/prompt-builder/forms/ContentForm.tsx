@@ -1,9 +1,11 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { validatePromptForm } from "@/utils/validation-schemas";
+import { AlertCircle } from "lucide-react";
 
 interface ContentFormProps {
   formData: Record<string, any>;
@@ -12,8 +14,34 @@ interface ContentFormProps {
 }
 
 const ContentForm: React.FC<ContentFormProps> = ({ formData, onChange, subCategory }) => {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    onChange(e.target.name, e.target.value);
+    const { name, value } = e.target;
+    onChange(name, value);
+    
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+  
+  // Validate form data when it changes
+  useEffect(() => {
+    const validation = validatePromptForm(formData);
+    setErrors(validation.errors);
+  }, [formData]);
+  
+  const renderFieldError = (fieldName: string) => {
+    if (errors[fieldName]) {
+      return (
+        <div className="flex items-center gap-1 text-red-500 text-sm mt-1">
+          <AlertCircle className="w-4 h-4" />
+          {errors[fieldName]}
+        </div>
+      );
+    }
+    return null;
   };
 
   // Common fields for all content types
@@ -26,7 +54,9 @@ const ContentForm: React.FC<ContentFormProps> = ({ formData, onChange, subCatego
           placeholder="What's your content about?"
           value={formData.topic || ""}
           onChange={handleChange}
+          className={errors.topic ? "border-red-500" : ""}
         />
+        {renderFieldError("topic")}
       </div>
       
       <div className="mb-4">
@@ -36,8 +66,9 @@ const ContentForm: React.FC<ContentFormProps> = ({ formData, onChange, subCatego
           placeholder="Main points, sections, or ideas to include..."
           value={formData.keyPoints || ""}
           onChange={handleChange}
-          className="min-h-[80px]"
+          className={`min-h-[80px] ${errors.keyPoints ? "border-red-500" : ""}`}
         />
+        {renderFieldError("keyPoints")}
       </div>
       
       <div className="mb-4">
@@ -47,7 +78,9 @@ const ContentForm: React.FC<ContentFormProps> = ({ formData, onChange, subCatego
           placeholder="Specify audience demographics, knowledge level, interests..."
           value={formData.targetAudience || ""}
           onChange={handleChange}
+          className={errors.targetAudience ? "border-red-500" : ""}
         />
+        {renderFieldError("targetAudience")}
       </div>
     </>
   );
