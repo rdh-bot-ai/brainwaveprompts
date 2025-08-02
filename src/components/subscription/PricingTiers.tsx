@@ -72,10 +72,11 @@ const PricingTiers: React.FC = () => {
         </CardHeader>
         <CardContent className="flex-grow">
           <div className="space-y-2">
-            <PricingFeature included={true} feature="2 prompt enhancements per month" tier="free" />
-            <PricingFeature included={false} feature="Advanced options" tier="free" />
-            <PricingFeature included={false} feature="Template access" tier="free" />
-            <PricingFeature included={false} feature="Export options" tier="free" />
+            <PricingFeature included={true} feature="2 AI prompt enhancements per month" tier="free" />
+            <PricingFeature included={true} feature="GPT-3.5 Turbo AI model" tier="free" />
+            <PricingFeature included={true} feature="Basic templates" tier="free" />
+            <PricingFeature included={false} feature="Advanced AI options" tier="free" />
+            <PricingFeature included={false} feature="Premium templates" tier="free" />
             <PricingFeature included={false} feature="Collaboration features" tier="free" />
             <PricingFeature included={false} feature="Priority support" tier="free" />
           </div>
@@ -106,12 +107,13 @@ const PricingTiers: React.FC = () => {
         </CardHeader>
         <CardContent className="flex-grow">
           <div className="space-y-2">
-            <PricingFeature included={true} feature="5 prompt enhancements per month" tier="registered" />
+            <PricingFeature included={true} feature="5 AI prompt enhancements per month" tier="registered" />
+            <PricingFeature included={true} feature="GPT-3.5 Turbo AI model" tier="registered" />
             <PricingFeature included={true} feature="Standard prompt caching" tier="registered" />
-            <PricingFeature included={true} feature="Limited advanced options" tier="registered" />
-            <PricingFeature included={true} feature="Basic templates" tier="registered" />
+            <PricingFeature included={true} feature="Limited advanced AI options" tier="registered" />
+            <PricingFeature included={true} feature="Extended templates library" tier="registered" />
             <PricingFeature included={true} feature="7-day prompt history" tier="registered" />
-            <PricingFeature included={false} feature="Collaboration features" tier="registered" />
+            <PricingFeature included={false} feature="Premium AI features" tier="registered" />
             <PricingFeature included={false} feature="Priority support" tier="registered" />
           </div>
         </CardContent>
@@ -141,11 +143,13 @@ const PricingTiers: React.FC = () => {
         </CardHeader>
         <CardContent className="pt-6 flex-grow">
           <div className="space-y-2">
-            <PricingFeature included={true} feature="Unlimited prompt enhancements" tier="premium" />
+            <PricingFeature included={true} feature="Unlimited AI prompt enhancements" tier="premium" />
+            <PricingFeature included={true} feature="GPT-4 Turbo AI model" tier="premium" />
+            <PricingFeature included={true} feature="Advanced AI parameters control" tier="premium" />
             <PricingFeature included={true} feature="Priority prompt caching" tier="premium" />
-            <PricingFeature included={true} feature="Full access to advanced options" tier="premium" />
-            <PricingFeature included={true} feature="All templates + Premium" tier="premium" />
+            <PricingFeature included={true} feature="All templates + Premium exclusive" tier="premium" />
             <PricingFeature included={true} feature="30-day prompt history" tier="premium" />
+            <PricingFeature included={true} feature="Collaboration features" tier="premium" />
             <PricingFeature included={true} feature="Priority support" tier="premium" />
           </div>
         </CardContent>

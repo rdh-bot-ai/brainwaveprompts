@@ -19,6 +19,8 @@ import { validatePromptForm } from "@/utils/validation-schemas";
 import { consumeCredit, getRemainingCredits } from "@/utils/credits";
 import AdvancedOptionsPanel from "./AdvancedOptionsPanel";
 import { useDebounce } from "use-debounce";
+import { aiService, AIEnhancementOptions } from "@/services/AIService";
+import { getAIModel, getModelDisplayName } from "@/config/planMatrix";
 
 const PromptBuilder: React.FC = () => {
   const { user, creditUsage, canUsePrompt, usePrompt } = useContext(AuthContext);
@@ -241,18 +243,78 @@ const PromptBuilder: React.FC = () => {
 
     setIsEnhancing(true);
     
-    setTimeout(() => {
-      const enhancedPrompt = generateEnhancedPrompt();
-      setGeneratedPrompt(enhancedPrompt);
-      setIsEnhancing(false);
-      
-      savePromptToHistory(enhancedPrompt);
-  
-      // Update displayed remaining count
-      if (user) {
-        setPromptsRemaining(getRemainingCredits(user.plan));
+    // Use AI enhancement if available, otherwise fallback to template-based
+    const enhancePromptAsync = async () => {
+      try {
+        let enhancedPrompt: string;
+        
+        if (aiService.isAvailable() && user) {
+          // Use AI enhancement with user's model
+          const aiOptions: AIEnhancementOptions = {
+            temperature: advancedOptions.temperature,
+            maxTokens: advancedOptions.maxTokens,
+            topP: advancedOptions.topP,
+            frequencyPenalty: advancedOptions.frequencyPenalty,
+            presencePenalty: advancedOptions.presencePenalty,
+          };
+          
+          const aiResponse = await aiService.enhancePrompt(
+            debouncedFormData.prompt || "",
+            user.plan,
+            aiOptions
+          );
+          
+          enhancedPrompt = aiResponse.enhancedPrompt;
+          
+          // Show which model was used
+          toast({
+            title: "Prompt enhanced!",
+            description: `Enhanced using ${getModelDisplayName(aiResponse.model)}`,
+            duration: 3000
+          });
+        } else {
+          // Fallback to template-based enhancement
+          enhancedPrompt = generateEnhancedPrompt();
+          
+          if (!aiService.isAvailable()) {
+            toast({
+              title: "Offline mode",
+              description: "Using template-based enhancement. Configure OpenAI API key for AI enhancement.",
+              variant: "default",
+              duration: 5000
+            });
+          }
+        }
+        
+        setGeneratedPrompt(enhancedPrompt);
+        savePromptToHistory(enhancedPrompt);
+        
+        // Update displayed remaining count
+        if (user) {
+          setPromptsRemaining(getRemainingCredits(user.plan));
+        }
+      } catch (error) {
+        // Handle AI enhancement errors gracefully
+        const fallbackPrompt = generateEnhancedPrompt();
+        setGeneratedPrompt(fallbackPrompt);
+        savePromptToHistory(fallbackPrompt);
+        
+        toast({
+          title: "Enhancement completed",
+          description: "Used template-based enhancement due to AI service issues.",
+          variant: "default",
+          duration: 5000
+        });
+        
+        if (user) {
+          setPromptsRemaining(getRemainingCredits(user.plan));
+        }
+      } finally {
+        setIsEnhancing(false);
       }
-    }, 1500);
+    };
+    
+    enhancePromptAsync();
   };
 
   const generateEnhancedPrompt = () => {

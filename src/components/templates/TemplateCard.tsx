@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AuthContext } from "@/contexts/AuthContext";
 import { TemplateItem } from "@/types/template-types";
 import { useNavigate } from "react-router-dom";
+import { canAccessTemplate } from "@/config/planMatrix";
 
 interface TemplateCardProps {
   template: TemplateItem;
@@ -15,15 +16,12 @@ interface TemplateCardProps {
 
 const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
   const { user } = useContext(AuthContext);
-  const userTier = user?.plan === "FREE_TIER" ? "free" : user?.plan === "REGISTERED" ? "registered" : user?.plan === "PREMIUM" ? "premium" : "free";
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const canAccessTemplate = (templateTier: string) => {
-    if (templateTier === "free") return true;
-    if (templateTier === "registered" && (userTier === "registered" || userTier === "premium")) return true;
-    if (templateTier === "premium" && userTier === "premium") return true;
-    return false;
+  const userCanAccessTemplate = () => {
+    if (!user) return template.tier === "free";
+    return canAccessTemplate(user.plan, template.tier);
   };
 
   const getTierBadgeColor = (tier: string) => {
@@ -77,7 +75,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
   };
 
   return (
-    <Card className={`overflow-hidden border ${!canAccessTemplate(template.tier) ? "opacity-80" : "hover:border-purple-300 hover:shadow-md transition-all"}`}>
+    <Card className={`overflow-hidden border ${!userCanAccessTemplate() ? "opacity-80" : "hover:border-purple-300 hover:shadow-md transition-all"}`}>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <Badge className={`${getTierBadgeColor(template.tier)} font-medium`}>
@@ -89,11 +87,11 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
         <CardDescription>{template.description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className={`bg-gray-50 p-3 rounded-md relative ${!canAccessTemplate(template.tier) ? "blur-sm" : ""}`}>
+        <div className={`bg-gray-50 p-3 rounded-md relative ${!userCanAccessTemplate() ? "blur-sm" : ""}`}>
           <p className="text-xs text-gray-600 line-clamp-4">
             {template.prompt}
           </p>
-          {!canAccessTemplate(template.tier) && (
+          {!userCanAccessTemplate() && (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="bg-white/80 p-2 rounded-full">
                 <Lock className="h-6 w-6 text-gray-500" />
@@ -103,7 +101,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
         </div>
       </CardContent>
       <CardFooter>
-        {canAccessTemplate(template.tier) ? (
+        {userCanAccessTemplate() ? (
           <div className="w-full grid grid-cols-2 gap-2">
             <Button variant="outline" className="w-full flex items-center" onClick={handleCopyPrompt}>
               <Copy className="mr-2 h-4 w-4" />

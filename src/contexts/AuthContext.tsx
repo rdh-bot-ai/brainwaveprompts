@@ -132,7 +132,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: "user-" + Math.random().toString(36).substr(2, 9),
         email,
         name,
-        plan: "REGISTERED", // New users get the registered tier
+        plan: "FREE_TIER", // New users start with free tier
       };
       setUser(mockUser);
       localStorage.setItem("user", JSON.stringify(mockUser));

@@ -16,15 +16,15 @@ const UpgradePrompt: React.FC<UpgradePromptProps> = ({ currentTier }) => {
   const tierInfo = {
     registered: {
       name: "Registered",
-      benefit: "5 prompts per month and basic templates",
+      benefit: "5 AI prompts/month with GPT-3.5 + extended templates",
       cta: "Upgrade for Free",
       price: "Free",
     },
     premium: {
       name: "Premium",
-      benefit: "Unlimited prompts and advanced AI features",
+      benefit: "Unlimited GPT-4 Turbo prompts + advanced AI features",
       cta: "Upgrade to Premium",
-      price: "₹750/month",
+      price: "$18/month",
     },
   };
 
